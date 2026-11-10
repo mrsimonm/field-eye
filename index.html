@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#121212">
+<meta name="theme-color" content="#EDF2E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121711" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Field Eye">
@@ -277,7 +278,7 @@ select { border: 1px solid var(--line); background: var(--card); border-radius: 
 .tourbtn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
 .tourbtn:hover { border-color: var(--muted); }
 .tourbtn svg { width: 17px; height: 17px; flex: none; }
-@media (max-width: 440px) { .tourbtn span { display: none; } .tourbtn { padding: 6px 9px; } }
+@media (max-width: 440px) { #tourBtn span, #installBtn span { display: none; } #tourBtn, #installBtn { padding: 6px 9px; } }
 .tourhint { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; }
 .tourhint p { flex: 1 1 220px; font-weight: 700; font-size: 0.95rem; }
 .tour { position: fixed; inset: 0; z-index: 40; }
@@ -312,6 +313,153 @@ html.touring * { scroll-margin-top: 76px; scroll-margin-bottom: 24px; }
 @media (prefers-reduced-motion: reduce) {
   .frame img, .tour-spot, .tour-bar i { transition: none; }
 }
+
+/* ========================================================================
+   Liquid-glass redesign (forest green) — layered over the base styles.
+   Frosted panels over a soft green aurora, one green accent for primary
+   and active states, pill tabs that float at the bottom on phones, and
+   dialogs that rise as bottom sheets. Keeps the readable Atkinson fonts.
+   ===================================================================== */
+:root {
+  --paper: #EDF2E8;
+  --card: rgba(249,252,246,.74);
+  --ink: #1E2A22; --muted: #5A6B5E; --line: #D4DECB;
+  --moss: #2E6B48; --on-moss: #F3F8F1;
+  --amber: #866C2C; --amber-soft: #ECE3CC;
+  --good: #2A7548; --good-soft: #D8EEDD;
+  --bad: #B4402B; --bad-soft: #F6DDD6;
+  --plate: #0E140F; --plate-ink: #CBD6CD;
+  --r: 18px; --r-sm: 12px; --r-pill: 999px;
+  --glass-fill: rgba(249,252,246,.66); --glass-fill-2: rgba(249,252,246,.86);
+  --glass-border: rgba(255,255,255,.62);
+  --glass-blur: blur(22px) saturate(160%);
+  --glass-shadow: 0 20px 50px -16px rgba(32,74,50,.26), 0 0 0 1px rgba(30,70,45,.05), inset 0 1px 0 rgba(255,255,255,.72), inset 0 -1px 0 rgba(40,90,60,.04);
+  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.30), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.14), transparent 84%), var(--glass-fill);
+  --blob-1: rgba(94,168,125,.34); --blob-2: rgba(150,180,120,.30); --blob-3: rgba(120,170,150,.26); --blob-4: rgba(196,206,150,.26);
+  --shadow: 0 1px 2px rgba(32,74,50,.08);
+  --shadow-lift: 0 14px 34px -12px rgba(36,80,52,.26);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121711; --card: rgba(28,37,29,.72);
+    --ink: #E6EDE4; --muted: #9DAE9F; --line: #2C382E;
+    --moss: #8ECBA4; --on-moss: #0F1511;
+    --amber: #CDAE6E; --amber-soft: #39301A;
+    --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
+    --plate: #080A08; --plate-ink: #AEB9AF;
+    --glass-fill: rgba(28,37,29,.62); --glass-fill-2: rgba(28,37,29,.84);
+    --glass-border: rgba(255,255,255,.12);
+    --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.25);
+    --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.05), transparent 84%), var(--glass-fill);
+    --blob-1: rgba(70,150,105,.26); --blob-2: rgba(120,160,90,.22); --blob-3: rgba(90,150,130,.20); --blob-4: rgba(150,170,100,.16);
+    --shadow: 0 1px 2px rgba(0,0,0,.45);
+    --shadow-lift: 0 16px 38px -12px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121711; --card: rgba(28,37,29,.72);
+  --ink: #E6EDE4; --muted: #9DAE9F; --line: #2C382E;
+  --moss: #8ECBA4; --on-moss: #0F1511;
+  --amber: #CDAE6E; --amber-soft: #39301A;
+  --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
+  --plate: #080A08; --plate-ink: #AEB9AF;
+  --glass-fill: rgba(28,37,29,.62); --glass-fill-2: rgba(28,37,29,.84);
+  --glass-border: rgba(255,255,255,.12);
+  --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.25);
+  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.05), transparent 84%), var(--glass-fill);
+  --blob-1: rgba(70,150,105,.26); --blob-2: rgba(120,160,90,.22); --blob-3: rgba(90,150,130,.20); --blob-4: rgba(150,170,100,.16);
+  --shadow: 0 1px 2px rgba(0,0,0,.45);
+  --shadow-lift: 0 16px 38px -12px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+
+/* Soft green aurora behind the frosted panels */
+body {
+  background:
+    radial-gradient(760px 520px at 8% -6%, var(--blob-1), transparent 60%),
+    radial-gradient(680px 560px at 104% 8%, var(--blob-2), transparent 58%),
+    radial-gradient(720px 620px at 50% 112%, var(--blob-3), transparent 60%),
+    radial-gradient(520px 460px at 90% 70%, var(--blob-4), transparent 62%),
+    var(--paper);
+  background-attachment: fixed; background-repeat: no-repeat;
+}
+body::before { background: var(--paper); }
+
+/* Frosted header */
+.bar {
+  background: color-mix(in srgb, var(--paper) 68%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Glass panels */
+.empty, .specimen, .addcard, .sharecard, .learn, .notice, .tweak-box, .tourhint, .tour-card, dialog.editor {
+  background: var(--glass-sheen);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--r);
+}
+.verdict { border-radius: var(--r); box-shadow: var(--shadow-lift); }
+.plate { border-radius: var(--r); box-shadow: var(--glass-shadow); }
+.strip img, .compare img, .thumb, .pending img { border-radius: var(--r-sm); }
+
+/* Tabs: a floating glass pill */
+.tabs {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow);
+}
+.tab[aria-selected="true"] { background: var(--moss); color: var(--on-moss); box-shadow: 0 3px 10px -3px color-mix(in srgb, var(--moss) 70%, transparent); }
+
+/* Round, frosted controls */
+.btn { border-radius: var(--r-sm); background: var(--glass-fill-2); border: 1px solid var(--glass-border); box-shadow: var(--shadow); }
+.btn.sm { border-radius: var(--r-pill); }
+.btn.primary { background: linear-gradient(135deg, var(--moss), color-mix(in srgb, var(--moss) 76%, #0a3a24)); border-color: transparent; color: var(--on-moss); border-radius: var(--r-pill); box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--moss) 65%, transparent); }
+.btn.primary:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; box-shadow: none; }
+.btn.danger.solid { background: var(--bad); border-color: var(--bad); }
+.tourbtn { border-radius: var(--r-pill); background: var(--glass-fill); border: 1px solid var(--glass-border); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); box-shadow: var(--shadow); }
+.choice { background: var(--glass-fill); border: 1.5px solid var(--glass-border); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border-radius: var(--r-sm); box-shadow: var(--shadow); }
+.seg, select, .tweaks summary, .field input, .field textarea, .typeform input { background: var(--glass-fill-2); border-radius: var(--r-sm); }
+.tweaks summary { border-radius: var(--r-pill); }
+.addthumb { border-radius: var(--r-sm); }
+.avatar { background: var(--moss); color: var(--on-moss); }
+
+/* Gentle motion */
+.btn, .tab, .choice, .tourbtn, .seg button, .thumb .open { transition: transform .15s cubic-bezier(.2,.7,.2,1), box-shadow .2s, background .2s, border-color .2s, filter .2s; }
+.btn:active, .choice:active, .tab:active, .tourbtn:active { transform: translateY(1px) scale(.99); }
+
+/* Dialog as a frosted sheet */
+dialog::backdrop { background: rgba(10,20,14,.5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+
+/* ---- Phone: floating bottom tab bar + bottom-sheet dialogs ---- */
+@media (max-width: 560px) {
+  .brand { font-size: 1.15rem; }
+  /* Drop the header's backdrop-filter on phones: it would trap the fixed tab bar inside the header. */
+  .bar { -webkit-backdrop-filter: none; backdrop-filter: none; background: color-mix(in srgb, var(--paper) 94%, transparent); }
+  .bar-right { gap: 6px; flex-wrap: nowrap; }
+  .tabs {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 30; padding: 5px; gap: 4px; box-shadow: var(--shadow-lift);
+  }
+  .tab { padding: 10px 18px; font-size: 0.95rem; white-space: nowrap; }
+  .wrap { padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px)); }
+  .next-row { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  .editor {
+    width: 100%; max-width: none; margin: 0; left: 0; right: 0; top: auto; bottom: 0;
+    max-height: 92dvh; border-radius: 22px 22px 0 0;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    animation: fe-sheet .26s cubic-bezier(.2,.7,.2,1);
+  }
+}
+@keyframes fe-sheet { from { transform: translateY(100%); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
 </style>
 
 <header class="bar">
