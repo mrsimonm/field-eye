@@ -1,0 +1,13 @@
+rules_version = '2';
+// Field Eye: each signed-in person can store only their own photos, as images under 15 MB.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /users/{uid}/photos/{photoId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.size < 15 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}
