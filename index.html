@@ -1,0 +1,1659 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+<title>Field Eye</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@75..150,500..800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one study column (max 780px) under a sticky bar with two tabs.
+   Practice = dark photo plate + answer tray + what-to-look-for notes.
+   My animals = add form, then a stack of specimen cards with photo grids. */
+:root {
+  --paper: #EEEEEC;
+  --card: #FAFAF9;
+  --ink: #1A1A1A;
+  --muted: #5E5E5E;
+  --line: #D6D6D3;
+  --moss: #262626;
+  --on-moss: #F5F5F4;
+  --amber: #686868;
+  --amber-soft: #E4E4E2;
+  --good: #2A7548;
+  --good-soft: #DCEEDF;
+  --bad: #AE3D28;
+  --bad-soft: #F6DED7;
+  --plate: #121212;
+  --plate-ink: #CFCFCF;
+  --f-display: "Anybody", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121212; --card: #1C1C1C; --ink: #E8E8E8; --muted: #9A9A9A; --line: #2F2F2F;
+    --moss: #E2E2E2; --on-moss: #121212; --amber: #ABABAB; --amber-soft: #2A2A2A;
+    --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
+    --plate: #080808; --plate-ink: #B0B0B0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121212; --card: #1C1C1C; --ink: #E8E8E8; --muted: #9A9A9A; --line: #2F2F2F;
+  --moss: #E2E2E2; --on-moss: #121212; --amber: #ABABAB; --amber-soft: #2A2A2A;
+  --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
+  --plate: #080808; --plate-ink: #B0B0B0;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+h1, h2, h3, h4 { font-family: var(--f-display); font-stretch: 85%; line-height: 1.1; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+kbd { font-family: var(--f-mono); font-size: 0.72em; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; opacity: 0.7; }
+
+/* Bar */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 780px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); font-weight: 800; font-stretch: 120%; font-size: 1.25rem; letter-spacing: -0.01em; }
+.brand svg { width: 26px; height: 26px; flex: none; }
+.tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+.tab { border: 0; background: transparent; padding: 6px 14px; border-radius: 999px; cursor: pointer; font-weight: 700; font-size: 0.92rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.tab[aria-selected="true"] { background: var(--moss); color: var(--on-moss); }
+.count { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 500; opacity: 0.85; }
+
+.wrap { max-width: 780px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 96px; display: grid; gap: 18px; }
+.view { display: grid; gap: 16px; min-width: 0; }
+
+.notice { border: 1px solid var(--line); background: var(--card); border-radius: var(--r); padding: 10px 14px; font-size: 0.92rem; color: var(--muted); }
+.notice.warn { border-color: var(--amber); background: var(--amber-soft); color: var(--ink); }
+.notice.bad { border-color: var(--bad); background: var(--bad-soft); color: var(--ink); }
+
+/* Buttons */
+.btn { border: 1px solid var(--line); background: var(--card); padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--moss); border-color: var(--moss); color: var(--on-moss); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--bad); }
+.btn.danger.solid { background: var(--bad); border-color: var(--bad); color: var(--card); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn.sm { padding: 6px 12px; font-size: 0.88rem; }
+
+/* Practice controls */
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.controls select { flex: 0 1 auto; min-width: 0; }
+.opt-label { font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.tweak-box .seg { display: flex; }
+.tweak-box .seg button { flex: 1; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
+.seg button { border: 0; background: transparent; padding: 7px 12px; cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--muted); }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+select { border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 10px; font-size: 0.9rem; max-width: 100%; }
+.tweaks { position: relative; }
+.tweaks summary { list-style: none; cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 12px; font-size: 0.9rem; font-weight: 700; color: var(--muted); }
+.tweaks summary::-webkit-details-marker { display: none; }
+.tweaks[open] summary { color: var(--ink); border-color: var(--muted); }
+.tweak-box { position: absolute; z-index: 4; top: calc(100% + 6px); right: 0; width: min(310px, calc(100vw - 32px)); background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 10px; box-shadow: 0 10px 30px rgb(0 0 0 / 0.12); }
+.tweak-box label { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: start; cursor: pointer; font-weight: 700; font-size: 0.92rem; }
+.tweak-box input { margin-top: 4px; accent-color: var(--moss); }
+.tweak-box small { grid-column: 2; font-weight: 400; color: var(--muted); font-size: 0.82rem; line-height: 1.35; }
+
+.scoreline { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+.scoreline b { color: var(--ink); font-weight: 500; }
+
+/* Photo plate */
+.plate { margin: 0; background: var(--plate); border-radius: 16px; overflow: hidden; box-shadow: 0 1px 0 var(--line), 0 12px 32px -18px rgb(0 0 0 / 0.45); }
+.frame { position: relative; aspect-ratio: var(--ar, 4 / 3); max-height: 66vh; width: 100%; max-width: 100%; overflow: hidden; display: grid; place-items: center; }
+/* Leftover space around the photo shows a blurred copy of it instead of black bars. */
+.frame .fill { position: absolute; inset: -10%; background: center / cover no-repeat; filter: blur(24px) brightness(0.5) saturate(1.1); transform: scale(1.05); }
+.frame.bw .fill { filter: blur(24px) brightness(0.5) grayscale(1); }
+.frame.flip .fill { transform: scale(-1.05, 1.05); }
+.frame img { position: relative; width: 100%; height: 100%; object-fit: contain; display: block; transition: transform 0.55s cubic-bezier(.2,.7,.2,1), filter 0.55s; }
+.frame.revealed img { transform: none !important; filter: none !important; }
+.frame .missing { color: var(--plate-ink); font-size: 0.9rem; }
+.plate-meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 8px 14px; color: var(--plate-ink); font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+
+/* Answer tray */
+.tray { display: grid; gap: 10px; }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.choice { text-align: left; border: 1.5px solid var(--line); background: var(--card); border-radius: 12px; padding: 15px 16px; min-height: 54px; cursor: pointer; font-weight: 700; font-size: 1.02rem; display: flex; gap: 10px; align-items: center; min-width: 0; }
+.choice span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.choice:hover:not(:disabled) { border-color: var(--moss); }
+.choice .k { font-family: var(--f-mono); font-size: 0.75rem; font-weight: 500; border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; color: var(--muted); flex: none; }
+.choice:disabled { cursor: default; }
+.choice.right { border-color: var(--good); background: var(--good-soft); }
+.choice.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.choice.dim { opacity: 0.55; }
+@media (hover: none) { .choice .k, .next-row kbd { display: none; } }
+.typeform { display: flex; gap: 8px; flex-wrap: wrap; }
+.typeform input { flex: 1 1 220px; min-width: 0; border: 1.5px solid var(--line); background: var(--card); border-radius: var(--r); padding: 12px 14px; font-size: 1.05rem; }
+.typeform input:focus { border-color: var(--moss); outline: none; }
+
+/* Result */
+.verdict { border-radius: var(--r); padding: 14px 16px; display: grid; gap: 4px; border: 1.5px solid; }
+.verdict.ok { border-color: var(--good); background: var(--good-soft); }
+.verdict.no { border-color: var(--bad); background: var(--bad-soft); }
+.verdict .label { font-family: var(--f-mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.verdict.ok .label { color: var(--good); }
+.verdict.no .label { color: var(--bad); }
+.verdict h3 { font-size: clamp(1.6rem, 6vw, 2.1rem); font-weight: 800; font-stretch: 100%; overflow-wrap: anywhere; }
+.verdict .sub { color: var(--muted); font-size: 0.92rem; }
+.learn { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: grid; gap: 12px; min-width: 0; }
+.learn h4, .eyebrow { font-family: var(--f-mono); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); }
+.traits { white-space: pre-line; max-width: 65ch; }
+.traits.empty { color: var(--muted); font-style: italic; }
+.strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.strip button { flex: none; border: 2px solid transparent; padding: 0; border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--plate); width: 84px; height: 64px; }
+.strip button[aria-current="true"] { border-color: var(--amber); }
+.strip img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.compare { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 14px; align-items: start; border-top: 1px dashed var(--line); padding-top: 12px; }
+.compare img { width: 100%; aspect-ratio: 4/3; object-fit: contain; border-radius: 8px; background: var(--plate); display: block; }
+/* Next stays within thumb reach while you read the notes below it */
+.next-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; position: sticky; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 3; }
+.next-row .btn.primary { padding: 13px 24px; font-size: 1.02rem; box-shadow: 0 8px 22px -6px rgb(0 0 0 / 0.35); }
+
+/* Empty state */
+.empty { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px 22px; display: grid; gap: 16px; }
+.empty h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 800; font-stretch: 95%; }
+.empty p { color: var(--muted); max-width: 60ch; }
+.steps { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: baseline; }
+.steps li::before { content: counter(s); font-family: var(--f-mono); font-size: 0.8rem; color: var(--amber); border: 1px solid var(--amber); border-radius: 50%; width: 24px; height: 24px; display: grid; place-items: center; }
+.steps b { display: block; }
+.steps span { color: var(--muted); font-size: 0.94rem; }
+
+/* Library */
+.lib-head { display: grid; gap: 6px; }
+.lib-head h2 { font-size: 1.8rem; font-weight: 800; font-stretch: 95%; }
+.lib-head p { color: var(--muted); max-width: 62ch; }
+.addcard, .specimen { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.addcard { border-style: dashed; border-width: 1.5px; }
+.addcard.drag, .specimen.drag { border-color: var(--amber); background: var(--amber-soft); }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-weight: 700; font-size: 0.88rem; }
+.field small { color: var(--muted); font-size: 0.8rem; }
+.field input, .field textarea { border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 9px 11px; width: 100%; min-width: 0; }
+.field textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+.field input:focus, .field textarea:focus { border-color: var(--moss); outline: none; }
+.form-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.form-err { color: var(--bad); font-size: 0.9rem; font-weight: 700; }
+.pickfile { position: relative; overflow: hidden; }
+.pickfile input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.pending { display: flex; gap: 6px; flex-wrap: wrap; }
+.pending:empty { display: none; }
+.pending img { width: 56px; height: 44px; object-fit: contain; border-radius: 6px; background: var(--plate); }
+
+.lib-list { display: grid; gap: 14px; }
+.specimen header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.specimen header > div { min-width: 0; }
+.tagno { font-family: var(--f-mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--amber); text-transform: uppercase; }
+.specimen h3 { font-size: 1.45rem; font-weight: 800; font-stretch: 100%; overflow-wrap: anywhere; }
+.specimen .sub { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.mastery { display: grid; justify-items: end; gap: 3px; flex: none; }
+.pips { display: flex; gap: 3px; }
+.pips i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--moss); }
+.pips i.on { background: var(--moss); }
+.mastery small { font-family: var(--f-mono); font-size: 0.7rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.thumb { position: relative; margin: 0; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: var(--plate); max-width: 100%; }
+.thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.thumb .x { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 6px; background: rgb(0 0 0 / 0.6); color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 7px; cursor: pointer; }
+.thumb.confirm .x { background: var(--bad); }
+.thumb .open { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: pointer; }
+.thumb .pen { position: absolute; right: 4px; bottom: 4px; font-size: 0.68rem; font-weight: 700; background: rgb(0 0 0 / 0.6); color: #fff; padding: 1px 6px; border-radius: 4px; pointer-events: none; }
+.thumb.low::after { content: "Low res"; position: absolute; left: 4px; top: 4px; font-family: var(--f-mono); font-size: 0.62rem; background: var(--amber); color: var(--paper); padding: 1px 5px; border-radius: 4px; pointer-events: none; }
+.thumb .acc { position: absolute; left: 4px; bottom: 4px; font-family: var(--f-mono); font-size: 0.65rem; background: rgb(0 0 0 / 0.6); color: #fff; padding: 1px 5px; border-radius: 4px; }
+.addthumb { aspect-ratio: 4/3; border: 1.5px dashed var(--line); border-radius: 8px; display: grid; place-items: center; text-align: center; color: var(--muted); font-size: 0.82rem; font-weight: 700; cursor: pointer; position: relative; padding: 6px; max-width: 100%; }
+.addthumb:hover { border-color: var(--moss); color: var(--moss); }
+.addthumb input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.warnline { font-size: 0.88rem; color: var(--amber); font-weight: 700; }
+.busy { font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); }
+.specimen footer { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.specimen footer .q { font-weight: 700; font-size: 0.92rem; }
+.readonly-note { color: var(--muted); font-size: 0.92rem; }
+.sharecard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.share-head { display: grid; gap: 4px; }
+.share-head h3 { font-size: 1.15rem; font-weight: 800; font-stretch: 100%; }
+.share-head p { color: var(--muted); font-size: 0.9rem; max-width: 60ch; }
+.share-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.share-row select { min-width: 0; flex: 0 1 auto; }
+.sharecard .busy:empty { display: none; }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 20; background: var(--ink); color: var(--paper); padding: 10px 16px; border-radius: 10px; font-size: 0.92rem; max-width: calc(100vw - 32px); box-shadow: 0 8px 24px rgb(0 0 0 / 0.2); }
+
+/* Photo editor */
+.editor { border: 0; border-radius: 14px; padding: 16px; background: var(--card); color: var(--ink); width: min(720px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow: auto; box-shadow: 0 20px 60px rgb(0 0 0 / 0.35); }
+.editor[open] { display: grid; gap: 12px; }
+.editor::backdrop { background: rgb(0 0 0 / 0.6); }
+.ed-head { display: grid; gap: 4px; }
+.ed-head h3 { font-size: 1.3rem; font-weight: 800; font-stretch: 100%; overflow-wrap: anywhere; }
+.ed-head p { color: var(--muted); font-size: 0.9rem; max-width: 60ch; }
+.ed-wrap { min-width: 0; display: grid; justify-items: center; }
+.ed-stage { position: relative; background: var(--plate); overflow: hidden; border-radius: 8px; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; max-width: 100%; min-height: 120px; min-width: 120px; }
+.ed-stage canvas { display: block; width: 100%; height: 100%; }
+.crop { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgb(0 0 0 / 0.55); cursor: move; outline-offset: 3px; }
+.crop i { position: absolute; width: 30px; height: 30px; border: 0 solid #fff; }
+.crop i[data-h="nw"] { left: -5px; top: -5px; border-width: 4px 0 0 4px; cursor: nwse-resize; }
+.crop i[data-h="ne"] { right: -5px; top: -5px; border-width: 4px 4px 0 0; cursor: nesw-resize; }
+.crop i[data-h="sw"] { left: -5px; bottom: -5px; border-width: 0 0 4px 4px; cursor: nesw-resize; }
+.crop i[data-h="se"] { right: -5px; bottom: -5px; border-width: 0 4px 4px 0; cursor: nwse-resize; }
+.ed-tools, .ed-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* Tutorial */
+.bar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tourbtn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.tourbtn:hover { border-color: var(--muted); }
+.tourbtn svg { width: 17px; height: 17px; flex: none; }
+@media (max-width: 440px) { .tourbtn span { display: none; } .tourbtn { padding: 6px 9px; } }
+.tourhint { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 14px; }
+.tourhint p { flex: 1 1 220px; font-weight: 700; font-size: 0.95rem; }
+.tour { position: fixed; inset: 0; z-index: 40; }
+.tour-block { position: absolute; inset: 0; }
+.tour-spot { position: fixed; border-radius: 12px; box-shadow: 0 0 0 200vmax rgb(0 0 0 / 0.62); outline: 2.5px solid #fff; pointer-events: none; transition: left 0.25s, top 0.25s, width 0.25s, height 0.25s; }
+.tour-spot.none { outline: 0; }
+.tour-card { position: fixed; width: min(390px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow: auto; background: var(--card); color: var(--ink); border-radius: 14px; padding: 16px; display: grid; gap: 10px; box-shadow: 0 18px 50px rgb(0 0 0 / 0.4); }
+.tour-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.tour-count { font-family: var(--f-mono); font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tour-bar { height: 4px; background: var(--line); border-radius: 4px; overflow: hidden; }
+.tour-bar i { display: block; height: 100%; width: 0; background: var(--moss); transition: width 0.25s; }
+.tour-card h3 { font-size: 1.3rem; font-weight: 800; font-stretch: 100%; margin-bottom: 6px; }
+.tour-card p { font-size: 0.97rem; line-height: 1.5; }
+.tour-card ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 0.95rem; }
+.tour-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tour-actions #tourSkip { margin-right: auto; }
+.tour-actions #tourNext { min-width: 96px; }
+.tour-keys { font-size: 0.78rem; color: var(--muted); }
+html.touring * { scroll-margin-top: 76px; scroll-margin-bottom: 24px; }
+.tour-demo { border-style: dashed; border-width: 1.5px; }
+.tour-demo-tag { font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.tour-demo button, .tour-demo .addthumb { pointer-events: none; }
+
+@media (max-width: 560px) {
+  .choices { grid-template-columns: minmax(0, 1fr); }
+  .fields { grid-template-columns: minmax(0, 1fr); }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+  .compare img { max-width: 240px; }
+  .tab { padding: 6px 11px; }
+  .next-row .btn.primary { flex: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frame img, .tour-spot, .tour-bar i { transition: none; }
+}
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="13" cy="13" r="9.5" fill="none" stroke="var(--moss)" stroke-width="3"/><circle cx="13" cy="13" r="3.5" fill="var(--amber)"/><path d="M20 20l8 8" stroke="var(--moss)" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg>
+      Field Eye
+    </div>
+    <div class="bar-right">
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab" role="tab" id="tab-practice" data-act="view" data-view="practice" aria-selected="true">Practice</button>
+        <button class="tab" role="tab" id="tab-library" data-act="view" data-view="library" aria-selected="false">My animals <span class="count" id="libCount"></span></button>
+      </nav>
+      <button class="tourbtn" type="button" id="tourBtn" data-act="tour" aria-label="Tutorial: learn how to use Field Eye"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.6 7.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.6" r="1.1" fill="currentColor"/></svg><span>Tutorial</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="notice" class="notice" hidden></div>
+  <div class="tourhint" id="tourHint" hidden>
+    <p>New here? A 2-minute tutorial shows you how everything works.</p>
+    <button class="btn primary sm" type="button" data-act="tour">Start the tutorial</button>
+    <button class="btn ghost sm" type="button" data-act="tour-hint-close">Not now</button>
+  </div>
+
+  <section id="practice" class="view" aria-labelledby="tab-practice">
+    <div class="controls">
+      <select id="groupSel" aria-label="Which animals to practise"><option value="all">All animals</option></select>
+      <details class="tweaks" id="tweaks">
+        <summary>Options</summary>
+        <div class="tweak-box">
+          <span class="opt-label">Answer by</span>
+          <div class="seg" role="group" aria-label="Answer style">
+            <button id="mode-choice" data-act="mode" data-mode="choice" aria-pressed="true">Picking from 4</button>
+            <button id="mode-type" data-act="mode" data-mode="type" aria-pressed="false">Typing the name</button>
+          </div>
+          <span class="opt-label">Photo tricks</span>
+          <label><input type="checkbox" id="optMirror"> Random mirror <small>Flips some photos, so you can't go by which way the animal faces.</small></label>
+          <label><input type="checkbox" id="optZoom"> Random zoom and tilt <small>Zooms in on a different spot each time. Crop photos to the animal in My animals and the zoom stays on it.</small></label>
+          <label><input type="checkbox" id="optBw"> Black and white <small>Hard mode: shape and pattern only, no colour.</small></label>
+        </div>
+      </details>
+    </div>
+    <div class="scoreline" id="scoreline"></div>
+    <div id="stage"></div>
+  </section>
+
+  <section id="library" class="view" aria-labelledby="tab-library" hidden>
+    <div class="lib-head">
+      <h2>My animals</h2>
+      <p>Add each animal once with 3 or more photos from different angles and seasons. Practice rotates through all of them. Everything you change is saved in this browser.</p>
+    </div>
+    <div><button class="btn primary" type="button" id="addToggle" data-act="add-open" hidden>+ New animal</button></div>
+    <section class="sharecard" aria-labelledby="shareTitle">
+      <div class="share-head"><h3 id="shareTitle">Share a set</h3><p>Export a set as one file with all its photos and notes. Send it to a friend, and they import it here.</p></div>
+      <div class="share-row"><select id="exportSel" aria-label="Set to export"><option value="all">All animals</option></select><button class="btn" type="button" id="exportBtn" data-act="export">Export file</button></div>
+      <div class="share-row" id="exportFallback" hidden><button class="btn primary" type="button" data-act="export-dl">Download file</button><button class="btn" type="button" data-act="export-copy">Copy as text</button></div>
+      <div class="share-row"><label class="btn pickfile" for="importFile">Import a set file<input type="file" id="importFile" accept=".json,.txt,application/json,text/plain"></label></div>
+      <p class="busy" id="shareStatus" role="status"></p>
+    </section>
+    <form id="addForm" class="addcard" novalidate>
+      <div class="eyebrow">New animal</div>
+      <div class="fields">
+        <div class="field"><label for="add-name">Name</label><input id="add-name" autocomplete="off" placeholder="e.g. Red fox" required></div>
+        <div class="field"><label for="add-group">Group <small>(optional)</small></label><input id="add-group" list="groupList" autocomplete="off" placeholder="e.g. Mammals, Owls, Exam 2"></div>
+        <div class="field full"><label for="add-alts">Other accepted answers <small>(optional, comma separated)</small></label><input id="add-alts" autocomplete="off" placeholder="e.g. Vulpes vulpes, fox"></div>
+        <div class="field full"><label for="add-traits">What to look for <small>(shown after every answer)</small></label><textarea id="add-traits" placeholder="e.g. Rusty orange coat, white-tipped bushy tail, black 'stockings' on the legs, pointed black-backed ears"></textarea></div>
+      </div>
+      <div class="pending" id="addPending"></div>
+      <div class="form-actions">
+        <label class="btn pickfile" for="add-photos">Choose photos<input type="file" id="add-photos" accept="image/*" multiple></label>
+        <span class="busy" id="addPhotoCount">No photos yet. You can also drop them here.</span>
+      </div>
+      <div class="form-actions">
+        <button class="btn primary" type="submit" id="addSubmit">Add animal</button>
+        <button class="btn ghost" type="button" id="addCancel" data-act="add-close">Cancel</button>
+        <span class="form-err" id="addErr" hidden></span>
+      </div>
+    </form>
+    <p class="readonly-note" id="readonlyNote" hidden>Animals you add or import are saved in this browser only, so they stay on this device. The rest of the list belongs to the page's owner.</p>
+    <datalist id="groupList"></datalist>
+    <div class="lib-list" id="libList"></div>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="tour" id="tour" hidden>
+  <div class="tour-block"></div>
+  <div class="tour-spot none" id="tourSpot"></div>
+  <section class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle" aria-describedby="tourBody">
+    <div class="tour-top"><span class="eyebrow" id="tourChap"></span><span class="tour-count" id="tourCount"></span></div>
+    <div class="tour-bar" aria-hidden="true"><i id="tourBar"></i></div>
+    <div aria-live="polite"><h3 id="tourTitle"></h3><div id="tourBody"></div></div>
+    <div class="tour-actions">
+      <button class="btn ghost sm" type="button" id="tourSkip" data-act="tour-end">Skip tutorial</button>
+      <button class="btn sm" type="button" id="tourBack" data-act="tour-back">Back</button>
+      <button class="btn primary sm" type="button" id="tourNext" data-act="tour-next">Next</button>
+    </div>
+    <p class="tour-keys" id="tourKeys">Tip: arrow keys go forward and back, Esc closes.</p>
+  </section>
+</div>
+<dialog id="editor" class="editor" aria-labelledby="edTitle">
+  <div class="ed-head"><h3 id="edTitle">Edit photo</h3><p>Drag the box around the animal, or drag across the photo to draw a new one. Practice and thumbnails only show what's inside the box. Your original photo is kept.</p></div>
+  <div class="ed-wrap"><div class="ed-stage" id="edStage"><canvas id="edCanvas"></canvas><div class="crop" id="edCrop" tabindex="0" role="group" aria-label="Crop box. Arrow keys move it, Shift and arrow keys resize it."><i data-h="nw"></i><i data-h="ne"></i><i data-h="sw"></i><i data-h="se"></i></div></div></div>
+  <div class="ed-tools"><button class="btn sm" type="button" data-act="ed-rot" data-dir="-1">↺ Rotate left</button><button class="btn sm" type="button" data-act="ed-rot" data-dir="1">Rotate right ↻</button><button class="btn sm ghost" type="button" data-act="ed-reset">Reset</button><span class="busy" id="edInfo"></span></div>
+  <div class="ed-actions"><button class="btn primary" type="button" id="edSave" data-act="ed-save">Save</button><button class="btn ghost" type="button" data-act="ed-cancel">Cancel</button></div>
+</dialog>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- small helpers ---------- */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const newId = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const shuffle = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, Math.min(12000, Math.max(3200, msg.length * 55)));
+}
+function notice(msg, kind) {
+  const n = $("#notice");
+  if (!msg) { n.hidden = true; return; }
+  n.textContent = msg; n.className = "notice" + (kind ? " " + kind : ""); n.hidden = false;
+}
+
+/* ---------- state ---------- */
+const S = {
+  animals: [],
+  progress: {},          // animalId -> { box 1..5, seen, right, ph: { photoId: [seen, right] } }
+  set: Object.assign({ mode: "choice", group: "all", mirror: true, zoom: true, bw: false }, ls.get("fe-settings", {})),
+  view: "practice",
+  q: null,
+  sess: { right: 0, total: 0, streak: 0, best: 0 },
+  lastAnimal: null,
+  lastPhoto: {},
+  editing: null,
+  confirmDel: null,
+  confirmPhoto: null,
+  uploading: {},         // animalId -> number of photos still being added
+  addFiles: [],
+  store: null,
+  ready: false,
+  addOpen: false,
+  edits: new Map(),      // photoId -> { pid, rot, x, y, w, h } crop/rotation, as fractions of the rotated photo
+};
+const byId = (id) => S.animals.find((a) => a.id === id);
+const saveSettings = () => ls.set("fe-settings", S.set);
+
+/* ---------- photo sizing ----------
+   Photos are kept exactly as they are whenever possible: no shrinking, no re-saving.
+   Only photos too big to store sensibly (huge pixel count or file size), or in a format
+   other browsers can't show (HEIC), are converted, and then at high quality. */
+const SMALL_PX = 640;            // photos whose longest side is under this look blurry in practice
+const MAX_SIDE = 4096;           // longest side kept for oversized photos (covers 12 MP phone photos in full)
+const MAX_AREA = 16e6;           // pixel limit, so the canvas also works on iPhones and iPads
+const MAX_BYTES = 12e6;          // larger files are re-saved so they fit in storage and in exported sets
+const KEEP_TYPES = /^image\/(jpeg|png|webp|gif)$/;
+async function shrink(file) {
+  const url = URL.createObjectURL(file);
+  const heic = /\.(heic|heif)$/i.test(file.name || "") || /hei[cf]/i.test(file.type);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(Object.assign(new Error("decode"), { code: heic ? "heic" : "decode" })); i.src = url; });
+    const W = img.naturalWidth, H = img.naturalHeight;
+    const s = Math.min(1, MAX_SIDE / Math.max(W, H), Math.sqrt(MAX_AREA / (W * H)));
+    if (s === 1 && KEEP_TYPES.test(file.type) && file.size <= MAX_BYTES) {
+      const blob = file instanceof File ? new Blob([file], { type: file.type }) : file;
+      return { blob, w: W, h: H };   // the original, untouched
+    }
+    const w = Math.max(1, Math.round(W * s)), h = Math.max(1, Math.round(H * s));
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img, 0, 0, w, h);
+    const blob = await new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/jpeg", 0.92));
+    return { blob, w: W, h: H };
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/* ---------- edited photos (crop + rotation) ----------
+   The original photo is never changed. Each edit is a few numbers stored on the animal,
+   and the cropped version is drawn in the browser and cached. */
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const editKey = (pid, e) => `${pid}|${e.rot}|${e.x},${e.y},${e.w},${e.h}`;
+const derived = new Map();   // editKey -> object URL, or a Promise while it's being drawn
+const ratios = new Map();    // src -> width/height, filled as photos load
+async function loadImg(url) {
+  let src = url, tmp = null;
+  if (!url.startsWith("blob:")) {
+    // Fetch into a local blob so the canvas can export the cropped version.
+    try { const r = await fetch(url, { credentials: "same-origin" }); if (r.ok) { tmp = URL.createObjectURL(await r.blob()); src = tmp; } } catch {}
+  }
+  try {
+    return await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("decode")); i.src = src; });
+  } finally { if (tmp) setTimeout(() => URL.revokeObjectURL(tmp), 0); }
+}
+function drawEdit(img, e) {
+  const W = img.naturalWidth, H = img.naturalHeight, rot = ((e.rot % 360) + 360) % 360;
+  const RW = rot % 180 ? H : W, RH = rot % 180 ? W : H;
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(e.w * RW)); c.height = Math.max(1, Math.round(e.h * RH));
+  const g = c.getContext("2d");
+  g.translate(-e.x * RW, -e.y * RH); g.translate(RW / 2, RH / 2); g.rotate((rot * Math.PI) / 180); g.drawImage(img, -W / 2, -H / 2);
+  return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/jpeg", 0.9));
+}
+function buildDerived(pid, e) {
+  const k = editKey(pid, e), have = derived.get(k);
+  if (have) return typeof have === "string" ? Promise.resolve(have) : have;
+  const p = (async () => {
+    try { const u = URL.createObjectURL(await drawEdit(await loadImg(S.store.photoUrl(pid)), e)); derived.set(k, u); return u; }
+    catch { derived.set(k, S.store.photoUrl(pid)); return null; }   // fall back to the original
+  })();
+  derived.set(k, p);
+  return p;
+}
+function swapSrc(pid, u) {
+  document.querySelectorAll("img[data-pid]").forEach((i) => { if (i.dataset.pid === pid) i.src = u; });
+  document.querySelectorAll(".fill[data-pid]").forEach((f) => { if (f.dataset.pid === pid) f.style.backgroundImage = `url('${u}')`; });
+}
+// The URL to show for a photo: the edited version when there is one and it's ready, otherwise the original.
+function photoSrc(pid) {
+  const base = S.store.photoUrl(pid), e = S.edits.get(pid);
+  if (!e || !base) return base;
+  const k = editKey(pid, e), d = derived.get(k);
+  if (typeof d === "string") return d;
+  if (!d) buildDerived(pid, e).then((u) => { const cur = S.edits.get(pid); if (u && cur && editKey(pid, cur) === k) swapSrc(pid, u); });
+  return base;
+}
+
+/* ---------- storage: this browser (IndexedDB) ---------- */
+function openIdb() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open("field-eye", 1);
+    r.onupgradeneeded = () => { const d = r.result; d.createObjectStore("animals", { keyPath: "id" }); d.createObjectStore("photos", { keyPath: "id" }); d.createObjectStore("kv"); };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+function tx(db, store, mode, fn) {
+  return new Promise((res, rej) => {
+    const t = db.transaction(store, mode); let out; const req = fn(t.objectStore(store));
+    if (req) req.onsuccess = () => { out = req.result; };
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error);
+  });
+}
+const LocalStore = {
+  kind: "local", canEdit: true,
+  async init(onAnimals) {
+    this.onAnimals = onAnimals; this.urls = new Map();
+    try { this.db = await openIdb(); } catch { this.db = null; this.mem = { animals: new Map(), photos: new Map(), kv: {} }; }
+    await this.emit();
+  },
+  async emit() {
+    const list = this.db ? await tx(this.db, "animals", "readonly", (s) => s.getAll()) : [...this.mem.animals.values()];
+    for (const a of list) for (const pid of a.photos || []) await this.ensureUrl(pid);
+    this.onAnimals(list.map((a) => structuredClone(a)));
+  },
+  async ensureUrl(pid) {
+    if (pid.startsWith("starter/") || this.urls.has(pid)) return;
+    const rec = this.db ? await tx(this.db, "photos", "readonly", (s) => s.get(pid)) : this.mem.photos.get(pid);
+    if (rec) this.urls.set(pid, URL.createObjectURL(rec.blob));
+  },
+  photoUrl(pid) { return pid.startsWith("starter/") ? pid : this.urls.get(pid) || ""; },
+  async putMany(list) {
+    if (this.db) await tx(this.db, "animals", "readwrite", (s) => { list.forEach((a) => s.put(a)); });
+    else list.forEach((a) => this.mem.animals.set(a.id, a));
+    await this.emit();
+  },
+  async saveAnimal(a) { const { _src, ...rec } = a; if (this.db) await tx(this.db, "animals", "readwrite", (s) => s.put(rec)); else this.mem.animals.set(rec.id, rec); await this.emit(); },
+  async deleteAnimal(id) { if (this.db) await tx(this.db, "animals", "readwrite", (s) => s.delete(id)); else this.mem.animals.delete(id); await this.emit(); },
+  async uploadPhoto(blob) {
+    const id = newId("p");
+    if (this.db) await tx(this.db, "photos", "readwrite", (s) => s.put({ id, blob })); else this.mem.photos.set(id, { id, blob });
+    this.urls.set(id, URL.createObjectURL(blob));
+    return id;
+  },
+  async deletePhoto(pid) {
+    if (this.db) await tx(this.db, "photos", "readwrite", (s) => s.delete(pid)); else this.mem.photos.delete(pid);
+    const u = this.urls.get(pid); if (u) URL.revokeObjectURL(u); this.urls.delete(pid);
+  },
+  async loadProgress() { try { return (this.db ? await tx(this.db, "kv", "readonly", (s) => s.get("progress")) : this.mem.kv.progress) || {}; } catch { return {}; } },
+  async saveProgress(p) { try { if (this.db) await tx(this.db, "kv", "readwrite", (s) => s.put(p, "progress")); else this.mem.kv.progress = p; } catch {} },
+};
+
+/* ---------- storage: saved with the artifact (db + assets) ---------- */
+const CloudStore = {
+  kind: "cloud",
+  async init(onAnimals, { db, assets, user }) {
+    this.db = db; this.assets = assets; this.user = user;
+    this.canEdit = !!assets;
+    this.uid = null;
+    try { this.uid = user ? await user.id() : null; } catch {}
+    this.chain = Promise.resolve();
+    let loaded = false;
+    const timer = setTimeout(() => { if (!loaded) notice("Your animals are taking a while to load. They will appear as soon as the connection comes back.", "warn"); }, 10000);
+    db.collection("animals").onSnapshot(
+      (snap) => {
+        if (!snap.metadata.fromCache) { loaded = true; clearTimeout(timer); if ($("#notice").classList.contains("warn")) notice(""); }
+        onAnimals(snap.docs.map((d) => Object.assign(structuredClone(d.data()), { id: d.id })));
+      },
+      (err) => { clearTimeout(timer); notice(`Couldn't load your animals (${err.code}). Reload the page to try again.`, "bad"); }
+    );
+  },
+  photoUrl(pid) { return "/_blob/" + pid; },
+  async saveAnimal(a) { const { id, _src, ...body } = a; await this.db.doc("animals/" + id).set(JSON.parse(JSON.stringify(body))); },
+  async deleteAnimal(id) { await this.db.doc("animals/" + id).delete(); },
+  async uploadPhoto(blob) { const r = await this.assets.upload(blob, { type: KEEP_TYPES.test(blob.type) ? blob.type : "image/jpeg" }); return r.id; },
+  async deletePhoto(pid) { try { await this.assets.delete(pid); } catch {} },
+  progressRef() { return this.db.doc(`data/users/${this.uid}/progress`); },
+  async loadProgress() {
+    if (!this.uid) return ls.get("fe-progress", {});
+    try { const s = await this.progressRef().get(); return s.exists ? structuredClone(s.data().animals || {}) : {}; } catch { return {}; }
+  },
+  saveProgress(p) {
+    if (!this.uid) { ls.set("fe-progress", p); return Promise.resolve(); }
+    const body = { animals: JSON.parse(JSON.stringify(p)) };
+    this.chain = this.chain.then(() => this.progressRef().set(body)).catch(() => {});
+    return this.chain;
+  },
+};
+
+/* ---------- storage: shared list plus this browser ----------
+   People who can edit the page add to the shared list. Everyone else can still add
+   or import animals; those are kept in their own browser and marked _src: "local". */
+const MixedStore = {
+  kind: "mixed", canEdit: true,
+  async init(onAnimals, caps) {
+    this.cloud = CloudStore; this.local = LocalStore;
+    this.lists = { cloud: [], local: [] }; this.cloudReady = false;
+    const push = () => onAnimals([...this.lists.cloud, ...this.lists.local]);
+    await LocalStore.init((l) => { this.lists.local = l.map((a) => ({ ...a, _src: "local" })); if (this.cloudReady) push(); });
+    await CloudStore.init((l) => { this.cloudReady = true; this.lists.cloud = l.map((a) => ({ ...a, _src: "cloud" })); push(); }, caps);
+  },
+  get newSrc() { return this.cloud.canEdit ? "cloud" : "local"; },
+  canEditAnimal(a) { return a?._src === "local" || this.cloud.canEdit; },
+  pick(src) { return src === "local" ? this.local : this.cloud; },
+  photoUrl(pid) { return this.local.urls.get(pid) || this.cloud.photoUrl(pid); },
+  saveAnimal(a) { return this.pick(a._src).saveAnimal(a); },
+  deleteAnimal(id) { return this.pick(byId(id)?._src).deleteAnimal(id); },
+  uploadPhoto(blob, aid) { const a = byId(aid); return this.pick(a ? a._src : this.newSrc).uploadPhoto(blob); },
+  deletePhoto(pid) { return this.local.urls.has(pid) ? this.local.deletePhoto(pid) : this.cloud.deletePhoto(pid); },
+  loadProgress() { return this.cloud.loadProgress(); },
+  saveProgress(p) { return this.cloud.saveProgress(p); },
+};
+const canEditA = (a) => (S.store?.canEditAnimal ? S.store.canEditAnimal(a) : !!S.store?.canEdit);
+const newSrc = () => S.store?.newSrc;
+
+let progTimer;
+function queueSaveProgress() {
+  clearTimeout(progTimer);
+  progTimer = setTimeout(() => S.store.saveProgress(S.progress), 1200);
+}
+
+/* ---------- answer checking ---------- */
+function norm(s) {
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9 ]+/g, " ").replace(/\b(the|a|an)\b/g, " ").replace(/\s+/g, " ").trim();
+}
+function lev(a, b) {
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+function judge(input, animal) {
+  const g = norm(input); if (!g) return { ok: false };
+  const names = [animal.name, ...(animal.alts || [])].map(norm).filter(Boolean);
+  if (names.includes(g)) return { ok: true, exact: true };
+  for (const n of names) {
+    const tol = n.length <= 4 ? 0 : n.length <= 8 ? 1 : 2;
+    if (lev(g, n) <= tol) return { ok: true, exact: false };
+  }
+  return { ok: false };
+}
+
+/* ---------- picking what to show ---------- */
+const BOX_WEIGHT = [0, 10, 6, 3.5, 2, 1];
+const prog = (id) => (S.progress[id] ||= { box: 1, seen: 0, right: 0, ph: {} });
+const groups = () => [...new Set(S.animals.map((a) => (a.group || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+function pool() {
+  return S.animals.filter((a) => (a.photos || []).length && (S.set.group === "all" || (a.group || "").trim() === S.set.group));
+}
+function pickAnimal(p) {
+  const cands = p.length > 1 ? p.filter((a) => a.id !== S.lastAnimal) : p;
+  const w = cands.map((a) => BOX_WEIGHT[S.progress[a.id]?.box || 1]);
+  let r = Math.random() * w.reduce((x, y) => x + y, 0);
+  for (let i = 0; i < cands.length; i++) { r -= w[i]; if (r <= 0) return cands[i]; }
+  return cands[cands.length - 1];
+}
+function pickPhoto(a) {
+  const ph = S.progress[a.id]?.ph || {};
+  const last = S.lastPhoto[a.id];
+  let cands = a.photos.length > 1 ? a.photos.filter((p) => p !== last) : a.photos;
+  const seen = (p) => ph[p]?.[0] || 0;
+  const min = Math.min(...cands.map(seen));
+  cands = cands.filter((p) => seen(p) === min);
+  return pick(cands);
+}
+function makeTransform() {
+  const flip = S.set.mirror && Math.random() < 0.5;
+  const z = S.set.zoom ? 1.06 + Math.random() * 0.26 : 1;
+  const rot = S.set.zoom ? +(Math.random() * 6 - 3).toFixed(1) : 0;
+  const ox = S.set.zoom ? Math.round(32 + Math.random() * 36) : 50;
+  const oy = S.set.zoom ? Math.round(32 + Math.random() * 36) : 50;
+  return { flip, css: `transform-origin:${ox}% ${oy}%;transform:scale(${flip ? -z : z},${z}) rotate(${flip ? -rot : rot}deg);${S.set.bw ? "filter:grayscale(1) contrast(1.05);" : ""}` };
+}
+function nextQuestion() {
+  const p = pool();
+  if (!p.length) { S.q = null; renderStage(); return; }
+  const a = pickAnimal(p);
+  const pid = pickPhoto(a);
+  S.lastAnimal = a.id; S.lastPhoto[a.id] = pid;
+  let mode = S.set.mode, options = null;
+  if (mode === "choice") {
+    const others = S.animals.filter((x) => x.id !== a.id);
+    if (!others.length) mode = "type";
+    else {
+      const g = (a.group || "").trim();
+      const same = shuffle(others.filter((x) => g && (x.group || "").trim() === g));
+      const rest = shuffle(others.filter((x) => !(g && (x.group || "").trim() === g)));
+      options = shuffle([a, ...[...same, ...rest].slice(0, 3)]).map((o) => o.id);
+    }
+  }
+  S.q = { aid: a.id, pid, shown: pid, mode, options, tf: makeTransform(), answered: false, forcedType: mode !== S.set.mode };
+  renderStage();
+}
+
+function answer(guessId, typed) {
+  const q = S.q; if (!q || q.answered) return;
+  const a = byId(q.aid); if (!a) return;
+  let ok = false, close = false, confused = null;
+  if (q.mode === "choice") { ok = guessId === a.id; if (!ok && guessId) confused = guessId; }
+  else if (typed != null) {
+    const j = judge(typed, a); ok = j.ok; close = j.ok && !j.exact;
+    if (!ok) confused = S.animals.find((x) => x.id !== a.id && judge(typed, x).ok)?.id || null;
+  }
+  Object.assign(q, { answered: true, ok, close, guess: guessId, typed, confused });
+  S.sess.total++;
+  if (ok) { S.sess.right++; S.sess.streak++; S.sess.best = Math.max(S.sess.best, S.sess.streak); } else S.sess.streak = 0;
+  const pr = prog(a.id);
+  pr.seen++; if (ok) pr.right++;
+  pr.box = ok ? Math.min(5, pr.box + 1) : 1;
+  const ps = (pr.ph[q.pid] ||= [0, 0]); ps[0]++; if (ok) ps[1]++;
+  queueSaveProgress();
+  renderStage();
+  setTimeout(() => $("#nextBtn")?.focus({ preventScroll: true }), 30);
+}
+
+/* ---------- rendering: practice ---------- */
+function renderControls() {
+  $("#mode-choice").setAttribute("aria-pressed", S.set.mode === "choice");
+  $("#mode-type").setAttribute("aria-pressed", S.set.mode === "type");
+  const gs = groups();
+  if (S.set.group !== "all" && !gs.includes(S.set.group)) S.set.group = "all";
+  const sel = $("#groupSel");
+  const withPhotos = (g) => S.animals.filter((a) => (a.photos || []).length && (g === "all" || (a.group || "").trim() === g)).length;
+  sel.innerHTML = `<option value="all">All animals (${withPhotos("all")})</option>` + gs.map((g) => `<option value="${esc(g)}">${esc(g)} (${withPhotos(g)})</option>`).join("");
+  sel.value = S.set.group;
+  $("#optMirror").checked = S.set.mirror; $("#optZoom").checked = S.set.zoom; $("#optBw").checked = S.set.bw;
+  $("#groupList").innerHTML = gs.map((g) => `<option value="${esc(g)}"></option>`).join("");
+  const ex = $("#exportSel"), exv = ex.value;
+  ex.innerHTML = `<option value="all">All animals (${S.animals.length})</option>` + gs.map((g) => `<option value="${esc(g)}">${esc(g)} (${S.animals.filter((a) => (a.group || "").trim() === g).length})</option>`).join("");
+  ex.value = gs.includes(exv) ? exv : "all";
+  $("#libCount").textContent = S.animals.length ? S.animals.length : "";
+  renderScore();
+}
+function renderScore() {
+  const p = pool();
+  const photos = p.reduce((n, a) => n + a.photos.length, 0);
+  const pct = S.sess.total ? Math.round((S.sess.right / S.sess.total) * 100) + "%" : "–";
+  $("#scoreline").innerHTML = S.sess.total
+    ? `<span><b>${S.sess.right}</b> of <b>${S.sess.total}</b> right · <b>${pct}</b></span>${S.sess.streak > 1 ? `<span>Streak <b>${S.sess.streak}</b></span>` : ""}`
+    : `<span>${plural(p.length, "animal")} · ${plural(photos, "photo")}</span>`;
+  $("#scoreline").hidden = !S.animals.length;
+}
+
+function emptyState() {
+  if (!S.ready) return `<div class="empty"><p>Loading your animals…</p></div>`;
+  const anyPhotos = S.animals.some((a) => (a.photos || []).length);
+  if (S.animals.length && anyPhotos) {
+    return `<div class="empty"><h2>No photos in this group yet</h2><p>Pick another group, or add photos to the animals in “${esc(S.set.group)}”.</p><div><button class="btn" data-act="group-all">Practise all animals</button></div></div>`;
+  }
+  if (S.animals.length) {
+    return `<div class="empty"><h2>Add photos to start</h2><p>You have ${plural(S.animals.length, "animal")} but no photos yet. The quiz needs at least one photo, and works best with three or more per animal.</p><div><button class="btn primary" data-act="view" data-view="library">Add photos</button></div></div>`;
+  }
+  const edit = S.store?.canEdit;
+  return `<div class="empty">
+    <div class="eyebrow">How it works</div>
+    <h2>Learn the animal, not the photo</h2>
+    <p>Normal flashcards show the same picture every time, so you end up memorising the picture. Field Eye keeps several photos of each animal and shows a different one each round, often flipped or cropped, so you have to recognise the actual features.</p>
+    <ol class="steps">
+      <li><div><b>Add an animal with several photos</b><span>Different angles, ages, sexes, seasons and backgrounds. More variety means better learning.</span></div></li>
+      <li><div><b>Write what to look for</b><span>The traits that give it away. They show after every answer, right next to the photo.</span></div></li>
+      <li><div><b>Practise</b><span>Pick from 4 or type the name. Animals you miss come back more often until you know them.</span></div></li>
+    </ol>
+    ${edit ? `<div><button class="btn primary" data-act="first">Add your first animal</button></div>` : `<p>Nobody has added animals here yet.</p>`}
+  </div>`;
+}
+
+function renderStage() {
+  renderScore();
+  const st = $("#stage");
+  const q = S.q;
+  const a = q && byId(q.aid);
+  if (!q || !a) { st.innerHTML = emptyState(); return; }
+  const url = photoSrc(q.shown);
+  const ar = ratios.get(url);
+  const live = !q.answered;
+  const fcls = `frame${q.answered ? " revealed" : ""}${live && S.set.bw ? " bw" : ""}${live && q.tf.flip ? " flip" : ""}`;
+  const idx = a.photos.indexOf(q.pid) + 1;
+  const ps = S.progress[a.id]?.ph?.[q.pid];
+  const metaLeft = q.answered ? `Photo ${idx} of ${a.photos.length}` : `Who is this?`;
+  const metaRight = q.answered && ps ? `This photo: ${ps[1]}/${ps[0]} right` : (S.set.bw || S.set.zoom || S.set.mirror) ? "Tricks on" : "";
+  let html = `<figure class="plate"><div class="${fcls}"${ar ? ` style="--ar:${ar.toFixed(3)}"` : ""}><div class="fill" data-pid="${esc(q.shown)}" style="background-image:url('${esc(url)}')"></div><img id="qImg" data-pid="${esc(q.shown)}" src="${esc(url)}" alt="${q.answered ? esc(a.name) : "Photo of the animal to identify"}" style="${q.answered ? "" : q.tf.css}"></div>${q.answered ? `<figcaption class="plate-meta"><span>${metaLeft}</span><span>${esc(metaRight)}</span></figcaption>` : ""}</figure>`;
+
+  if (q.mode === "choice") {
+    html += `<div class="tray"><div class="choices">` + q.options.map((oid, i) => {
+      const o = byId(oid); const name = o ? o.name : "(removed)";
+      let cls = "";
+      if (q.answered) cls = oid === a.id ? "right" : oid === q.guess ? "wrong" : "dim";
+      return `<button class="choice ${cls}" data-act="choose" data-id="${esc(oid)}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span><span>${esc(name)}</span></button>`;
+    }).join("") + `</div></div>`;
+  } else {
+    html += `<div class="tray">${q.forcedType && !q.answered ? `<p class="busy">Add a second animal to use Pick from 4.</p>` : ""}
+      <form class="typeform" id="typeForm"><input id="typeIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the name" aria-label="Animal name" ${q.answered ? `disabled value="${esc(q.typed || "")}"` : ""}>
+      ${q.answered ? "" : `<button class="btn primary" type="submit">Check</button><button class="btn ghost" type="button" data-act="dunno">I don't know</button>`}</form></div>`;
+  }
+
+  if (q.answered) {
+    let label, sub = "";
+    if (q.ok) { label = q.close ? "Correct, check the spelling" : "Correct"; if (q.close) sub = `You typed “${esc(q.typed)}”.`; }
+    else {
+      label = q.typed == null && q.mode === "type" ? "The answer was" : "Not quite. It's";
+      if (q.mode === "type" && q.typed) sub = `You typed “${esc(q.typed)}”.`;
+    }
+    const alts = (a.alts || []).length ? `<div class="sub">Also accepted: ${esc(a.alts.join(", "))}</div>` : "";
+    html += `<div class="verdict ${q.ok ? "ok" : "no"}"><span class="label">${label}</span><h3>${esc(a.name)}</h3>${sub ? `<div class="sub">${sub}</div>` : ""}${alts}</div>`;
+    html += `<div class="next-row"><button class="btn primary" id="nextBtn" data-act="next">Next photo <kbd>Enter</kbd></button></div>`;
+    const traits = (a.traits || "").trim();
+    const others = a.photos;
+    html += `<div class="learn"><div><h4>What to look for</h4><p class="traits${traits ? "" : " empty"}">${traits ? esc(traits) : "No traits written yet. Add them under My animals so they show here."}</p></div>`;
+    if (others.length > 1) {
+      html += `<div><h4>All ${others.length} photos of ${esc(a.name)}</h4><div class="strip">` + others.map((pid) => `<button data-act="show" data-pid="${esc(pid)}" aria-current="${pid === q.shown}" aria-label="Show this photo"><img data-pid="${esc(pid)}" src="${esc(photoSrc(pid))}" alt="" loading="lazy"></button>`).join("") + `</div></div>`;
+    }
+    const c = q.confused && byId(q.confused);
+    if (c) {
+      const cpid = (c.photos || []).length ? pick(c.photos) : null;
+      const cp = cpid ? photoSrc(cpid) : "";
+      const ct = (c.traits || "").trim();
+      html += `<div class="compare">${cp ? `<img data-pid="${esc(cpid)}" src="${esc(cp)}" alt="${esc(c.name)}">` : `<div></div>`}<div><h4>You said ${esc(c.name)}. Compare:</h4><p class="traits${ct ? "" : " empty"}">${ct ? esc(ct) : "No traits written for this one yet."}</p></div></div>`;
+    }
+    html += `${canEditA(a) ? `<div><button class="btn ghost sm" data-act="edit-photo" data-aid="${esc(a.id)}" data-pid="${esc(q.shown)}">Crop or rotate this photo</button></div>` : ""}</div>`;
+  }
+  st.innerHTML = html;
+  if (!q.answered && q.mode === "type") setTimeout(() => $("#typeIn")?.focus({ preventScroll: true }), 30);
+}
+
+/* ---------- rendering: library ---------- */
+function pips(box) { return `<span class="pips">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= box ? "on" : ""}"></i>`).join("")}</span>`; }
+function readEdit() { return ["name", "alts", "group", "traits"].reduce((o, k) => { const el = $("#ed-" + k); if (el) o[k] = el.value; return o; }, {}); }
+function renderLibrary() {
+  const keep = S.editing ? readEdit() : null;
+  const edit = S.store?.canEdit;
+  const showForm = edit && (!S.animals.length || S.addOpen);
+  $("#addForm").hidden = !showForm;
+  $("#addToggle").hidden = !edit || showForm;
+  $("#addCancel").hidden = !S.animals.length;
+  $("#readonlyNote").hidden = !(S.store?.kind === "mixed" && !S.store.cloud.canEdit);
+  const list = [...S.animals].sort((x, y) => (x.created || 0) - (y.created || 0));
+  if (!list.length) { $("#libList").innerHTML = ""; return; }
+  $("#libList").innerHTML = list.map((a, i) => {
+    const pr = S.progress[a.id];
+    const edit = canEditA(a);
+    const n = (a.photos || []).length;
+    const no = String(i + 1).padStart(3, "0");
+    const sub = [a.group, (a.alts || []).join(", ")].filter(Boolean).map(esc).join(" · ");
+    if (S.editing === a.id) {
+      return `<article class="specimen" data-id="${esc(a.id)}"><div class="eyebrow">Editing No. ${no}</div>
+        <div class="fields">
+          <div class="field"><label for="ed-name">Name</label><input id="ed-name" value="${esc(a.name)}" autocomplete="off"></div>
+          <div class="field"><label for="ed-group">Group</label><input id="ed-group" list="groupList" value="${esc(a.group || "")}" autocomplete="off"></div>
+          <div class="field full"><label for="ed-alts">Other accepted answers <small>(comma separated)</small></label><input id="ed-alts" value="${esc((a.alts || []).join(", "))}" autocomplete="off"></div>
+          <div class="field full"><label for="ed-traits">What to look for</label><textarea id="ed-traits">${esc(a.traits || "")}</textarea></div>
+        </div>
+        <footer><button class="btn primary sm" data-act="save-edit">Save</button><button class="btn ghost sm" data-act="cancel-edit">Cancel</button></footer></article>`;
+    }
+    const thumbs = (a.photos || []).map((pid) => {
+      const st = pr?.ph?.[pid];
+      const conf = S.confirmPhoto === pid;
+      const img = `<img data-pid="${esc(pid)}" src="${esc(photoSrc(pid))}" alt="Photo of ${esc(a.name)}" loading="lazy">`;
+      return `<figure class="thumb${conf ? " confirm" : ""}">${edit ? `<button class="open" data-act="edit-photo" data-pid="${esc(pid)}" aria-label="Crop or rotate this photo of ${esc(a.name)}">${img}</button><span class="pen">${S.edits.has(pid) ? "✎ Edited" : "✎ Edit"}</span>` : img}${st ? `<span class="acc">${st[1]}/${st[0]}</span>` : ""}${edit ? `<button class="x" data-act="del-photo" data-pid="${esc(pid)}" aria-label="Remove photo">${conf ? "Remove?" : "✕"}</button>` : ""}</figure>`;
+    }).join("");
+    const up = S.uploading[a.id];
+    const warn = n === 0 ? "No photos yet, so this animal won't appear in practice." : n < 3 ? `Only ${plural(n, "photo")}. Add ${3 - n} more so you learn the animal, not the picture.` : "";
+    const traits = (a.traits || "").trim();
+    let foot = "";
+    if (edit) {
+      foot = S.confirmDel === a.id
+        ? `<span class="q">Delete ${esc(a.name)} and its ${plural(n, "photo")}? This can't be undone.</span><button class="btn danger solid sm" data-act="del-yes">Delete</button><button class="btn ghost sm" data-act="del-no">Keep it</button>`
+        : `<button class="btn sm" data-act="edit">Edit details</button><button class="btn ghost danger sm" data-act="del">Delete</button>`;
+    }
+    return `<article class="specimen" data-id="${esc(a.id)}">
+      <header><div><h3>${esc(a.name)}</h3><div class="sub">${[a.group ? esc(a.group) : "", plural(n, "photo"), a._src === "local" && S.store?.kind === "mixed" ? "on this device" : "", (a.alts || []).length ? `also “${esc(a.alts.join(", "))}”` : ""].filter(Boolean).join(" · ")}</div></div>
+      <div class="mastery" title="The dots fill up as you get this animal right, and reset when you miss it.">${pips(pr?.box || 0)}<small>${pr ? `${pr.right} of ${pr.seen} right` : "Not practised"}</small></div></header>
+      ${traits ? `<p class="traits">${esc(traits)}</p>` : edit ? `<p class="traits empty">No notes yet. Use Edit details to write what gives it away.</p>` : ""}
+      <div class="thumbs">${thumbs}${edit ? `<label class="addthumb">+ Add photos<input type="file" accept="image/*" multiple data-act="add-photos" aria-label="Add photos of ${esc(a.name)}"></label>` : ""}</div>
+      ${up ? `<div class="busy">Adding ${plural(up, "photo")}…</div>` : warn ? `<div class="warnline">${warn}</div>` : ""}
+      ${foot ? `<footer>${foot}</footer>` : ""}
+    </article>`;
+  }).join("");
+  if (keep) for (const [k, v] of Object.entries(keep)) { const el = $("#ed-" + k); if (el) el.value = v; }
+}
+
+function renderAddPending() {
+  const box = $("#addPending");
+  box.querySelectorAll("img").forEach((i) => URL.revokeObjectURL(i.src));
+  box.innerHTML = S.addFiles.map((f) => `<img src="${URL.createObjectURL(f)}" alt="">`).join("");
+  $("#addPhotoCount").textContent = S.addFiles.length ? `${plural(S.addFiles.length, "photo")} ready` + (S.addFiles.length < 3 ? ". 3 or more works best." : ".") : "No photos yet. You can also drop them here.";
+}
+
+function setView(v) {
+  S.view = v;
+  $("#practice").hidden = v !== "practice";
+  $("#library").hidden = v !== "library";
+  $("#tab-practice").setAttribute("aria-selected", v === "practice");
+  $("#tab-library").setAttribute("aria-selected", v === "library");
+  if (v === "practice") { if (!S.q || !byId(S.q.aid)) nextQuestion(); else renderStage(); }
+  else renderLibrary();
+  window.scrollTo({ top: 0 });
+}
+
+/* ---------- data changes ---------- */
+function onAnimals(list) {
+  const okEdit = (e) => e && typeof e.pid === "string" && [e.rot, e.x, e.y, e.w, e.h].every((v) => typeof v === "number" && isFinite(v)) && e.w > 0 && e.h > 0;
+  S.animals = list.map((a) => ({ ...a, photos: Array.isArray(a.photos) ? a.photos : [], alts: Array.isArray(a.alts) ? a.alts : [], photoEdits: Array.isArray(a.photoEdits) ? a.photoEdits.filter(okEdit) : [] }));
+  S.edits = new Map();
+  for (const a of S.animals) for (const e of a.photoEdits) if (a.photos.includes(e.pid)) S.edits.set(e.pid, e);
+  for (const pid of S.edits.keys()) photoSrc(pid);   // start drawing cropped versions now, before they're needed
+  const firstLoad = !S.ready; S.ready = true;
+  renderControls();
+  if (S.view === "library") renderLibrary();
+  const q = S.q, a = q && byId(q.aid);
+  if (!q || !a || !a.photos.includes(q.pid)) { if (S.view === "practice" || firstLoad) nextQuestion(); else S.q = null; }
+  else if (S.view === "practice") renderStage();
+}
+
+async function addPhotos(aid, files) {
+  files = [...files].filter((f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name));
+  if (!files.length || !canEditA(byId(aid))) return [];
+  S.uploading[aid] = (S.uploading[aid] || 0) + files.length;
+  if (S.view === "library") renderLibrary();
+  const ids = [], failed = [], small = [];
+  for (const f of files) {
+    try {
+      const r = await shrink(f);
+      ids.push(await S.store.uploadPhoto(r.blob, aid));
+      if (Math.max(r.w, r.h) < SMALL_PX) small.push(`${f.name} (${r.w}×${r.h} px)`);
+    }
+    catch (e) { failed.push({ name: f.name, code: e?.code }); }
+    S.uploading[aid]--;
+    if (S.view === "library") renderLibrary();
+  }
+  delete S.uploading[aid];
+  const cur = byId(aid);
+  if (cur && ids.length) await S.store.saveAnimal({ ...cur, photos: [...cur.photos, ...ids] });
+  const msgs = [];
+  if (ids.length) msgs.push(`Added ${plural(ids.length, "photo")}.`);
+  if (small.length) msgs.push(`${small.join(", ")} ${small.length === 1 ? "is" : "are"} small and may look blurry. Photos at least 1000 px wide work best.`);
+  const heic = failed.filter((f) => f.code === "heic"), quota = failed.some((f) => f.code === "quota_or_state");
+  const other = failed.filter((f) => f.code !== "heic" && f.code !== "quota_or_state");
+  if (quota) msgs.push("Storage is full. Remove some photos to add more.");
+  if (heic.length) msgs.push(`${heic.map((f) => f.name).join(", ")}: this browser can't open iPhone HEIC photos. Add them from Safari, or on the iPhone set Settings › Camera › Formats › Most Compatible.`);
+  if (other.length) msgs.push(`Couldn't add ${other.map((f) => f.name).join(", ")}. Try a JPG or PNG.`);
+  if (msgs.length) toast(msgs.join(" "));
+  if (S.view === "library") renderLibrary();
+  return ids;
+}
+
+async function createAnimal(e) {
+  e.preventDefault();
+  const err = $("#addErr");
+  const name = $("#add-name").value.trim();
+  const showErr = (m) => { err.textContent = m; err.hidden = false; };
+  err.hidden = true;
+  if (!name) { showErr("Give the animal a name."); $("#add-name").focus(); return; }
+  const dup = S.animals.find((a) => norm(a.name) === norm(name));
+  if (dup) { showErr(`You already have ${dup.name}. Add photos to it below instead.`); return; }
+  const a = {
+    id: newId("a"), name,
+    group: $("#add-group").value.trim(),
+    alts: $("#add-alts").value.split(",").map((s) => s.trim()).filter(Boolean),
+    traits: $("#add-traits").value.trim(),
+    photos: [], created: Date.now(),
+  };
+  if (newSrc()) a._src = newSrc();
+  const btn = $("#addSubmit"); btn.disabled = true; btn.textContent = "Adding…";
+  try {
+    await S.store.saveAnimal(a);
+    const files = S.addFiles; S.addFiles = [];
+    $("#addForm").reset(); renderAddPending();
+    S.addOpen = false; renderLibrary();
+    if (!byId(a.id)) S.animals.push(a);
+    toast(`Added ${name}.`);
+    if (files.length) await addPhotos(a.id, files);
+  } catch (ex) {
+    showErr(`Couldn't save ${name} (${ex?.code || "error"}). Try again.`);
+  } finally { btn.disabled = false; btn.textContent = "Add animal"; }
+}
+
+/* ---------- share sets: export and import ---------- */
+let DL = null;   // downloads capability, when the page runs in claude.ai
+const shareStatus = (m) => { $("#shareStatus").textContent = m || ""; };
+const slug = (t) => String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "set";
+const toDataUrl = (blob) => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = () => rej(fr.error); fr.readAsDataURL(blob); });
+async function photoBlob(pid) {
+  const url = S.store.photoUrl(pid);
+  try { const r = await fetch(url, { credentials: "same-origin" }); if (r.ok) return await r.blob(); } catch {}
+  const img = await loadImg(url);   // fallback: redraw the photo
+  const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight;
+  c.getContext("2d").drawImage(img, 0, 0);
+  return await new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/jpeg", 0.9));
+}
+function dataUrlToBlob(s) {
+  const m = typeof s === "string" && s.length < 40e6 && /^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=]+)$/.exec(s);
+  if (!m) return null;
+  try { const bin = atob(m[2]), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type: m[1] }); } catch { return null; }
+}
+/* When this view can't save files directly, photos are made smaller so the set fits in one piece of text. */
+let packed = null;
+async function smallPhoto(pid) {
+  const img = await loadImg(S.store.photoUrl(pid));
+  const s = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+  const c = document.createElement("canvas"); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+  c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+  return await new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("encode"))), "image/jpeg", 0.8));
+}
+function exportDownload() {
+  if (!packed) return;
+  const u = URL.createObjectURL(new Blob([packed.json], { type: "application/json" }));
+  const a = document.createElement("a"); a.href = u; a.download = packed.name; a.style.display = "none";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 60000);
+  shareStatus("If no file appears in your downloads within a few seconds, use Copy as text.");
+}
+async function exportCopy() {
+  if (!packed) return;
+  try {
+    await navigator.clipboard.writeText(packed.json);
+    shareStatus(`Copied (${packed.mb} MB of text). Open Notepad, or TextEdit on a Mac (choose Format > Make Plain Text). Paste, save it as a .txt file, and send that file. Pasting can take a minute.`);
+  } catch { shareStatus("This browser refused to copy the set. Try exporting one smaller group at a time, or use Chrome."); }
+}
+async function exportSet() {
+  const g = $("#exportSel").value;
+  const list = S.animals.filter((a) => g === "all" || (a.group || "").trim() === g);
+  if (!list.length) { shareStatus("There are no animals in that set yet."); return; }
+  packed = null; $("#exportFallback").hidden = true;
+  const btn = $("#exportBtn"); btn.disabled = true;
+  const total = list.reduce((n, a) => n + a.photos.length, 0);
+  let done = 0, missed = 0;
+  try {
+    const animals = [];
+    for (const a of list) {
+      const photos = [];
+      for (const pid of a.photos) {
+        try {
+          const e = S.edits.get(pid);
+          photos.push({ data: await toDataUrl(await photoBlob(pid)), ...(e ? { edit: { rot: e.rot, x: e.x, y: e.y, w: e.w, h: e.h } } : {}) });
+        } catch { missed++; }
+        shareStatus(`Packing photos… ${++done} of ${total}`);
+      }
+      animals.push({ name: a.name, group: (a.group || "").trim(), alts: a.alts || [], traits: a.traits || "", photos });
+    }
+    const setName = g === "all" ? "All animals" : g;
+    const json = JSON.stringify({ app: "field-eye", version: 1, set: setName, exported: new Date().toISOString(), animals });
+    if (!DL) {
+      packed = { json, name: `field-eye-${slug(setName)}.json`, mb: (json.length / 1e6).toFixed(1) };
+      exportDownload();
+      shareStatus(`Exported ${plural(list.length, "animal")} and ${plural(total - missed, "photo")}${missed ? ` (${missed} couldn't be read)` : ""}. Find the file in your downloads and send it to a friend.`);
+      return;
+    }
+    shareStatus("Waiting for you to confirm the download…");
+    await DL.save({ filename: `field-eye-${slug(setName)}.json`, data: new Blob([json], { type: "application/json" }) });
+    shareStatus(`Exported ${plural(list.length, "animal")} and ${plural(total - missed, "photo")}${missed ? ` (${missed} couldn't be read)` : ""}. Send the file to your friend.`);
+  } catch (e) {
+    shareStatus(e?.code === "declined" ? "Export cancelled." : e?.code === "too_large" ? "That set is too big for one file. Try exporting a smaller group." : `Couldn't export (${e?.code || "error"}).`);
+  } finally { btn.disabled = false; }
+}
+async function importSet(file) {
+  const bad = "That file isn't a Field Eye set. Use a file made with Export file.";
+  let d;
+  try { if (file.size > 400e6) throw 0; shareStatus("Reading the file…"); d = JSON.parse((await file.text()).trim()); } catch { shareStatus(bad); return; }
+  if (!d || d.app !== "field-eye" || !Array.isArray(d.animals)) { shareStatus(bad); return; }
+  const str = (v, n) => (typeof v === "string" ? v.slice(0, n) : "");
+  const okEdit = (e) => e && [0, 90, 180, 270].includes(e.rot) && [e.x, e.y, e.w, e.h].every((v) => typeof v === "number" && v >= 0 && v <= 1) && e.w > 0 && e.h > 0;
+  const src = newSrc();
+  const total = d.animals.reduce((n, a) => n + (Array.isArray(a?.photos) ? Math.min(a.photos.length, 200) : 0), 0);
+  let added = 0, photosIn = 0, seen = 0, failed = 0; const skipped = [];
+  for (const raw of d.animals.slice(0, 2000)) {
+    const name = str(raw?.name, 120).trim(); if (!name) continue;
+    if (S.animals.some((a) => norm(a.name) === norm(name))) { skipped.push(name); continue; }
+    const a = { id: newId("a"), name, group: str(raw.group, 80).trim(), alts: Array.isArray(raw.alts) ? raw.alts.map((x) => str(x, 120).trim()).filter(Boolean).slice(0, 20) : [], traits: str(raw.traits, 4000).trim(), photos: [], photoEdits: [], created: Date.now() + added };
+    if (src) a._src = src;
+    try {
+      await S.store.saveAnimal(a);
+      if (!byId(a.id)) S.animals.push(a);
+      for (const ph of (Array.isArray(raw.photos) ? raw.photos : []).slice(0, 200)) {
+        shareStatus(`Importing photos… ${++seen} of ${total}`);
+        const blob = dataUrlToBlob(ph?.data); if (!blob) { failed++; continue; }
+        try {
+          const pid = await S.store.uploadPhoto((await shrink(blob)).blob, a.id);
+          a.photos.push(pid); photosIn++;
+          if (okEdit(ph.edit)) a.photoEdits.push({ pid, rot: ph.edit.rot, x: ph.edit.x, y: ph.edit.y, w: ph.edit.w, h: ph.edit.h });
+        } catch (e) { failed++; if (e?.code === "quota_or_state") break; }
+      }
+      await S.store.saveAnimal({ ...(byId(a.id) || a), photos: a.photos, photoEdits: a.photoEdits });
+      added++;
+    } catch (e) { failed++; }
+  }
+  const where = src === "local" ? " They're saved in this browser." : "";
+  const set = str(d.set, 80) || "the set";
+  shareStatus(`Imported ${plural(added, "animal")} with ${plural(photosIn, "photo")} from “${set}”.${where}`
+    + (skipped.length ? ` Skipped ${skipped.length} you already have: ${skipped.slice(0, 5).join(", ")}${skipped.length > 5 ? "…" : ""}.` : "")
+    + (failed ? ` ${failed} item${failed === 1 ? "" : "s"} couldn't be added.` : ""));
+  renderControls(); renderLibrary();
+}
+
+/* ---------- events ---------- */
+let photoConfirmTimer;
+document.addEventListener("click", async (e) => {
+  const t = e.target.closest("[data-act]"); if (!t || t.tagName === "INPUT") return;
+  const act = t.dataset.act;
+  const card = t.closest(".specimen"); const aid = card?.dataset.id;
+  switch (act) {
+    case "view": setView(t.dataset.view); break;
+    case "first": S.addOpen = true; setView("library"); setTimeout(() => $("#add-name").focus(), 50); break;
+    case "group-all": S.set.group = "all"; saveSettings(); renderControls(); nextQuestion(); break;
+    case "mode":
+      S.set.mode = t.dataset.mode; saveSettings(); renderControls();
+      if (S.q && !S.q.answered) nextQuestion();
+      break;
+    case "choose": answer(t.dataset.id, null); break;
+    case "dunno": answer(null, null); break;
+    case "next": nextQuestion(); window.scrollTo({ top: 0, behavior: "smooth" }); break;
+    case "export": exportSet(); break;
+    case "export-dl": exportDownload(); break;
+    case "export-copy": exportCopy(); break;
+    case "tour": startTour(); break;
+    case "tour-next": tourGo(1); break;
+    case "tour-back": tourGo(-1); break;
+    case "tour-end": endTour(); break;
+    case "tour-hint-close": ls.set("fe-tour-seen", true); $("#tourHint").hidden = true; break;
+    case "add-open": S.addOpen = true; renderLibrary(); $("#add-name").focus(); break;
+    case "add-close": S.addOpen = false; S.addFiles = []; $("#addForm").reset(); renderAddPending(); renderLibrary(); break;
+    case "show": if (S.q) { S.q.shown = t.dataset.pid; renderStage(); } break;
+    case "edit-photo": openEditor(t.dataset.aid || aid, t.dataset.pid); break;
+    case "ed-rot": edRotate(+t.dataset.dir); break;
+    case "ed-reset": ED.rot = 0; ED.r = { x: 0, y: 0, w: 1, h: 1 }; edDraw(); break;
+    case "ed-save": edSave(); break;
+    case "ed-cancel": $("#editor").close(); break;
+    case "edit": S.editing = aid; S.confirmDel = null; renderLibrary(); $("#ed-name")?.focus(); break;
+    case "cancel-edit": S.editing = null; renderLibrary(); break;
+    case "save-edit": {
+      const a = byId(aid); if (!a) break;
+      const v = readEdit(); const name = v.name.trim();
+      if (!name) { toast("The name can't be empty."); break; }
+      S.editing = null;
+      try {
+        await S.store.saveAnimal({ ...a, name, group: v.group.trim(), traits: v.traits.trim(), alts: v.alts.split(",").map((s) => s.trim()).filter(Boolean) });
+        toast("Saved.");
+      } catch (ex) { toast(`Couldn't save (${ex?.code || "error"}).`); }
+      renderLibrary(); renderControls();
+      break;
+    }
+    case "del": S.confirmDel = aid; renderLibrary(); break;
+    case "del-no": S.confirmDel = null; renderLibrary(); break;
+    case "del-yes": {
+      const a = byId(aid); if (!a) break;
+      S.confirmDel = null;
+      try {
+        await S.store.deleteAnimal(a.id);
+        for (const pid of a.photos) await S.store.deletePhoto(pid);
+        delete S.progress[a.id]; queueSaveProgress();
+        toast(`Deleted ${a.name}.`);
+      } catch (ex) { toast(`Couldn't delete (${ex?.code || "error"}).`); }
+      renderLibrary();
+      break;
+    }
+    case "del-photo": {
+      const pid = t.dataset.pid;
+      clearTimeout(photoConfirmTimer);
+      if (S.confirmPhoto !== pid) {
+        S.confirmPhoto = pid; renderLibrary();
+        photoConfirmTimer = setTimeout(() => { S.confirmPhoto = null; if (S.view === "library") renderLibrary(); }, 4000);
+        break;
+      }
+      S.confirmPhoto = null;
+      const a = byId(aid); if (!a) break;
+      try {
+        await S.store.saveAnimal({ ...a, photos: a.photos.filter((p) => p !== pid), photoEdits: (a.photoEdits || []).filter((x) => x.pid !== pid) });
+        await S.store.deletePhoto(pid);
+        if (S.progress[a.id]?.ph) { delete S.progress[a.id].ph[pid]; queueSaveProgress(); }
+        toast("Photo removed.");
+      } catch (ex) { toast(`Couldn't remove it (${ex?.code || "error"}).`); }
+      renderLibrary();
+      break;
+    }
+  }
+});
+
+document.addEventListener("submit", (e) => {
+  if (e.target.id === "typeForm") {
+    e.preventDefault();
+    const v = $("#typeIn").value;
+    if (!v.trim()) { $("#typeIn").focus(); return; }
+    answer(null, v);
+  } else if (e.target.id === "addForm") createAnimal(e);
+});
+
+document.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.id === "groupSel") { S.set.group = t.value; saveSettings(); renderControls(); nextQuestion(); }
+  else if (t.id === "optMirror" || t.id === "optZoom" || t.id === "optBw") {
+    S.set.mirror = $("#optMirror").checked; S.set.zoom = $("#optZoom").checked; S.set.bw = $("#optBw").checked; saveSettings();
+    if (S.q && !S.q.answered) { S.q.tf = makeTransform(); renderStage(); }
+  }
+  else if (t.id === "importFile") { const f = t.files[0]; t.value = ""; if (f) importSet(f); }
+  else if (t.id === "add-photos") { S.addFiles.push(...t.files); t.value = ""; renderAddPending(); }
+  else if (t.dataset.act === "add-photos") { const aid = t.closest(".specimen")?.dataset.id; const files = [...t.files]; t.value = ""; if (aid) addPhotos(aid, files); }
+});
+
+// Drag photos onto the add form or onto an animal's card
+document.addEventListener("dragover", (e) => {
+  const zone = e.target.closest?.("#addForm, .specimen"); if (!zone || !S.store?.canEdit) return;
+  e.preventDefault(); zone.classList.add("drag");
+});
+document.addEventListener("dragleave", (e) => { const zone = e.target.closest?.("#addForm, .specimen"); if (zone && !zone.contains(e.relatedTarget)) zone.classList.remove("drag"); });
+document.addEventListener("drop", (e) => {
+  const zone = e.target.closest?.("#addForm, .specimen"); if (!zone || !S.store?.canEdit) return;
+  e.preventDefault(); zone.classList.remove("drag");
+  const files = [...(e.dataTransfer?.files || [])].filter((f) => f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name));
+  if (!files.length) return;
+  if (zone.id === "addForm") { S.addFiles.push(...files); renderAddPending(); }
+  else addPhotos(zone.dataset.id, files);
+});
+
+document.addEventListener("keydown", (e) => {
+  if ($("#editor").open) return;
+  if (S.view !== "practice" || !S.q || e.metaKey || e.ctrlKey || e.altKey) return;
+  const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName);
+  if (!S.q.answered && S.q.mode === "choice" && !inField && /^[1-4]$/.test(e.key)) {
+    const oid = S.q.options?.[+e.key - 1]; if (oid) { e.preventDefault(); answer(oid, null); }
+  } else if (S.q.answered && e.key === "Enter" && e.target.tagName !== "BUTTON" && !inField) {
+    e.preventDefault(); nextQuestion();
+  }
+});
+
+// Photo loaded -> fit the practice frame to its shape, flag low-resolution thumbnails
+document.addEventListener("load", (e) => {
+  const img = e.target; if (img.tagName !== "IMG" || !img.dataset.pid) return;
+  const w = img.naturalWidth, h = img.naturalHeight; if (!w || !h) return;
+  if (img.id === "qImg") {
+    const ar = clamp(w / h, 0.66, 2);
+    ratios.set(img.getAttribute("src"), ar);
+    img.parentElement.style.setProperty("--ar", ar.toFixed(3));
+  }
+  const th = img.closest(".thumb"); if (th) th.classList.toggle("low", Math.max(w, h) < SMALL_PX);
+}, true);
+
+/* ---------- photo editor ---------- */
+const ED = { aid: null, pid: null, img: null, rot: 0, r: { x: 0, y: 0, w: 1, h: 1 }, drag: null };
+const MIN_BOX = 0.06;
+async function openEditor(aid, pid) {
+  const a = byId(aid); if (!a || !pid || !canEditA(a)) return;
+  const e = S.edits.get(pid);
+  Object.assign(ED, { aid, pid, img: null, drag: null, rot: e ? e.rot : 0, r: e ? { x: e.x, y: e.y, w: e.w, h: e.h } : { x: 0, y: 0, w: 1, h: 1 } });
+  $("#edTitle").textContent = `Edit photo of ${a.name}`;
+  $("#edInfo").textContent = "Loading photo…";
+  $("#edSave").disabled = true;
+  $("#edCrop").hidden = true;
+  const cv = $("#edCanvas"); cv.width = 1; cv.height = 1;
+  $("#editor").showModal();
+  let img;
+  try { img = await loadImg(S.store.photoUrl(pid)); } catch { if (ED.pid === pid) $("#edInfo").textContent = "This photo couldn't be loaded."; return; }
+  if (ED.pid !== pid || !$("#editor").open) return;
+  ED.img = img;
+  $("#edSave").disabled = false; $("#edCrop").hidden = false;
+  edDraw();
+}
+function edDims() { const W = ED.img.naturalWidth, H = ED.img.naturalHeight; return ED.rot % 180 ? [H, W] : [W, H]; }
+function edDraw() {
+  if (!ED.img) return;
+  const [RW, RH] = edDims();
+  const stage = $("#edStage"), cv = $("#edCanvas");
+  const availW = stage.parentElement.clientWidth || 300, availH = Math.min(window.innerHeight * 0.56, 560);
+  const s = Math.min(availW / RW, availH / RH);
+  const w = Math.max(1, Math.round(RW * s)), h = Math.max(1, Math.round(RH * s)), dpr = Math.min(2, window.devicePixelRatio || 1);
+  stage.style.width = w + "px"; stage.style.height = h + "px";
+  cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const g = cv.getContext("2d"), W = ED.img.naturalWidth, H = ED.img.naturalHeight;
+  g.setTransform(cv.width / RW, 0, 0, cv.height / RH, 0, 0);
+  g.translate(RW / 2, RH / 2); g.rotate((ED.rot * Math.PI) / 180); g.drawImage(ED.img, -W / 2, -H / 2);
+  edBox();
+}
+const isFull = (r) => r.x <= 0.001 && r.y <= 0.001 && r.w >= 0.999 && r.h >= 0.999;
+function edBox() {
+  const r = ED.r, b = $("#edCrop");
+  b.style.left = r.x * 100 + "%"; b.style.top = r.y * 100 + "%"; b.style.width = r.w * 100 + "%"; b.style.height = r.h * 100 + "%";
+  const [RW, RH] = edDims();
+  const pw = Math.round(r.w * RW), ph = Math.round(r.h * RH);
+  $("#edInfo").textContent = `${isFull(r) ? "Whole photo" : "Cropped"} · ${pw}×${ph} px${Math.max(pw, ph) < SMALL_PX ? " · small, may look blurry" : ""}`;
+}
+function edRotate(dir) {
+  if (!ED.img) return;
+  const r = ED.r;
+  ED.r = dir > 0 ? { x: 1 - (r.y + r.h), y: r.x, w: r.h, h: r.w } : { x: r.y, y: 1 - (r.x + r.w), w: r.h, h: r.w };
+  ED.rot = (ED.rot + (dir > 0 ? 90 : 270)) % 360;
+  edDraw();
+}
+async function edSave() {
+  const a = byId(ED.aid); if (!a || !ED.img) return;
+  const q4 = (v) => Math.round(v * 10000) / 10000;
+  const r = ED.r, pid = ED.pid;
+  const list = (a.photoEdits || []).filter((x) => x.pid !== pid);
+  let ed = null;
+  if (!isFull(r) || ED.rot) { ed = { pid, rot: ED.rot, x: q4(r.x), y: q4(r.y), w: q4(r.w), h: q4(r.h) }; list.push(ed); }
+  const btn = $("#edSave"); btn.disabled = true; btn.textContent = "Saving…";
+  try {
+    if (ed) await buildDerived(pid, ed);
+    await S.store.saveAnimal({ ...a, photoEdits: list });
+    $("#editor").close();
+    toast(ed ? "Photo saved. The original is kept, so you can change it again." : "Photo set back to the original.");
+  } catch (ex) { toast(`Couldn't save (${ex?.code || "error"}).`); }
+  finally { btn.disabled = false; btn.textContent = "Save"; }
+}
+(() => {
+  const stage = $("#edStage");
+  const at = (e, st) => ({ x: clamp((e.clientX - st.left) / st.width, 0, 1), y: clamp((e.clientY - st.top) / st.height, 0, 1) });
+  stage.addEventListener("pointerdown", (e) => {
+    if (!ED.img || e.button > 0) return;
+    const st = stage.getBoundingClientRect();
+    // On an uncropped photo the box fills everything, so a drag inside it draws a new box instead of moving it.
+    const h = e.target.dataset?.h || (e.target.id === "edCrop" && !isFull(ED.r) ? "move" : "new");
+    ED.drag = { h, p: at(e, st), r0: { ...ED.r }, st, moved: false };
+    stage.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  stage.addEventListener("pointermove", (e) => {
+    const d = ED.drag; if (!d) return;
+    const p = at(e, d.st), dx = p.x - d.p.x, dy = p.y - d.p.y, r0 = d.r0;
+    let r = { ...r0 };
+    if (d.h === "move") { r.x = clamp(r0.x + dx, 0, 1 - r0.w); r.y = clamp(r0.y + dy, 0, 1 - r0.h); }
+    else if (d.h === "new") {
+      if (!d.moved && Math.abs(dx) < 0.02 && Math.abs(dy) < 0.02) return;
+      d.moved = true;
+      r = { w: Math.max(MIN_BOX, Math.abs(dx)), h: Math.max(MIN_BOX, Math.abs(dy)) };
+      r.x = Math.min(Math.min(d.p.x, p.x), 1 - r.w); r.y = Math.min(Math.min(d.p.y, p.y), 1 - r.h);
+    } else {
+      if (d.h.includes("w")) { const x = clamp(r0.x + dx, 0, r0.x + r0.w - MIN_BOX); r.w = r0.x + r0.w - x; r.x = x; }
+      if (d.h.includes("e")) r.w = clamp(r0.w + dx, MIN_BOX, 1 - r0.x);
+      if (d.h.includes("n")) { const y = clamp(r0.y + dy, 0, r0.y + r0.h - MIN_BOX); r.h = r0.y + r0.h - y; r.y = y; }
+      if (d.h.includes("s")) r.h = clamp(r0.h + dy, MIN_BOX, 1 - r0.y);
+    }
+    ED.r = r; edBox();
+  });
+  const end = () => { ED.drag = null; };
+  stage.addEventListener("pointerup", end);
+  stage.addEventListener("pointercancel", end);
+  $("#edCrop").addEventListener("keydown", (e) => {
+    const k = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key]; if (!k) return;
+    e.preventDefault();
+    const s = 0.02, r = { ...ED.r };
+    if (e.shiftKey) { r.w = clamp(r.w + k[0] * s, MIN_BOX, 1 - r.x); r.h = clamp(r.h + k[1] * s, MIN_BOX, 1 - r.y); }
+    else { r.x = clamp(r.x + k[0] * s, 0, 1 - r.w); r.y = clamp(r.y + k[1] * s, 0, 1 - r.h); }
+    ED.r = r; edBox();
+  });
+  $("#editor").addEventListener("close", () => { ED.img = null; ED.pid = null; ED.drag = null; });
+  window.addEventListener("resize", () => { if ($("#editor").open) edDraw(); });
+})();
+
+// Broken photo -> placeholder
+document.addEventListener("error", (e) => {
+  const img = e.target; if (img.tagName !== "IMG") return;
+  if (img.id === "qImg") img.parentElement.innerHTML = `<span class="missing">This photo couldn't be loaded.</span>`;
+  else img.style.visibility = "hidden";
+}, true);
+
+/* ---------- tutorial ----------
+   A guided tour: dims the page, lights up one part at a time and explains it.
+   It uses example content (an example animal card and an example practice round),
+   so it works the same with zero or hundreds of animals and never changes real data or scores. */
+const TOUCH = matchMedia("(hover: none)").matches;
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TAP = TOUCH ? "Tap" : "Click", tap = TAP.toLowerCase();
+const demoPic = (c) => "data:image/svg+xml," + encodeURIComponent(
+  `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><rect width='400' height='300' fill='${c.bg}'/><circle cx='${c.flip ? 90 : 320}' cy='60' r='70' fill='#fff' opacity='.18'/><rect x='40' y='258' width='320' height='14' rx='7' fill='#5a3d22'/><g transform='translate(200 150) scale(${c.flip ? -1 : 1} 1)'><path d='M-60 25 L-125 55 L-112 70 L-50 45Z' fill='${c.body}'/><ellipse cx='0' cy='25' rx='72' ry='56' fill='${c.body}'/><ellipse cx='22' cy='40' rx='46' ry='40' fill='${c.breast}'/><circle cx='48' cy='-30' r='38' fill='${c.body}'/><circle cx='58' cy='-22' r='26' fill='${c.face || c.breast}'/>${c.bib ? `<path d='M50 -4 Q74 6 66 34 Q46 26 50 -4Z' fill='#222'/>` : ""}<circle cx='60' cy='-40' r='6' fill='#111'/><path d='M84 -34 L110 -28 L84 -22Z' fill='#2a2a2a'/><path d='M-8 78 L-12 110 M16 78 L13 110' stroke='#3a2a1a' stroke-width='5' stroke-linecap='round'/></g></svg>`
+).replace(/'/g, "%27");
+const DEMO = {
+  robin1: demoPic({ bg: "#9fbf8a", body: "#7a5a3a", breast: "#e2763a" }),
+  robin2: demoPic({ bg: "#b9c7d6", body: "#6e5238", breast: "#d9682f", flip: true }),
+  robin3: demoPic({ bg: "#d9b98a", body: "#7d5c3c", breast: "#e88444" }),
+  sparrow: demoPic({ bg: "#c9d6b0", body: "#8a6a48", breast: "#cbbfa8", face: "#9a9a96", bib: true, flip: true }),
+};
+function demoCardHtml() {
+  const th = [["robin1", "3/4", ""], ["robin2", "2/2", " low"], ["robin3", "", ""]].map(([k, acc, low]) =>
+    `<figure class="thumb${low}"><img src="${DEMO[k]}" alt=""><span class="pen">✎ Edit</span>${acc ? `<span class="acc">${acc}</span>` : ""}<button class="x" type="button" tabindex="-1">✕</button></figure>`).join("");
+  return `<article class="specimen tour-demo" id="tdCard" aria-hidden="true">
+    <div class="tour-demo-tag">Example card · only shown in the tutorial</div>
+    <header><div><h3>European robin</h3><div class="sub">Garden birds · 3 photos · also “robin, Erithacus rubecula”</div></div>
+    <div class="mastery" id="tdMastery">${pips(3)}<small>7 of 9 right</small></div></header>
+    <p class="traits">Orange-red face and breast, edged with grey. Plain brown back. Round body, thin dark bill, upright stance.</p>
+    <div class="thumbs" id="tdThumbs">${th}<span class="addthumb">+ Add photos</span></div>
+    <footer id="tdFoot"><button class="btn sm" type="button" tabindex="-1">Edit details</button><button class="btn ghost danger sm" type="button" tabindex="-1">Delete</button></footer>
+  </article>`;
+}
+function demoPracticeHtml(answered) {
+  const opts = ["House sparrow", "European robin", "Great tit", "Blackbird"];
+  const img = DEMO.robin2;
+  let h = `<div class="tour-demo-tag">Example round · only shown in the tutorial, it doesn't count</div>
+    <figure class="plate" id="tdPlate"><div class="frame${answered ? " revealed" : " flip"}" style="--ar:1.333"><div class="fill" style="background-image:url('${img}')"></div><img src="${img}" alt="" style="${answered ? "" : "transform-origin:42% 45%;transform:scale(-1.14,1.14) rotate(-2deg)"}"></div>${answered ? `<figcaption class="plate-meta"><span>Photo 2 of 3</span><span>This photo: 2/3 right</span></figcaption>` : ""}</figure>
+    <div class="tray"><div class="choices" id="tdChoices">${opts.map((n, i) => `<button class="choice ${answered ? (n === "European robin" ? "right" : n === "House sparrow" ? "wrong" : "dim") : ""}" type="button" tabindex="-1"><span class="k">${i + 1}</span><span>${n}</span></button>`).join("")}</div></div>`;
+  if (answered) {
+    h += `<div class="verdict no" id="tdVerdict"><span class="label">Not quite. It's</span><h3>European robin</h3><div class="sub">Also accepted: robin, Erithacus rubecula</div></div>
+    <div class="next-row" id="tdNext"><button class="btn primary" type="button" tabindex="-1">Next photo${TOUCH ? "" : " <kbd>Enter</kbd>"}</button></div>
+    <div class="learn"><div id="tdLearn" style="display:grid;gap:12px"><div><h4>What to look for</h4><p class="traits">Orange-red face and breast, edged with grey. Plain brown back. Round body, thin dark bill, upright stance.</p></div>
+      <div><h4>All 3 photos of European robin</h4><div class="strip">${["robin1", "robin2", "robin3"].map((k) => `<button type="button" tabindex="-1" aria-current="${k === "robin2"}"><img src="${DEMO[k]}" alt=""></button>`).join("")}</div></div></div>
+      <div class="compare" id="tdCompare"><img src="${DEMO.sparrow}" alt=""><div><h4>You said House sparrow. Compare:</h4><p class="traits">Grey crown, black bib, streaky brown back. No orange anywhere.</p></div></div>
+      <div><button class="btn ghost sm" type="button" tabindex="-1" id="tdCrop">Crop or rotate this photo</button></div></div>`;
+  }
+  return `<div id="tdPractice" class="view tour-demo-wrap" data-state="${answered ? "a" : "q"}" aria-hidden="true">${h}</div>`;
+}
+
+const keys = (s) => (TOUCH ? "" : s);
+const STEPS = [
+  { ch: "Welcome", scene: "home", title: "Welcome to Field Eye",
+    body: () => `<p>Field Eye teaches you to recognise animals from photos, like flashcards that don't let you cheat.</p><p style="margin-top:8px">This tutorial walks you through everything, one part at a time. It takes about 2 minutes. The examples you'll see are only for the tutorial: nothing you have is changed, and nothing counts towards your score.</p>` },
+  { ch: "Welcome", scene: "home", target: () => $(".tabs"), title: "Two sections",
+    body: `<p><b>Practice</b> is where you quiz yourself.</p><p style="margin-top:6px"><b>My animals</b> is where you add animals and their photos. The number next to it shows how many animals you have.</p>` },
+
+  { ch: "Adding an animal", scene: "lib", target: () => $("#addForm"), title: "The New animal form",
+    body: () => `<p>Each animal you want to learn gets one entry with several photos. You fill in this form once per animal.</p><p style="margin-top:6px">Once you have animals, the form hides behind the <b>+ New animal</b> button at the top of My animals.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#add-name")?.closest(".field"), title: "Name",
+    body: `<p>The answer you're learning, for example “Red fox”. This is what counts as correct in practice.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#add-group")?.closest(".field"), title: "Group (optional)",
+    body: `<p>Sort animals into sets, like “Owls”, “Mammals” or “Exam 2”. Then you can:</p><ul><li>practise one group at a time</li><li>export one group to share it</li></ul><p style="margin-top:6px">In Pick from 4, the wrong options come from the same group, so it's harder to guess.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#add-alts")?.closest(".field"), title: "Other accepted answers",
+    body: `<p>Other names that also count as correct when you type the answer, such as the Latin name or a short name. Separate them with commas.</p><p style="margin-top:6px">Small typos are forgiven automatically.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#add-traits")?.closest(".field"), title: "What to look for",
+    body: `<p>Write down the features that give the animal away, like colours, markings and shape. They show after every answer, right next to the photo.</p><p style="margin-top:6px">This is what you really learn, so short and specific works best.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#add-photos")?.closest(".form-actions"), title: "Photos",
+    body: () => `<p>${TAP} <b>Choose photos</b>${TOUCH ? "" : ", or drag photos onto the form"}. Add <b>3 or more</b> per animal, from different angles, seasons, ages and backgrounds.</p><p style="margin-top:6px">That way you learn the animal, not one picture. Photos are kept at full quality.</p>` },
+  { ch: "Adding an animal", scene: "lib", target: () => $("#addSubmit")?.closest(".form-actions"), title: "Save it",
+    body: `<p><b>Add animal</b> saves it. <b>Cancel</b> closes the form without saving.</p>` },
+
+  { ch: "Your animal cards", scene: "lib", target: () => $("#tdCard"), title: "An animal card",
+    body: `<p>Every animal you add gets a card like this example. It shows the name, group, number of photos, other answers and your notes.</p>` },
+  { ch: "Your animal cards", scene: "lib", target: () => $("#tdThumbs"), title: "The photos",
+    body: () => `<ul style="margin:0"><li><b>${TAP} a photo</b> to crop or rotate it. Crop to the animal, so practice zooms in on it. Your original photo is always kept.</li><li><b>✕</b> removes a photo. ${TAP} it twice to confirm.</li><li><b>3/4</b> means you got that photo right 3 times out of 4.</li><li><b>Low res</b> warns that a photo is small and may look blurry.</li><li><b>+ Add photos</b> adds more${TOUCH ? "" : ". You can also drag photos onto the card"}.</li></ul>` },
+  { ch: "Your animal cards", scene: "lib", target: () => $("#tdMastery"), title: "How well you know it",
+    body: `<p>The 5 dots fill up each time you get this animal right and empty again when you miss it. Underneath is your total score for it.</p><p style="margin-top:6px">Animals with fewer dots come up more often in practice.</p>` },
+  { ch: "Your animal cards", scene: "lib", target: () => $("#tdFoot"), title: "Edit or delete",
+    body: `<p><b>Edit details</b> changes the name, group, other answers and notes.</p><p style="margin-top:6px"><b>Delete</b> removes the animal and all its photos. It asks you first, because it can't be undone.</p>` },
+
+  { ch: "Sharing", scene: "lib", target: () => $(".sharecard"), title: "Share a set with friends",
+    body: () => `<ul style="margin:0"><li>Pick <b>All animals</b> or one group, then ${tap} <b>Export file</b>. You get one file with every photo, note and crop.</li><li>Send the file to a friend.</li><li>They ${tap} <b>Import a set file</b> in their Field Eye. Animals they already have are skipped.</li></ul>` },
+
+  { ch: "Practising", scene: "practice-q", target: () => $("#groupSel"), title: "Choose what to practise",
+    body: `<p>Practise all your animals, or just one group. The number shows how many animals in it have photos.</p>` },
+  { ch: "Practising", scene: "practice-opts", target: () => $("#tweaks .tweak-box"), title: "Options",
+    body: `<ul style="margin:0"><li><b>Picking from 4</b>: choose the right name. Good for starting out.</li><li><b>Typing the name</b>: a real test, like an exam.</li><li><b>Random mirror</b>: flips some photos, so you can't rely on which way the animal faces.</li><li><b>Random zoom and tilt</b>: shows a slightly different part each time.</li><li><b>Black and white</b>: no colour, only shape and pattern.</li></ul>` },
+  { ch: "Practising", scene: "practice-q", target: () => $("#tdPlate"), title: "The photo",
+    body: `<p>Each round shows one photo of one animal. It's usually a different photo than last time, and it may be flipped or zoomed in.</p><p style="margin-top:6px">Look for the features, not the picture you remember.</p>` },
+  { ch: "Practising", scene: "practice-q", target: () => $("#tdChoices"), title: "Answer",
+    body: () => `<p>${TAP} the name you think it is${keys(", or press <kbd>1</kbd> to <kbd>4</kbd>")}.</p><p style="margin-top:6px">With <b>Typing the name</b>, type it and ${tap} <b>Check</b>${keys(" (or press Enter)")}. Not sure? ${TAP} <b>I don't know</b> to see the answer.</p>` },
+  { ch: "Practising", scene: "practice-a", target: () => $("#tdVerdict"), title: "Right or wrong",
+    body: `<p>Green means correct. Red means not quite, and the right answer is shown.</p><p style="margin-top:6px">In this example, the answer <b>House sparrow</b> was wrong. It's a European robin.</p>` },
+  { ch: "Practising", scene: "practice-a", target: () => $("#tdLearn"), title: "Learn from it",
+    body: () => `<p>Your notes on what to look for appear here, with all the photos of this animal. ${TAP} a small photo to see it big.</p>` },
+  { ch: "Practising", scene: "practice-a", target: () => $("#tdCompare"), title: "Mix-ups",
+    body: `<p>When you pick the wrong animal, it's shown here with its notes, so you can see what tells the two apart.</p><p style="margin-top:6px">Below it, <b>Crop or rotate this photo</b> lets you fix a photo right away.</p>` },
+  { ch: "Practising", scene: "practice-a", target: () => $("#tdNext"), title: "Next round",
+    body: () => `<p>${TAP} <b>Next photo</b>${keys(" or press Enter")} to keep going.</p><p style="margin-top:6px">Animals you miss come back sooner, and ones you know show up less. Your score and streak for this session are shown at the top of Practice.</p>` },
+
+  { ch: "Done", scene: "practice", target: () => $("#tourBtn"), title: "You're ready",
+    body: `<ul style="margin:0"><li>Add your first animal with 3 or more photos.</li><li>Write down what to look for.</li><li>Practise for a few minutes a day.</li></ul><p style="margin-top:8px">You can open this tutorial again any time with this button.</p>` },
+];
+
+const T = { on: false, i: 0, el: null, raf: 0, prevView: "practice", prevAdd: false, ret: null };
+function tourScene(sc) {
+  if (sc === "home") return;
+  const lib = sc === "lib";
+  if (lib) {
+    const need = !S.addOpen && S.store?.canEdit; if (S.store?.canEdit) S.addOpen = true;
+    if (S.view !== "library") setView("library"); else if (need) renderLibrary();
+    if (!$("#tdCard")) $("#libList").insertAdjacentHTML("beforebegin", demoCardHtml());
+  } else if (S.view !== "practice") setView("practice");
+  const want = sc === "practice-a" ? "a" : sc === "practice-q" || sc === "practice-opts" ? "q" : null;
+  const dp = $("#tdPractice");
+  if (want && (!dp || dp.dataset.state !== want)) { dp?.remove(); $("#stage").insertAdjacentHTML("beforebegin", demoPracticeHtml(want === "a")); }
+  if (!want) dp?.remove();
+  $("#stage").hidden = !!want;
+  $("#tweaks").open = sc === "practice-opts";
+}
+function tourPlace() {
+  if (!T.on) return;
+  const card = $("#tourCard"), spot = $("#tourSpot");
+  const vw = innerWidth, vh = innerHeight, cs = getComputedStyle(document.documentElement);
+  const sTop = parseFloat(cs.paddingTop) || 0, sBot = parseFloat(cs.paddingBottom) || 0;
+  const m = 12, pad = 6, cw = card.offsetWidth, ch = card.offsetHeight;
+  const el = T.el && T.el.isConnected && T.el.getClientRects().length ? T.el : null;
+  let left, top;
+  if (!el) {
+    spot.classList.add("none");
+    Object.assign(spot.style, { left: vw / 2 + "px", top: vh / 2 + "px", width: "0px", height: "0px" });
+    left = (vw - cw) / 2; top = Math.max(m + sTop, (vh - ch) / 2);
+  } else {
+    const r = el.getBoundingClientRect();
+    spot.classList.remove("none");
+    Object.assign(spot.style, { left: r.left - pad + "px", top: r.top - pad + "px", width: r.width + pad * 2 + "px", height: r.height + pad * 2 + "px" });
+    const minTop = m + sTop, maxTop = vh - ch - m - sBot;
+    if (vw < 640) {
+      left = (vw - cw) / 2;
+      // Card at the bottom of the screen, unless that would cover the highlighted part.
+      if (r.bottom + pad <= maxTop - 4) top = maxTop;
+      else if (r.top - pad >= minTop + ch + 4) top = minTop;
+      else top = maxTop;
+    } else {
+      left = clamp(r.left + r.width / 2 - cw / 2, m, vw - cw - m);
+      if (r.bottom + pad + m + ch <= vh - m - sBot) top = r.bottom + pad + m;
+      else if (r.top - pad - m - ch >= minTop) top = r.top - pad - m - ch;
+      else if (r.right + pad + m + cw <= vw - m) { left = r.right + pad + m; top = clamp(r.top, minTop, maxTop); }
+      else if (r.left - pad - m - cw >= m) { left = r.left - pad - m - cw; top = clamp(r.top, minTop, maxTop); }
+      else { left = vw - cw - m; top = maxTop; }
+    }
+  }
+  card.style.left = Math.round(left) + "px"; card.style.top = Math.round(Math.max(m, top)) + "px";
+}
+const tourQueue = () => { cancelAnimationFrame(T.raf); T.raf = requestAnimationFrame(tourPlace); };
+function tourShow(i) {
+  T.i = clamp(i, 0, STEPS.length - 1);
+  const st = STEPS[T.i], last = T.i === STEPS.length - 1;
+  tourScene(st.scene);
+  $("#tourChap").textContent = st.ch;
+  $("#tourCount").textContent = `Step ${T.i + 1} of ${STEPS.length}`;
+  $("#tourBar").style.width = ((T.i + 1) / STEPS.length) * 100 + "%";
+  $("#tourTitle").textContent = st.title;
+  $("#tourBody").innerHTML = typeof st.body === "function" ? st.body() : st.body;
+  $("#tourBack").hidden = T.i === 0;
+  $("#tourNext").textContent = T.i === 0 ? "Start" : last ? "Finish" : "Next";
+  $("#tourSkip").textContent = T.i === 0 ? "Not now" : "Skip tutorial";
+  $("#tourSkip").hidden = last;
+  $("#tourKeys").hidden = TOUCH || T.i > 1;
+  const el = st.target?.();
+  T.el = el && el.getClientRects().length ? el : null;
+  if (T.el) {
+    const r = T.el.getBoundingClientRect();
+    T.el.scrollIntoView({ block: r.height > innerHeight * 0.5 ? "start" : "center", behavior: REDUCED ? "auto" : "smooth" });
+  }
+  tourPlace();
+  [120, 380, 750].forEach((ms) => setTimeout(tourQueue, ms));   // follow the smooth scroll and any reflow
+  $("#tourNext").focus({ preventScroll: true });
+}
+function tourKey(e) {
+  if (!T.on) return;
+  if (e.key === "Escape") { e.preventDefault(); endTour(); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); tourGo(1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); if (T.i > 0) tourGo(-1); }
+  else if (e.key === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); tourGo(1); }
+  else if (e.key === "Tab") {
+    const f = [...$("#tourCard").querySelectorAll("button")].filter((b) => !b.hidden);
+    const i = f.indexOf(document.activeElement);
+    e.preventDefault();
+    f[(i + (e.shiftKey ? -1 : 1) + f.length) % f.length]?.focus();
+  }
+  e.stopPropagation();   // keep practice shortcuts (1-4, Enter) from firing underneath
+}
+function tourGo(d) {
+  if (!T.on) return;
+  if (d > 0 && T.i === STEPS.length - 1) { endTour(); return; }
+  tourShow(T.i + d);
+}
+function startTour() {
+  if (T.on) return;
+  if ($("#editor").open) $("#editor").close();
+  ls.set("fe-tour-seen", true); $("#tourHint").hidden = true;
+  Object.assign(T, { on: true, prevView: S.view, prevAdd: S.addOpen, ret: document.activeElement });
+  S.confirmDel = null; S.confirmPhoto = null;
+  if (S.editing) { S.editing = null; if (S.view === "library") renderLibrary(); }
+  document.documentElement.classList.add("touring");
+  $("#tour").hidden = false;
+  window.addEventListener("keydown", tourKey, true);
+  window.addEventListener("resize", tourQueue);
+  window.addEventListener("scroll", tourQueue, { capture: true, passive: true });
+  tourShow(0);
+}
+function endTour() {
+  if (!T.on) return;
+  T.on = false; cancelAnimationFrame(T.raf);
+  window.removeEventListener("keydown", tourKey, true);
+  window.removeEventListener("resize", tourQueue);
+  window.removeEventListener("scroll", tourQueue, { capture: true });
+  $("#tour").hidden = true;
+  document.documentElement.classList.remove("touring");
+  $("#tdCard")?.remove(); $("#tdPractice")?.remove();
+  $("#stage").hidden = false; $("#tweaks").open = false;
+  S.addOpen = T.prevAdd;
+  setView(T.prevView);
+  (T.ret && T.ret.isConnected ? T.ret : $("#tourBtn")).focus({ preventScroll: true });
+}
+
+/* ---------- starter set: everyone begins with these animals ---------- */
+async function seedStarter() {
+  if (ls.get("fe-starter-seeded", false)) return;
+  try {
+    const r = await fetch("starter/starter.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const d = await r.json();
+    const have = new Set(S.animals.map((a) => norm(a.name)));
+    await LocalStore.putMany(d.animals.filter((a) => !have.has(norm(a.name))));
+    ls.set("fe-starter-seeded", true);
+  } catch {}
+}
+
+/* ---------- start ---------- */
+async function start() {
+  renderControls(); renderStage();
+  $("#tourHint").hidden = !!ls.get("fe-tour-seen", false);
+  let caps = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    try {
+      const [db, assets, user, dl] = await Promise.all([claude.use("db"), claude.use("assets"), claude.use("user"), claude.use("downloads")]);
+      if (db) caps = { db, assets, user };
+      DL = dl;
+    } catch {}
+  }
+  if (caps) {
+    S.store = MixedStore;
+    await MixedStore.init(onAnimals, caps);
+  } else {
+    S.store = LocalStore;
+    await LocalStore.init(onAnimals);
+    await seedStarter();
+  }
+  S.progress = await S.store.loadProgress();
+  renderControls();
+  if (S.view === "library") renderLibrary(); else renderStage();
+}
+start();
+})();
+</script>
+</body>
+</html>
