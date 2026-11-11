@@ -1895,12 +1895,15 @@ const FireStore = {
   // First sign-in: an empty account gets the animals from this browser (or the starter set).
   async adoptLocal() {
     const { F } = FB, stRef = F.doc(FB.db, "users", this.uid, "meta", "state");
-    let st = null; try { st = await F.getDoc(stRef); } catch {}
-    if (st?.exists() && st.data().adopted) return;
-    const existing = await F.getDocs(F.query(F.collection(FB.db, "users", this.uid, "animals"), F.limit(1)));
-    if (existing.empty) {
+    let st = {}; try { const s = await F.getDoc(stRef); if (s.exists()) st = s.data() || {}; } catch {}
+    const starter = await fetchStarter();
+    const existing = await F.getDocs(F.collection(FB.db, "users", this.uid, "animals"));
+    const have = new Set(existing.docs.map((d) => norm(d.data().name || "")));
+    let seen = Array.isArray(st.starterSeen) ? st.starterSeen.slice() : (st.adopted ? STARTER_PRE_TOPUP.slice() : []);
+    if (existing.empty && !st.adopted) {
+      // First sign-in on a new account: bring over this browser's animals (or the starter set).
       let list = (LocalStore.list || []).map((a) => structuredClone(a));
-      if (!list.length) { try { list = (await (await fetch("starter/starter.json", { cache: "no-cache" })).json()).animals || []; } catch { list = []; } }
+      if (!list.length) list = starter.map((a) => structuredClone(a));
       let i = 0;
       for (const a of list) {
         notice(`Setting up your account: copying animal ${++i} of ${list.length}…`);
@@ -1911,12 +1914,23 @@ const FireStore = {
         }
         const photoEdits = (a.photoEdits || []).map((e) => ({ ...e, pid: map[e.pid] || e.pid })).filter((e) => photos.includes(e.pid));
         await this.saveAnimal({ ...a, photos, photoEdits });
+        if (String(a.id).startsWith("starter-")) seen.push(a.id);
       }
       const lp = await LocalStore.loadProgress();
       if (lp && Object.keys(lp).length) await F.setDoc(this.progressRef(), { animals: JSON.parse(JSON.stringify(lp)) });
       notice("");
+    } else {
+      // Existing account: add starter cards they don't have and haven't been offered before.
+      const { add, nextSeen } = starterToAdd(starter, have, seen);
+      let i = 0;
+      for (const a of add) { notice(`Adding ${++i} of ${add.length} new animal${add.length === 1 ? "" : "s"}…`); await this.saveAnimal(cleanStarter(a)); }
+      seen = nextSeen; if (add.length) notice("");
     }
-    await F.setDoc(stRef, { adopted: true }, { merge: true });
+    // Carry this browser's "already offered" list into the account, so a card the
+    // person deleted while signed out isn't re-added after they sign in.
+    const localSeen = ls.get("fe-starter-seen", []);
+    if (Array.isArray(localSeen)) seen = [...new Set([...seen, ...localSeen])];
+    await F.setDoc(stRef, { adopted: true, starterSeen: [...new Set(seen)] }, { merge: true });
   },
 };
 
@@ -2002,17 +2016,36 @@ function registerSW() {
   if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 
-/* ---------- starter set: everyone begins with these animals ---------- */
-async function seedStarter() {
-  if (ls.get("fe-starter-seeded", false)) return;
-  try {
-    const r = await fetch("starter/starter.json", { cache: "no-cache" });
-    if (!r.ok) return;
-    const d = await r.json();
-    const have = new Set(S.animals.map((a) => norm(a.name)));
-    await LocalStore.putMany(d.animals.filter((a) => !have.has(norm(a.name))));
-    ls.set("fe-starter-seeded", true);
-  } catch {}
+/* ---------- starter set: everyone begins with these animals, and is topped
+   up with new ones in later updates ----------
+   Every card a person has already been offered is remembered by id, so a card
+   they deleted never comes back, and only genuinely new cards are ever added.
+   STARTER_PRE_TOPUP is the set that shipped before top-up existed, used once to
+   migrate people who were seeded under the old one-time scheme. */
+const STARTER_PRE_TOPUP = Array.from({ length: 26 }, (_, i) => `starter-a${String(i + 1).padStart(3, "0")}`);
+let starterCache = null;
+async function fetchStarter() {
+  if (starterCache) return starterCache;
+  try { const r = await fetch("starter/starter.json", { cache: "no-cache" }); if (r.ok) starterCache = (await r.json()).animals || []; } catch {}
+  return starterCache || [];
+}
+// A starter card copied into someone's library: keep only its built-in (starter/) photos.
+const cleanStarter = (a) => ({ ...a, photos: (a.photos || []).filter((p) => String(p).startsWith("starter/")), photoEdits: (a.photoEdits || []).filter((e) => (a.photos || []).includes(e.pid)) });
+// Given the starter set, the names someone already has, and the ids they've been
+// offered, decide which cards to add and the updated "offered" list.
+function starterToAdd(starter, haveNames, seen) {
+  const add = starter.filter((a) => !seen.includes(a.id) && !haveNames.has(norm(a.name)));
+  const nextSeen = [...new Set([...seen, ...starter.filter((a) => haveNames.has(norm(a.name))).map((a) => a.id), ...add.map((a) => a.id)])];
+  return { add, nextSeen };
+}
+async function topUpLocal() {
+  const starter = await fetchStarter(); if (!starter.length) return;
+  const have = new Set(S.animals.map((a) => norm(a.name)));
+  let seen = ls.get("fe-starter-seen", null);
+  if (seen === null) seen = ls.get("fe-starter-seeded", false) ? STARTER_PRE_TOPUP.slice() : [];
+  const { add, nextSeen } = starterToAdd(starter, have, seen);
+  if (add.length) await LocalStore.putMany(add.map(cleanStarter));
+  ls.set("fe-starter-seen", nextSeen);
 }
 
 /* ---------- start ---------- */
@@ -2033,7 +2066,7 @@ async function start() {
   } else {
     S.store = LocalStore;
     await LocalStore.init(onAnimals);
-    await seedStarter();
+    await topUpLocal();
   }
   S.progress = await S.store.loadProgress();
   renderControls();
