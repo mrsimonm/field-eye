@@ -5,7 +5,10 @@ Live app: https://mrsimonm.github.io/field-eye/  (repo: github.com/mrsimonm/fiel
 ## State
 - Single-file app: `index.html`. Built-in cards: `starter/starter.json` + photos in `starter/`.
 - Starter cards are added to every user by id ("top-up": `topUpLocal` / `adoptLocal`), so new cards reach existing users automatically; deleted ones never return.
-- **43 of 62 required cards done** (list = Zoja's "0) Zoology_Taxonomic levels_2026.pdf" in the shared Drive folder "zoology"). Heterobranchia deliberately NOT a card (parent of two existing cards).
+- **All 62 required cards done** (2026-11-12). Notes on the 30 tester cards were fact-checked and rewritten (Notostraca, Decapoda, Turbellaria, Oligochaeta, Xiphosura were wrong).
+- Corrections reach existing users: each card in starter.json has `rev`/`oldRevs` (run `tools/inat/starter_revs.py OLD NEW` after editing cards); the app updates built-in cards the person never edited.
+- Photos always shown in full (`contain` + blurred fill); random zoom/tilt is now off by default for everyone.
+- Previously: 43 of 62 (list = Zoja's "0) Zoology_Taxonomic levels_2026.pdf" in the shared Drive folder "zoology"). Heterobranchia deliberately NOT a card (parent of two existing cards).
 - Sign-in (Google + email), sync, install, liquid-glass design: done, on Firebase project `field-eye-mrsimonm`.
 
 ## Cards still to build (19), card_no = id number

@@ -501,8 +501,9 @@ dialog::backdrop { background: rgba(10,20,14,.5); -webkit-backdrop-filter: blur(
           </div>
           <span class="opt-label">Photo tricks</span>
           <label><input type="checkbox" id="optMirror"> Random mirror <small>Flips some photos, so you can't go by which way the animal faces.</small></label>
-          <label><input type="checkbox" id="optZoom"> Random zoom and tilt <small>Zooms in on a different spot each time. Crop photos to the animal in My animals and the zoom stays on it.</small></label>
+          <label><input type="checkbox" id="optZoom"> Random zoom and tilt <small>Zooms in on a different spot each time, so the photo edges are hidden. Off by default: photos are always shown in full.</small></label>
           <label><input type="checkbox" id="optBw"> Black and white <small>Hard mode: shape and pattern only, no colour.</small></label>
+          <small><a href="https://github.com/mrsimonm/field-eye/blob/main/CREDITS.md" target="_blank" rel="noopener">Photo credits</a></small>
         </div>
       </details>
     </div>
@@ -622,7 +623,8 @@ function notice(msg, kind) {
 const S = {
   animals: [],
   progress: {},          // animalId -> { box 1..5, seen, right, ph: { photoId: [seen, right] } }
-  set: Object.assign({ mode: "choice", group: "all", mirror: true, zoom: true, bw: false }, ls.get("fe-settings", {})),
+  // Zoom and tilt hide the photo edges, so it's off for everyone once (they can turn it back on).
+  set: Object.assign({ mode: "choice", group: "all", mirror: true, zoom: false, bw: false }, (() => { const s = ls.get("fe-settings", {}); if (!ls.get("fe-full-photo", false)) { s.zoom = false; ls.set("fe-settings", s); ls.set("fe-full-photo", true); } return s; })()),
   view: "practice",
   q: null,
   sess: { right: 0, total: 0, streak: 0, best: 0 },
@@ -1924,7 +1926,10 @@ const FireStore = {
       const { add, nextSeen } = starterToAdd(starter, have, seen);
       let i = 0;
       for (const a of add) { notice(`Adding ${++i} of ${add.length} new animal${add.length === 1 ? "" : "s"}…`); await this.saveAnimal(cleanStarter(a)); }
-      seen = nextSeen; if (add.length) notice("");
+      const upd = starterUpdates(starter, existing.docs.map((d) => ({ ...d.data(), id: d.data().id || d.id })));
+      i = 0;
+      for (const a of upd) { notice(`Updating built-in animal ${++i} of ${upd.length}…`); await this.saveAnimal(a); }
+      seen = nextSeen; if (add.length || upd.length) notice("");
     }
     // Carry this browser's "already offered" list into the account, so a card the
     // person deleted while signed out isn't re-added after they sign in.
@@ -2038,13 +2043,36 @@ function starterToAdd(starter, haveNames, seen) {
   const nextSeen = [...new Set([...seen, ...starter.filter((a) => haveNames.has(norm(a.name))).map((a) => a.id), ...add.map((a) => a.id)])];
   return { add, nextSeen };
 }
+// Fingerprint of a card's content (same formula as tools/inat/starter_revs.py).
+function starterSig(a) {
+  const s = JSON.stringify([a.name || "", a.group || "", a.alts || [], a.traits || "", a.photos || []]);
+  let h = 5381; for (const ch of s) h = ((h * 33) ^ ch.codePointAt(0)) >>> 0;
+  return h.toString(36);
+}
+// Built-in cards the person never edited (their content still matches an old
+// version of the starter card) get the corrected notes and photos.
+function starterUpdates(starter, mine) {
+  const byId = new Map(starter.map((s) => [s.id, s]));
+  const out = [];
+  for (const a of mine) {
+    const s = byId.get(a.id); if (!s || !s.rev) continue;
+    const sig = starterSig(a);
+    if (sig === s.rev || !(s.oldRevs || []).includes(sig)) continue;
+    const c = cleanStarter(s);
+    const kept = (a.photoEdits || []).filter((e) => c.photos.includes(e.pid));
+    const photoEdits = [...kept, ...c.photoEdits.filter((e) => !kept.some((k) => k.pid === e.pid))];
+    out.push({ ...a, name: c.name, group: c.group, alts: c.alts, traits: c.traits, photos: c.photos, photoEdits });
+  }
+  return out;
+}
 async function topUpLocal() {
   const starter = await fetchStarter(); if (!starter.length) return;
   const have = new Set(S.animals.map((a) => norm(a.name)));
   let seen = ls.get("fe-starter-seen", null);
   if (seen === null) seen = ls.get("fe-starter-seeded", false) ? STARTER_PRE_TOPUP.slice() : [];
   const { add, nextSeen } = starterToAdd(starter, have, seen);
-  if (add.length) await LocalStore.putMany(add.map(cleanStarter));
+  const upd = starterUpdates(starter, S.animals);
+  if (add.length || upd.length) await LocalStore.putMany([...upd, ...add.map(cleanStarter)]);
   ls.set("fe-starter-seen", nextSeen);
 }
 
