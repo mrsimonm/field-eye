@@ -1,0 +1,14 @@
+[
+  {
+    "card_no": 31, "name": "Chilopoda", "rank": "class", "group": "subphylum: Myriapoda", "expect": "Myriapoda", "n": 7,
+    "notes": "myriapoda: head + trunk (14-177 segments), at least 9 pairs of limbs\nchilopoda (centipedes): long antennae, 1 pair of legs on each trunk segment, legs on the sides of the body, last pair of legs prolonged, limbs on the 1st trunk segment = maxillipeds with venom glands, fast runners, mostly predatory"
+  },
+  {
+    "card_no": 38, "name": "Anisoptera", "rank": "suborder", "group": "subphylum: Hexapoda", "expect": "Odonata", "n": 7,
+    "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nodonata: predators, short antennae, ocelli, wings with pterostigma (+ nodus)\nanisoptera (dragonflies): eyes very close, hind wings with anal lobes, wings not folded, more robust/fat abdomen"
+  },
+  {
+    "card_no": 60, "name": "Lepidoptera", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 8,
+    "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nlepidoptera (moths and butterflies): 2 pairs of wings with scales, proboscis, long legs\nlarva = caterpillar: legs + prolegs, mandibles"
+  }
+]

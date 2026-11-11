@@ -1,0 +1,22 @@
+[
+  {"card_no": 32, "name": "Diplopoda", "rank": "class", "group": "subphylum: Myriapoda", "expect": "Myriapoda", "n": 7,
+   "notes": "myriapoda: head + trunk (14-177 segments), at least 9 pairs of limbs\ndiplopoda (millipedes): short antennae, legs under the body, 1st segment no legs, 2nd-4th segments 1 pair, the remaining segments (diplosomites) 2 pairs of legs, maxillae fused into a gnathochilarium, slow, mostly detritivorous, can roll up (volvation)\npill millipede (Glomeris) x pill bug (Isopoda): count the leg pairs per segment"},
+  {"card_no": 33, "name": "Collembola", "rank": "class", "group": "subphylum: Hexapoda", "expect": "Hexapoda", "n": 7,
+   "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\ncollembola (springtails): minute to 9 mm, entognathous (mouthparts hidden inside the head capsule), 1st segment with a ventral tube (collophore), 3rd-4th segment with a jumping fork (furca), ocelli or blind"},
+  {"card_no": 34, "name": "Archaeognatha", "rank": "subclass", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\narchaeognatha (jumping bristletails): mandible with a single joint, large compound eyes that touch each other + ocelli, long maxillary palps, up to 15 mm, covered in scales, styli on the abdomen, 1 epiproct (caudal filament) + 1 pair of cerci all pointing the same way, nocturnal, on rocks, jumpers"},
+  {"card_no": 35, "name": "Zygentoma", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nzygentoma (silverfish): wingless (never had wings), up to 10 mm, covered in scales, one colour, compound eyes apart or missing, styli only on the last 2 abdominal segments, epiproct + 1 pair of cerci pointing to the sides, much smaller maxillary palps, do not jump, omnivorous, pests"},
+  {"card_no": 36, "name": "Ephemeroptera", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "pterygota: 2 pairs of wings; paleoptera: wings not folded on the abdomen\nephemeroptera (mayflies): short antennae, 2 long cerci (sometimes + 1 terminal filament), adult does not feed and lives 1 day, subimago = cloudy wings + fuzzy body\nnymphs: in water, tracheal gills, 3 caudal filaments"},
+  {"card_no": 37, "name": "Zygoptera", "rank": "suborder", "group": "subphylum: Hexapoda", "expect": "Odonata", "n": 7,
+   "notes": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nodonata: predators, short antennae, ocelli, wings with pterostigma (+ nodus)\nzygoptera (damselflies): eyes apart, wings with stems, folded along the abdomen (not touching), slim"},
+  {"card_no": 39, "name": "Plecoptera", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen, usually a large anal lobe on the wings\nplecoptera (stoneflies): cloudy wings folded over each other horizontally, 2 long cerci, long antennae, ocelli, good runners\nnymphs: 2 cerci (x Ephemeroptera), gills near the legs, abdomen, mouth"},
+  {"card_no": 40, "name": "Blattodea", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\nblattodea (cockroaches): winged or wingless, leathery front wings = tegmens, multisegmented cerci, large pronotum, massive coxae, thorny tibiae, eggs in an ootheca, usually night-active"},
+  {"card_no": 41, "name": "Mantodea", "rank": "order", "group": "subphylum: Hexapoda", "expect": "Insecta", "n": 7,
+   "notes": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\nmantodea (mantises): tegmens, ootheca, hypognathous head, raptorial forelegs, prolonged prothorax, short segmented cerci, males sometimes winged, females apterous"},
+  {"card_no": 42, "name": "Ensifera", "rank": "suborder", "group": "subphylum: Hexapoda", "expect": "Orthoptera", "n": 7,
+   "notes": "orthoptera: jumping hind legs, tegmens, 1-segmented cerci, stridulatory and hearing organs\nensifera (crickets and half of the grasshoppers): long antennae, long sword-like ovipositor, hearing organ on the front tibiae, stridulate by rubbing the front wings together, often predatory"}
+]
