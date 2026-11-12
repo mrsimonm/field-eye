@@ -485,6 +485,40 @@ html.phone {
 }
 @keyframes fe-sheet { from { transform: translateY(100%); } to { transform: none; } }
 
+/* Progress tab */
+.prog-hero { gap: 12px; }
+.prog-big { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.2rem, 9vw, 3rem); line-height: 1; }
+.prog-big small { font-size: 1rem; font-weight: 700; color: var(--muted); }
+.lvbar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--line) 80%, transparent); }
+.lvbar i { display: block; height: 100%; }
+.lv-mastered { background: var(--moss); }
+.lv-almost { background: color-mix(in srgb, var(--moss) 45%, transparent); }
+.lv-learning { background: var(--amber); }
+.lv-new { background: color-mix(in srgb, var(--line) 80%, transparent); }
+.lv-bars { background: color-mix(in srgb, var(--amber) 55%, transparent); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.82rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.stat b { display: block; font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat small { color: var(--muted); font-size: 0.8rem; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ch-bar { fill: color-mix(in srgb, var(--amber) 55%, transparent); }
+.ch-line { fill: none; stroke: var(--moss); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.grow { display: grid; gap: 4px; }
+.grow-top { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9rem; font-weight: 700; }
+.grow-top span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.grow-top span:last-child { color: var(--muted); font-weight: 400; white-space: nowrap; }
+.plist { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.plist li { display: flex; justify-content: space-between; gap: 10px; font-size: 0.94rem; }
+.plist li span:first-child { min-width: 0; overflow-wrap: anywhere; font-weight: 700; }
+.plist li span:last-child { color: var(--muted); white-space: nowrap; }
+.lvl { font-family: var(--f-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.lvl-mastered { background: var(--moss); color: var(--on-moss); border-color: transparent; }
+.lvl-almost { border-color: var(--moss); color: var(--moss); }
+.lvl-learning { border-color: var(--amber); color: var(--amber); }
+html.phone .tab { padding: 10px 13px; }
+html.phone .tab .count { display: none; }
+
 /* Phone / laptop switch in the header */
 .layoutsw { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-pill); background: var(--glass-fill); border: 1px solid var(--glass-border); box-shadow: var(--shadow); }
 .layoutsw button { border: 0; background: transparent; color: var(--muted); width: 32px; height: 28px; border-radius: var(--r-pill); display: grid; place-items: center; cursor: pointer; padding: 0; }
@@ -544,6 +578,7 @@ html.phone {
       <nav class="tabs" role="tablist" aria-label="Sections">
         <button class="tab" role="tab" id="tab-practice" data-act="view" data-view="practice" aria-selected="true">Practice</button>
         <button class="tab" role="tab" id="tab-library" data-act="view" data-view="library" aria-selected="false">My animals <span class="count" id="libCount"></span></button>
+        <button class="tab" role="tab" id="tab-progress" data-act="view" data-view="progress" aria-selected="false">Progress</button>
       </nav>
       <button class="tourbtn" type="button" id="installBtn" data-act="install" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m0 0l-3.5-3.5M10 12l3.5-3.5M4 15.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Install</span></button>
       <div class="layoutsw" role="group" aria-label="Layout">
@@ -623,6 +658,8 @@ html.phone {
     <datalist id="groupList"></datalist>
     <div class="lib-list" id="libList"></div>
   </section>
+
+  <section id="progress" class="view" aria-labelledby="tab-progress" hidden></section>
 </main>
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="tour" id="tour" hidden>
@@ -957,7 +994,41 @@ const BOX_WEIGHT = [0, 10, 6, 3.5, 2, 1];
 const prog = (id) => (S.progress[id] ||= { box: 1, seen: 0, right: 0, ph: {} });
 const groups = () => [...new Set(S.animals.map((a) => (a.group || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 function pool() {
-  return S.animals.filter((a) => (a.photos || []).length && (S.set.group === "all" || (a.group || "").trim() === S.set.group));
+  const withPh = S.animals.filter((a) => (a.photos || []).length);
+  if (S.set.group === WEAK) { const w = withPh.filter((a) => level(a) !== "mastered"); return w.length ? w : withPh; }
+  return withPh.filter((a) => S.set.group === "all" || (a.group || "").trim() === S.set.group);
+}
+
+/* ---------- long-term mastery ----------
+   Mastered = right on 3 different photos (fewer if the card has fewer), on 2 different
+   days, and the last answer was right. Not practised for 3 weeks: back to "almost". */
+const WEAK = "__weak";
+const STALE_DAYS = 21;
+const LEVEL_NAME = { new: "New", learning: "Learning", almost: "Almost", mastered: "Mastered" };
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+function level(a) {
+  const pr = S.progress[a.id];
+  if (!pr || !pr.seen) return "new";
+  const photos = a.photos || [];
+  const need = Math.min(3, Math.max(1, photos.length));
+  const photosRight = Object.entries(pr.ph || {}).filter(([p, v]) => v[1] > 0 && photos.includes(p)).length;
+  const days = (pr.days || []).length;
+  const stale = pr.last && Date.now() - pr.last > STALE_DAYS * 864e5;
+  if (pr.box >= 2 && photosRight >= need && days >= 2) return stale ? "almost" : "mastered";
+  if (pr.box >= 3 || (pr.box >= 2 && photosRight >= need)) return "almost";
+  return "learning";
+}
+const masteredCount = () => S.animals.filter((a) => (a.photos || []).length && level(a) === "mastered").length;
+// Called after every answer: per-card days + mix-ups, and a per-day log for the history chart.
+function logAnswer(pr, ok, confused) {
+  const today = dayKey();
+  pr.last = Date.now();
+  if (ok) pr.days = [...new Set([...(pr.days || []), today])].slice(-30);
+  else if (confused) { pr.mix ||= {}; pr.mix[confused] = (pr.mix[confused] || 0) + 1; }
+  const h = (S.progress._hist ||= {});
+  const e = (h[today] ||= { n: 0, r: 0, m: 0 });
+  e.n++; if (ok) e.r++;
+  e.m = masteredCount();
 }
 function pickAnimal(p) {
   const cands = p.length > 1 ? p.filter((a) => a.id !== S.lastAnimal) : p;
@@ -1020,6 +1091,7 @@ function answer(guessId, typed) {
   pr.seen++; if (ok) pr.right++;
   pr.box = ok ? Math.min(5, pr.box + 1) : 1;
   const ps = (pr.ph[q.pid] ||= [0, 0]); ps[0]++; if (ok) ps[1]++;
+  logAnswer(pr, ok, confused);
   queueSaveProgress();
   renderStage();
   setTimeout(() => $("#nextBtn")?.focus({ preventScroll: true }), 30);
@@ -1030,10 +1102,11 @@ function renderControls() {
   $("#mode-choice").setAttribute("aria-pressed", S.set.mode === "choice");
   $("#mode-type").setAttribute("aria-pressed", S.set.mode === "type");
   const gs = groups();
-  if (S.set.group !== "all" && !gs.includes(S.set.group)) S.set.group = "all";
+  if (S.set.group !== "all" && S.set.group !== WEAK && !gs.includes(S.set.group)) S.set.group = "all";
   const sel = $("#groupSel");
   const withPhotos = (g) => S.animals.filter((a) => (a.photos || []).length && (g === "all" || (a.group || "").trim() === g)).length;
-  sel.innerHTML = `<option value="all">All animals (${withPhotos("all")})</option>` + gs.map((g) => `<option value="${esc(g)}">${esc(g)} (${withPhotos(g)})</option>`).join("");
+  const notMastered = S.animals.filter((a) => (a.photos || []).length && level(a) !== "mastered").length;
+  sel.innerHTML = `<option value="all">All animals (${withPhotos("all")})</option><option value="${WEAK}">Not mastered yet (${notMastered})</option>` + gs.map((g) => `<option value="${esc(g)}">${esc(g)} (${withPhotos(g)})</option>`).join("");
   sel.value = S.set.group;
   $("#optMirror").checked = S.set.mirror; $("#optZoom").checked = S.set.zoom; $("#optBw").checked = S.set.bw;
   $("#groupList").innerHTML = gs.map((g) => `<option value="${esc(g)}"></option>`).join("");
@@ -1180,7 +1253,7 @@ function renderLibrary() {
     }
     return `<article class="specimen" data-id="${esc(a.id)}">
       <header><div><h3>${esc(a.name)}</h3><div class="sub">${[a.group ? esc(a.group) : "", plural(n, "photo"), a._src === "local" && S.store?.kind === "mixed" ? "on this device" : "", (a.alts || []).length ? `also “${esc(a.alts.join(", "))}”` : ""].filter(Boolean).join(" · ")}</div></div>
-      <div class="mastery" title="The dots fill up as you get this animal right, and reset when you miss it.">${pips(pr?.box || 0)}<small>${pr ? `${pr.right} of ${pr.seen} right` : "Not practised"}</small></div></header>
+      <div class="mastery" title="Mastered = right on 3 different photos, on 2 different days, and your last answer was right.">${pips(pr?.box || 0)}<span class="lvl lvl-${level(a)}">${LEVEL_NAME[level(a)]}</span><small>${pr ? `${pr.right} of ${pr.seen} right` : "Not practised"}</small></div></header>
       ${traits ? `<p class="traits">${esc(traits)}</p>` : edit ? `<p class="traits empty">No notes yet. Use Edit details to write what gives it away.</p>` : ""}
       <div class="thumbs">${thumbs}${edit ? `<label class="addthumb">+ Add photos<input type="file" accept="image/*" multiple data-act="add-photos" aria-label="Add photos of ${esc(a.name)}"></label>` : ""}</div>
       ${up ? `<div class="busy">Adding ${plural(up, "photo")}…</div>` : warn ? `<div class="warnline">${warn}</div>` : ""}
@@ -1188,6 +1261,74 @@ function renderLibrary() {
     </article>`;
   }).join("");
   if (keep) for (const [k, v] of Object.entries(keep)) { const el = $("#ed-" + k); if (el) el.value = v; }
+}
+
+/* ---------- Progress tab ---------- */
+function renderProgress() {
+  const list = S.animals.filter((a) => (a.photos || []).length);
+  const lv = new Map(list.map((a) => [a.id, level(a)]));
+  const count = (arr, k) => arr.filter((a) => lv.get(a.id) === k).length;
+  const bar = (arr) => {
+    const n = arr.length || 1;
+    return `<div class="lvbar">${["mastered", "almost", "learning"].map((k) => `<i class="lv-${k}" style="width:${(count(arr, k) / n * 100).toFixed(1)}%"></i>`).join("")}</div>`;
+  };
+  const total = list.length, m = count(list, "mastered");
+  const h = S.progress._hist || {};
+  const days = Object.keys(h).sort();
+  const allN = days.reduce((s, d) => s + h[d].n, 0), allR = days.reduce((s, d) => s + h[d].r, 0);
+  let streak = 0;
+  for (const d = new Date(); ; d.setDate(d.getDate() - 1)) {
+    const k = dayKey(d);
+    if (h[k]) streak++; else if (!(streak === 0 && k === dayKey())) break;
+  }
+  // Last 30 days: bars = answers that day, line = cards mastered (carried forward on days off).
+  const N = 30, W = 600, H = 150, pad = 6;
+  let lastM = 0; for (const d of days) if (d < dayKey(new Date(Date.now() - (N - 1) * 864e5))) lastM = h[d].m;
+  const pts = [];
+  for (let i = N - 1; i >= 0; i--) {
+    const k = dayKey(new Date(Date.now() - i * 864e5));
+    if (h[k]) lastM = h[k].m;
+    pts.push({ k, n: h[k]?.n || 0, m: lastM });
+  }
+  const maxN = Math.max(1, ...pts.map((p) => p.n)), bw = W / N;
+  const y = (v, max) => H - pad - (v / Math.max(1, max)) * (H - 2 * pad);
+  const chart = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cards mastered and answers per day, last 30 days">
+    ${pts.map((p, i) => p.n ? `<rect x="${(i * bw + 2).toFixed(1)}" y="${y(p.n, maxN).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${(H - pad - y(p.n, maxN)).toFixed(1)}" rx="2" class="ch-bar"><title>${p.k}: ${p.n} answers</title></rect>` : "").join("")}
+    <polyline class="ch-line" points="${pts.map((p, i) => `${(i * bw + bw / 2).toFixed(1)},${y(p.m, total).toFixed(1)}`).join(" ")}"/>
+  </svg>`;
+  const weak = list.map((a) => ({ a, pr: S.progress[a.id] })).filter((x) => x.pr?.seen >= 2 && lv.get(x.a.id) !== "mastered")
+    .sort((x, y2) => x.pr.right / x.pr.seen - y2.pr.right / y2.pr.seen || y2.pr.seen - x.pr.seen).slice(0, 6);
+  const pairs = new Map();
+  for (const a of list) for (const [oid, c] of Object.entries(S.progress[a.id]?.mix || {})) {
+    if (!byId(oid)) continue;
+    const key = [a.id, oid].sort().join("|");
+    pairs.set(key, (pairs.get(key) || 0) + c);
+  }
+  const mix = [...pairs.entries()].sort((x, y2) => y2[1] - x[1]).slice(0, 5);
+  const short = (a) => esc(String(a.name).replace(/^[^:]+:\s*/, ""));
+  const gs = groups();
+  const where = S.store?.kind === "account" ? "your account, on all your devices" : "this browser. Sign in to keep it on all your devices";
+  $("#progress").innerHTML = `
+    <div class="sharecard prog-hero">
+      <span class="eyebrow">Mastered</span>
+      <div class="prog-big">${m} <small>of ${total} cards</small></div>
+      ${bar(list)}
+      <div class="legend"><span><i class="lv-mastered"></i>Mastered ${m}</span><span><i class="lv-almost"></i>Almost ${count(list, "almost")}</span><span><i class="lv-learning"></i>Learning ${count(list, "learning")}</span><span><i class="lv-new"></i>New ${count(list, "new")}</span></div>
+      <div class="stats">
+        <div class="stat"><b>${streak}</b><small>day streak</small></div>
+        <div class="stat"><b>${days.length}</b><small>days practised</small></div>
+        <div class="stat"><b>${allN ? Math.round(allR / allN * 100) + "%" : "–"}</b><small>right of ${allN}</small></div>
+      </div>
+      ${m < total ? `<button class="btn primary" type="button" data-act="practise-weak">Practise the ${total - m} not mastered yet</button>` : ""}
+    </div>
+    <div class="sharecard">
+      <span class="eyebrow">Last 30 days</span>
+      ${days.length ? `<div class="chart">${chart}</div><div class="legend"><span><i class="lv-mastered"></i>Cards mastered</span><span><i class="lv-bars"></i>Answers per day</span></div>` : `<p class="readonly-note">Your history starts with your next answer.</p>`}
+    </div>
+    ${weak.length ? `<div class="sharecard"><span class="eyebrow">Hardest for you</span><ul class="plist">${weak.map((x) => `<li><span>${short(x.a)}</span><span>${x.pr.right} of ${x.pr.seen} right</span></li>`).join("")}</ul></div>` : ""}
+    ${mix.length ? `<div class="sharecard"><span class="eyebrow">You mix these up</span><ul class="plist">${mix.map(([k, c]) => { const [p, q2] = k.split("|").map(byId); return `<li><span>${short(p)} ↔ ${short(q2)}</span><span>${c}×</span></li>`; }).join("")}</ul></div>` : ""}
+    ${gs.length > 1 ? `<div class="sharecard"><span class="eyebrow">By group</span>${gs.map((g) => { const arr = list.filter((a) => (a.group || "").trim() === g); return arr.length ? `<div class="grow"><div class="grow-top"><span>${esc(g)}</span><span>${count(arr, "mastered")} of ${arr.length}</span></div>${bar(arr)}</div>` : ""; }).join("")}</div>` : ""}
+    <p class="readonly-note">Mastered = right on 3 different photos, on 2 different days, and your last answer was right. Not practised for 3 weeks: it drops back to Almost. Progress is saved in ${where}.</p>`;
 }
 
 function renderAddPending() {
@@ -1201,9 +1342,12 @@ function setView(v) {
   S.view = v;
   $("#practice").hidden = v !== "practice";
   $("#library").hidden = v !== "library";
+  $("#progress").hidden = v !== "progress";
   $("#tab-practice").setAttribute("aria-selected", v === "practice");
   $("#tab-library").setAttribute("aria-selected", v === "library");
+  $("#tab-progress").setAttribute("aria-selected", v === "progress");
   if (v === "practice") { if (!S.q || !byId(S.q.aid)) nextQuestion(); else renderStage(); }
+  else if (v === "progress") renderProgress();
   else renderLibrary();
   window.scrollTo({ top: 0 });
 }
@@ -1413,6 +1557,7 @@ document.addEventListener("click", async (e) => {
   const card = t.closest(".specimen"); const aid = card?.dataset.id;
   switch (act) {
     case "view": setView(t.dataset.view); break;
+    case "practise-weak": S.set.group = WEAK; saveSettings(); renderControls(); setView("practice"); nextQuestion(); break;
     case "first": S.addOpen = true; setView("library"); setTimeout(() => $("#add-name").focus(), 50); break;
     case "group-all": S.set.group = "all"; saveSettings(); renderControls(); nextQuestion(); break;
     case "mode":
