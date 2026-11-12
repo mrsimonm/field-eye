@@ -500,6 +500,29 @@ html.phone .choice .k { display: none; }
   html.phone .bar-right { gap: 4px; }
 }
 
+/* Test mode */
+.ctl-right { display: flex; gap: 8px; align-items: center; flex: none; }
+.testbtn { border: 1px solid var(--glass-border); background: var(--moss); color: var(--on-moss); border-radius: var(--r-pill); padding: 7px 16px; font-size: 0.9rem; font-weight: 700; cursor: pointer; box-shadow: var(--shadow); }
+.testbtn:hover { filter: brightness(1.06); }
+.test-card { gap: 12px; }
+.test-h { font-size: clamp(1.5rem, 6vw, 2rem); font-weight: 800; font-stretch: 100%; }
+.test-seg { display: flex; }
+.test-seg button { flex: 1; padding: 10px 8px; white-space: nowrap; }
+.test-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.testbar { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+.testbar > span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tbar { flex: 1; height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--line) 80%, transparent); overflow: hidden; }
+.tbar i { display: block; height: 100%; background: var(--moss); transition: width 0.25s; }
+.mistakes { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.mistakes li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: start; }
+.mistakes img { width: 96px; aspect-ratio: 4 / 3; object-fit: contain; background: var(--plate); border-radius: var(--r-sm); display: block; }
+.mistakes b { display: block; overflow-wrap: anywhere; }
+.mistakes small { color: var(--muted); font-size: 0.85rem; }
+.mistakes details { margin-top: 4px; font-size: 0.88rem; }
+.mistakes summary { cursor: pointer; color: var(--moss); font-weight: 700; }
+html.phone .test-actions .btn { flex: 1 1 auto; }
+html.phone:has(.testbar) .frame:not(.revealed) { height: max(200px, calc(100dvh - 432px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))); }
+
 /* Options panel */
 .tweak-box { gap: 10px; padding: 14px 16px; background: color-mix(in srgb, var(--paper) 95%, transparent); }
 .tweak-box .seg button { white-space: nowrap; padding: 10px 8px; }
@@ -635,6 +658,8 @@ html.phone {
   <section id="practice" class="view" aria-labelledby="tab-practice">
     <div class="controls">
       <select id="groupSel" aria-label="Which animals to practise"><option value="all">All animals</option></select>
+      <div class="ctl-right">
+      <button class="testbtn" type="button" data-act="test-setup" id="testBtn">Test</button>
       <details class="tweaks" id="tweaks">
         <summary>Options</summary>
         <div class="tweak-box">
@@ -650,6 +675,7 @@ html.phone {
           <a class="credits" href="https://github.com/mrsimonm/field-eye/blob/main/CREDITS.md" target="_blank" rel="noopener">Photo credits</a>
         </div>
       </details>
+      </div>
     </div>
     <div class="scoreline" id="scoreline"></div>
     <div id="stage"></div>
@@ -1107,11 +1133,24 @@ function choiceLabel(name) {
 }
 function nextQuestion() {
   addTime();
+  if (S.testSetup || S.test?.done) { S.q = null; renderStage(); return; }   // test setup / results stay on screen
+  if (S.test) {
+    const it = S.test.items[S.test.i];
+    if (!it) { finishTest(); return; }
+    const ta = byId(it.aid);
+    if (!ta || !(ta.photos || []).length) { S.test.items.splice(S.test.i, 1); nextQuestion(); return; }
+    S.q = buildQ(ta, ta.photos.includes(it.pid) ? it.pid : pickPhoto(ta));
+    renderStage(); return;
+  }
   const p = pool();
   if (!p.length) { S.q = null; renderStage(); return; }
   const a = pickAnimal(p);
   const pid = pickPhoto(a);
   S.lastAnimal = a.id; S.lastPhoto[a.id] = pid;
+  S.q = buildQ(a, pid);
+  renderStage();
+}
+function buildQ(a, pid) {
   let mode = S.set.mode, options = null;
   if (mode === "choice") {
     const others = S.animals.filter((x) => x.id !== a.id);
@@ -1123,8 +1162,76 @@ function nextQuestion() {
       options = shuffle([a, ...[...same, ...rest].slice(0, 3)]).map((o) => o.id);
     }
   }
-  S.q = { aid: a.id, pid, shown: pid, mode, options, tf: makeTransform(), answered: false, forcedType: mode !== S.set.mode };
-  renderStage();
+  return { aid: a.id, pid, shown: pid, mode, options, tf: makeTransform(), answered: false, forcedType: mode !== S.set.mode };
+}
+
+/* ---------- test mode: each animal once, no feedback until the end ---------- */
+const TEST_SIZES = [10, 20, 0];   // 0 = all
+const groupLabel = () => (S.set.group === "all" ? "All animals" : S.set.group === WEAK ? "Not mastered yet" : S.set.group);
+const fmtSecs = (s) => { const m = Math.floor(s / 60); return `${m ? m + " min " : ""}${s % 60} s`; };
+function openTestSetup() {
+  S.test = null; S.testSetup = true; S.q = null;
+  if (S.view !== "practice") setView("practice"); else renderStage();
+  window.scrollTo({ top: 0 });
+}
+function startTest(only) {
+  const p = only ? only.map(byId).filter((a) => a && (a.photos || []).length) : pool();
+  const size = S.testSize ?? 20;
+  const n = only || !size ? p.length : Math.min(size, p.length);
+  const items = shuffle(p).slice(0, n).map((a) => ({ aid: a.id, pid: pickPhoto(a) }));
+  S.testSetup = false;
+  S.test = { items, i: 0, res: [], started: Date.now(), group: only ? "Retry of missed" : groupLabel(), retry: !!only };
+  nextQuestion();
+  window.scrollTo({ top: 0 });
+}
+function finishTest() {
+  const t = S.test;
+  t.done = true; t.secs = Math.round((Date.now() - t.started) / 1000);
+  if (t.res.length) {
+    (S.progress._tests ||= []).push({ at: Date.now(), n: t.res.length, r: t.res.filter((x) => x.ok).length, secs: t.secs, g: t.group });
+    S.progress._tests = S.progress._tests.slice(-50);
+    queueSaveProgress();
+  }
+  S.q = null; renderStage(); window.scrollTo({ top: 0 });
+}
+function testSetupHtml() {
+  const p = pool(), size = S.testSize ?? 20;
+  const sizes = TEST_SIZES.filter((n) => !n || n < p.length);
+  return `<div class="sharecard test-card">
+    <span class="eyebrow">Test yourself</span>
+    <h2 class="test-h">Like an exam</h2>
+    <p class="readonly-note">Each animal comes up once, with a photo you've seen least. No hints and no answers until the end. Then you get your score and every mistake.</p>
+    <span class="opt-label">Questions</span>
+    <div class="seg test-seg" role="group" aria-label="Number of questions">${sizes.map((n) => `<button type="button" data-act="test-size" data-n="${n}" aria-pressed="${(size === n) || (!sizes.includes(size) && !n)}">${n || `All ${p.length}`}</button>`).join("")}</div>
+    <span class="opt-label">Answer by</span>
+    <div class="seg test-seg" role="group" aria-label="Answer style"><button type="button" data-act="mode" data-mode="choice" aria-pressed="${S.set.mode === "choice"}">Pick from 4</button><button type="button" data-act="mode" data-mode="type" aria-pressed="${S.set.mode === "type"}">Type the name</button></div>
+    <p class="readonly-note">Animals: <b>${esc(groupLabel())}</b> (${p.length}). Change it in the list above.</p>
+    <div class="test-actions"><button class="btn primary" type="button" data-act="test-start"${p.length ? "" : " disabled"}>Start test</button><button class="btn ghost" type="button" data-act="test-cancel">Back to practice</button></div>
+  </div>`;
+}
+function testBarHtml() {
+  const t = S.test, n = t.items.length;
+  return `<div class="testbar"><span>Question <b>${t.i + 1}</b> of ${n}</span><div class="tbar"><i style="width:${(t.i / n * 100).toFixed(1)}%"></i></div><button class="btn ghost sm" type="button" data-act="test-end">End test</button></div>`;
+}
+function testResultsHtml() {
+  const t = S.test, n = t.res.length, r = t.res.filter((x) => x.ok).length, pct = n ? Math.round(r / n * 100) : 0;
+  const wrong = t.res.filter((x) => !x.ok);
+  const msg = pct >= 90 ? "Excellent!" : pct >= 75 ? "Good job." : pct >= 50 ? "Getting there." : "Keep practising.";
+  const rows = wrong.map((x) => {
+    const a = byId(x.aid); if (!a) return "";
+    const g = x.guess && byId(x.guess);
+    const said = g ? `You said ${esc(g.name)}` : x.typed ? `You typed “${esc(x.typed)}”` : "No answer";
+    const tr = (a.traits || "").trim();
+    return `<li><img src="${esc(photoSrc(x.pid))}" data-pid="${esc(x.pid)}" alt="${esc(a.name)}" loading="lazy"><div><b>${esc(a.name)}</b><small>${said}</small>${tr ? `<details><summary>What to look for</summary><p class="traits">${esc(tr)}</p></details>` : ""}</div></li>`;
+  }).join("");
+  return `<div class="sharecard test-card">
+    <span class="eyebrow">Test result · ${esc(t.group)}</span>
+    <div class="prog-big">${r} <small>of ${n} right</small></div>
+    <div class="lvbar"><i class="lv-mastered" style="width:${pct}%"></i></div>
+    <p><b>${pct}%</b> · ${msg} · took ${fmtSecs(t.secs)}${t.items.length > n ? ` · ended after ${n} of ${t.items.length}` : ""}</p>
+    <div class="test-actions">${wrong.length ? `<button class="btn primary" type="button" data-act="test-retry">Retry the ${wrong.length} I missed</button>` : ""}<button class="btn${wrong.length ? "" : " primary"}" type="button" data-act="test-setup">New test</button><button class="btn ghost" type="button" data-act="test-cancel">Back to practice</button></div>
+  </div>
+  ${wrong.length ? `<div class="sharecard"><span class="eyebrow">Your mistakes (${wrong.length})</span><ul class="mistakes">${rows}</ul></div>` : n ? `<div class="sharecard"><p><b>No mistakes.</b> Try a bigger test or Type the name next.</p></div>` : ""}`;
 }
 
 function answer(guessId, typed) {
@@ -1145,6 +1252,7 @@ function answer(guessId, typed) {
   const ps = (pr.ph[q.pid] ||= [0, 0]); ps[0]++; if (ok) ps[1]++;
   logAnswer(pr, ok, confused);
   queueSaveProgress();
+  if (S.test && !S.test.done) { S.test.res.push({ aid: a.id, pid: q.pid, ok, guess: guessId, typed }); S.test.i++; nextQuestion(); return; }
   renderStage();
   setTimeout(() => $("#nextBtn")?.focus({ preventScroll: true }), 30);
 }
@@ -1169,6 +1277,7 @@ function renderControls() {
   renderScore();
 }
 function renderScore() {
+  if (S.test && !S.test.done) { $("#scoreline").innerHTML = `<span>Test · ${esc(S.test.group)}</span>`; return; }
   const p = pool();
   const photos = p.reduce((n, a) => n + a.photos.length, 0);
   const pct = S.sess.total ? Math.round((S.sess.right / S.sess.total) * 100) + "%" : "–";
@@ -1204,6 +1313,8 @@ function emptyState() {
 function renderStage() {
   renderScore();
   const st = $("#stage");
+  if (S.testSetup) { st.innerHTML = testSetupHtml(); return; }
+  if (S.test?.done) { st.innerHTML = testResultsHtml(); return; }
   const q = S.q;
   const a = q && byId(q.aid);
   if (!q || !a) { st.innerHTML = emptyState(); return; }
@@ -1216,6 +1327,7 @@ function renderStage() {
   const metaLeft = q.answered ? `Photo ${idx} of ${a.photos.length}` : `Who is this?`;
   const metaRight = q.answered && ps ? `This photo: ${ps[1]}/${ps[0]} right` : (S.set.bw || S.set.zoom || S.set.mirror) ? "Tricks on" : "";
   let html = `<figure class="plate"><div class="${fcls}"${ar ? ` style="--ar:${ar.toFixed(3)}"` : ""}><div class="fill" data-pid="${esc(q.shown)}" style="background-image:url('${esc(url)}')"></div><img id="qImg" data-pid="${esc(q.shown)}" src="${esc(url)}" alt="${q.answered ? esc(a.name) : "Photo of the animal to identify"}" style="${q.answered ? "" : q.tf.css}"></div>${q.answered ? `<figcaption class="plate-meta"><span>${metaLeft}</span><span>${esc(metaRight)}</span></figcaption>` : ""}</figure>`;
+  if (S.test && !S.test.done) html = testBarHtml() + html;
 
   if (q.mode === "choice") {
     html += `<div class="tray"><div class="choices">` + q.options.map((oid, i) => {
@@ -1398,6 +1510,14 @@ function renderProgress() {
       </div>
       ${tAll ? `<span class="eyebrow">Minutes per day, last 30 days</span><div class="chart">${timeChart}</div>` : `<p class="readonly-note">Practice time is counted from now on, only while you're practising.</p>`}
     </div>`;
+  const tests = (S.progress._tests || []).slice().reverse();
+  const tPct = (t) => (t.n ? Math.round(t.r / t.n * 100) : 0);
+  const testsHtml = `<div class="sharecard">
+      <span class="eyebrow">Tests</span>
+      ${tests.length ? `<div class="stats"><div class="stat"><b>${tests.length}</b><small>tests taken</small></div><div class="stat"><b>${Math.max(...tests.map(tPct))}%</b><small>best score</small></div><div class="stat"><b>${Math.round(tests.reduce((s, t) => s + tPct(t), 0) / tests.length)}%</b><small>average</small></div></div>
+      <ul class="plist">${tests.slice(0, 6).map((t) => `<li><span>${niceDay(dayKey(new Date(t.at)))} · ${esc(t.g || "")}</span><span>${t.r}/${t.n} · ${tPct(t)}%</span></li>`).join("")}</ul>` : `<p class="readonly-note">No tests yet. A test shows each animal once with no hints, then your score and mistakes.</p>`}
+      <div><button class="btn" type="button" data-act="test-setup">Take a test</button></div>
+    </div>`;
   const gs = groups();
   const where = S.store?.kind === "account" ? "your account, on all your devices" : "this browser. Sign in to keep it on all your devices";
   $("#progress").innerHTML = `
@@ -1413,6 +1533,7 @@ function renderProgress() {
       </div>
       ${m < total ? `<button class="btn primary" type="button" data-act="practise-weak">Practise the ${total - m} not mastered yet</button>` : ""}
     </div>
+    ${testsHtml}
     ${statsHtml}
     <div class="sharecard">
       <span class="eyebrow">Last 30 days</span>
@@ -1650,6 +1771,12 @@ document.addEventListener("click", async (e) => {
   const card = t.closest(".specimen"); const aid = card?.dataset.id;
   switch (act) {
     case "view": setView(t.dataset.view); break;
+    case "test-setup": openTestSetup(); break;
+    case "test-size": S.testSize = +t.dataset.n; renderStage(); break;
+    case "test-start": startTest(); break;
+    case "test-retry": startTest(S.test.res.filter((x) => !x.ok).map((x) => x.aid)); break;
+    case "test-end": if (S.test?.res.length) finishTest(); else { S.test = null; nextQuestion(); } break;
+    case "test-cancel": S.test = null; S.testSetup = false; nextQuestion(); window.scrollTo({ top: 0 }); break;
     case "practise-weak": S.set.group = WEAK; saveSettings(); renderControls(); setView("practice"); nextQuestion(); break;
     case "first": S.addOpen = true; setView("library"); setTimeout(() => $("#add-name").focus(), 50); break;
     case "group-all": S.set.group = "all"; saveSettings(); renderControls(); nextQuestion(); break;
@@ -2281,6 +2408,11 @@ function mergeProgress(a = {}, b = {}) {
     const x = a[k], y = b[k];
     if (x == null || y == null) { out[k] = structuredClone(x ?? y); continue; }
     if (k === "_lastAt") { out[k] = Math.max(x || 0, y || 0); continue; }
+    if (k === "_tests") {
+      const byAt = new Map();
+      for (const t of [...(Array.isArray(x) ? x : []), ...(Array.isArray(y) ? y : [])]) byAt.set(t.at, t);
+      out[k] = [...byAt.values()].sort((p, q) => p.at - q.at).slice(-50); continue;
+    }
     if (k === "_hist") {
       const h = {};
       for (const d of keys(x, y)) { const p = x[d] || {}, q = y[d] || {}; h[d] = {}; for (const f of keys(p, q)) h[d][f] = Math.max(p[f] || 0, q[f] || 0); }
