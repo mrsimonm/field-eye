@@ -1666,8 +1666,18 @@ document.addEventListener("click", async (e) => {
     case "acct-create": acctEmail(true); break;
     case "google": withAuth(async (A, auth) => {
       const prov = new A.GoogleAuthProvider();
+      prov.setCustomParameters({ prompt: "select_account" });
       try { await A.signInWithPopup(auth, prov); }
-      catch (e) { if (/popup-blocked|operation-not-supported/.test(e?.code || "")) { await A.signInWithRedirect(auth, prov); return; } throw e; }
+      catch (e) {
+        const c = e?.code || "";
+        // Pop-up blocked, or the browser blocked the pop-up's connection (Edge tracking
+        // prevention, ad-blockers): try the full-page Google sign-in instead.
+        if (/popup-blocked|operation-not-supported|web-storage-unsupported/.test(c) || (/network-request-failed|internal-error/.test(c) && navigator.onLine)) {
+          ls.set("fe-google-redirect", Date.now());
+          await A.signInWithRedirect(auth, prov); return;
+        }
+        throw e;
+      }
       $("#acct").close(); toast("Signed in.");
     }); break;
     case "acct-reset": withAuth(async (A, auth) => {
@@ -2182,7 +2192,15 @@ const FireStore = {
       onAnimals(list);
     }, (err) => notice(`Couldn't load your animals (${err.code}). Reload the page to try again.`, "bad"));
   },
-  stop() { if (this.unsub) this.unsub(); this.unsub = null; },
+  stop() { if (this.unsub) this.unsub(); if (this.unsubP) this.unsubP(); this.unsub = this.unsubP = null; },
+  // Live progress from the account's other devices (phone, laptop...).
+  watchProgress(onRemote) {
+    if (this.unsubP) this.unsubP();
+    this.unsubP = FB.F.onSnapshot(this.progressRef(), (s) => {
+      if (s.metadata.hasPendingWrites) return;          // our own write, not confirmed yet
+      onRemote(s.exists() ? s.data().animals || {} : {});
+    }, () => {});
+  },
   photoUrl(pid) { return pid.startsWith("starter/") ? pid : this.urls?.get(pid) || ""; },
   ref(id) { return FB.F.doc(FB.db, "users", this.uid, "animals", id); },
   async saveAnimal(a) {
@@ -2253,6 +2271,49 @@ const FireStore = {
   },
 };
 
+/* Progress from two devices is merged, never overwritten: for each card keep the
+   higher counts, all practice days and the newest level; for each day keep the higher
+   totals. Merging is order-independent, so devices always end up with the same result. */
+function mergeProgress(a = {}, b = {}) {
+  const out = {};
+  const keys = (...os) => new Set(os.flatMap((o) => Object.keys(o || {})));
+  for (const k of keys(a, b)) {
+    const x = a[k], y = b[k];
+    if (x == null || y == null) { out[k] = structuredClone(x ?? y); continue; }
+    if (k === "_lastAt") { out[k] = Math.max(x || 0, y || 0); continue; }
+    if (k === "_hist") {
+      const h = {};
+      for (const d of keys(x, y)) { const p = x[d] || {}, q = y[d] || {}; h[d] = {}; for (const f of keys(p, q)) h[d][f] = Math.max(p[f] || 0, q[f] || 0); }
+      out[k] = h; continue;
+    }
+    if (typeof x !== "object" || typeof y !== "object") { out[k] = structuredClone(y); continue; }
+    const newer = (y.last || 0) > (x.last || 0) || ((y.last || 0) === (x.last || 0) && (y.seen || 0) > (x.seen || 0)) ? y : x;
+    const ph = {};
+    for (const p of keys(x.ph, y.ph)) { const u = x.ph?.[p] || [0, 0], v = y.ph?.[p] || [0, 0]; ph[p] = [Math.max(u[0], v[0]), Math.max(u[1], v[1])]; }
+    const mix = {};
+    for (const m of keys(x.mix, y.mix)) mix[m] = Math.max(x.mix?.[m] || 0, y.mix?.[m] || 0);
+    const c = { ...structuredClone(newer), seen: Math.max(x.seen || 0, y.seen || 0), right: Math.max(x.right || 0, y.right || 0), ph };
+    const days = [...new Set([...(x.days || []), ...(y.days || [])])].sort().slice(-30);
+    if (days.length) c.days = days; else delete c.days;
+    if (Object.keys(mix).length) c.mix = mix; else delete c.mix;
+    out[k] = c;
+  }
+  return out;
+}
+// Same content regardless of key order (Firestore returns map keys sorted).
+const canon = (o) => JSON.stringify(o, (k, v) => (v && typeof v === "object" && !Array.isArray(v) ? Object.fromEntries(Object.keys(v).sort().map((kk) => [kk, v[kk]])) : v));
+function onRemoteProgress(remote) {
+  if (S.store !== FireStore) return;
+  const merged = mergeProgress(S.progress, remote);
+  const changed = canon(merged) !== canon(S.progress);
+  S.progress = merged;
+  if (canon(merged) !== canon(remote)) queueSaveProgress();   // this device has answers the account doesn't yet
+  if (!changed) return;
+  if (S.view === "progress") renderProgress();
+  else if (S.view === "library") renderLibrary();
+  else renderScore();
+}
+
 let acctSeq = 0;
 async function useAccount(user) {
   const seq = ++acctSeq;
@@ -2271,8 +2332,9 @@ async function useAccount(user) {
   await FireStore.init(onAnimals, user);
   if (seq !== acctSeq) return;
   S.progress = await FireStore.loadProgress();
+  FireStore.watchProgress(onRemoteProgress);
   renderControls();
-  if (S.view === "library") renderLibrary(); else renderStage();
+  if (S.view === "library") renderLibrary(); else if (S.view === "progress") renderProgress(); else renderStage();
 }
 function renderAccount() {
   const u = S.user, who = u ? u.name || u.email || "Account" : "";
@@ -2295,7 +2357,10 @@ function authError(e) {
     "auth/invalid-email": "That email address doesn't look right.",
     "auth/missing-password": "Type your password.",
     "auth/too-many-requests": "Too many tries. Wait a few minutes and try again.",
-    "auth/network-request-failed": "No internet connection. Try again when you're online.",
+    "auth/network-request-failed": navigator.onLine
+      ? "Your browser or network blocked the connection to Google sign-in. Try one of these: turn off tracking prevention or the ad-blocker for this site (Edge: Settings → Privacy, search, and services → Tracking prevention → Basic), check that the computer's date and time are correct, try Chrome, or sign in with email and a password below."
+      : "No internet connection. Try again when you're online.",
+    "auth/internal-error": "Google sign-in was blocked by the browser. Turn off tracking prevention or the ad-blocker for this site, or sign in with email and a password below.",
     "auth/unauthorized-domain": "Sign-in isn't allowed on this web address yet.",
   })[c] || `Couldn't sign in (${c || "no connection"}).`;
 }
@@ -2317,7 +2382,13 @@ function acctEmail(create) {
 async function initAccounts() {
   renderAccount();
   try { await loadFirebase(); } catch { return; }   // offline: keep using this browser
-  try { await FB.A.getRedirectResult(FB.auth); } catch (e) { acctMsg(authError(e)); }
+  try { await FB.A.getRedirectResult(FB.auth); }
+  catch (e) {
+    // Coming back from a full-page Google sign-in that failed: show why, in the sign-in window.
+    acctMsg(authError(e));
+    try { if (!$("#acct").open) $("#acct").showModal(); } catch {}
+  }
+  ls.set("fe-google-redirect", 0);
   FB.A.onAuthStateChanged(FB.auth, (u) => { useAccount(u).catch((e) => notice(`Couldn't open your account (${e?.code || "error"}). Reload to try again.`, "bad")); });
 }
 
