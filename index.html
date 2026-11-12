@@ -142,7 +142,7 @@ select { border: 1px solid var(--line); background: var(--card); border-radius: 
 .tweak-box { position: absolute; z-index: 4; top: calc(100% + 6px); right: 0; width: min(310px, calc(100vw - 32px)); background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 10px; box-shadow: 0 10px 30px rgb(0 0 0 / 0.12); }
 .tweak-box label { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: start; cursor: pointer; font-weight: 700; font-size: 0.92rem; }
 .tweak-box input { margin-top: 4px; accent-color: var(--moss); }
-.tweak-box small { grid-column: 2; font-weight: 400; color: var(--muted); font-size: 0.82rem; line-height: 1.35; }
+.tweak-box label small { grid-column: 2; font-weight: 400; color: var(--muted); font-size: 0.82rem; line-height: 1.35; }
 
 .scoreline { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
 .scoreline b { color: var(--ink); font-weight: 500; }
@@ -485,6 +485,30 @@ html.phone {
 }
 @keyframes fe-sheet { from { transform: translateY(100%); } to { transform: none; } }
 
+/* Answer button text: rank on a small line, then the name */
+.choice .cl { display: grid; gap: 1px; min-width: 0; }
+.choice .rank { font-family: var(--f-mono); font-size: 0.68rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.choice .nm { overflow-wrap: break-word; hyphens: auto; }
+html.phone .choice .k { display: none; }
+@media (max-width: 380px) {
+  html.phone .choice { padding: 9px 10px; font-size: 0.88rem; }
+  html.phone .brand { font-size: 0.92rem; }
+  html.phone .brand svg { width: 18px; height: 18px; }
+  html.phone .layoutsw button { width: 25px; height: 26px; }
+  html.phone #acctBtn { padding: 5px 8px; font-size: 0.82rem; }
+  html.phone #tourBtn { padding: 5px 7px; }
+  html.phone .bar-right { gap: 4px; }
+}
+
+/* Options panel */
+.tweak-box { gap: 10px; padding: 14px 16px; background: color-mix(in srgb, var(--paper) 95%, transparent); }
+.tweak-box .seg button { white-space: nowrap; padding: 10px 8px; }
+.tweak-box .opt-label { margin-top: 4px; }
+.tweak-box label { padding-top: 10px; border-top: 1px solid var(--line); }
+.tweak-box .opt-label + label { border-top: 0; padding-top: 0; }
+.tweak-box .credits { justify-self: end; font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+html.phone .tweak-box { width: calc(100vw - 32px); }
+
 /* Progress tab */
 .prog-hero { gap: 12px; }
 .prog-big { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.2rem, 9vw, 3rem); line-height: 1; }
@@ -559,7 +583,8 @@ html.phone {
   .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
   .choice { padding: 10px 12px; min-height: 66px; font-size: 0.93rem; line-height: 1.25; }
   .typeform input { flex-basis: 100%; }
-  .typeform .btn { flex: 1; }
+  .typeform .btn { flex: 1 1 0; white-space: nowrap; padding: 12px 10px; min-height: 48px; }
+  .typeform .btn.primary { flex-grow: 1.4; }
   .verdict { padding: 10px 14px; }
   .verdict h3 { font-size: 1.45rem; }
   .learn { padding: 12px 14px; gap: 10px; grid-template-columns: minmax(0, 1fr); }
@@ -615,14 +640,14 @@ html.phone {
         <div class="tweak-box">
           <span class="opt-label">Answer by</span>
           <div class="seg" role="group" aria-label="Answer style">
-            <button id="mode-choice" data-act="mode" data-mode="choice" aria-pressed="true">Picking from 4</button>
-            <button id="mode-type" data-act="mode" data-mode="type" aria-pressed="false">Typing the name</button>
+            <button id="mode-choice" data-act="mode" data-mode="choice" aria-pressed="true">Pick from 4</button>
+            <button id="mode-type" data-act="mode" data-mode="type" aria-pressed="false">Type the name</button>
           </div>
           <span class="opt-label">Photo tricks</span>
           <label><input type="checkbox" id="optMirror"> Random mirror <small>Flips some photos, so you can't go by which way the animal faces.</small></label>
-          <label><input type="checkbox" id="optZoom"> Random zoom and tilt <small>Zooms in on a different spot each time, so the photo edges are hidden. Off by default: photos are always shown in full.</small></label>
+          <label><input type="checkbox" id="optZoom"> Random zoom and tilt <small>Zooms in and tilts the photo, so its edges are hidden.</small></label>
           <label><input type="checkbox" id="optBw"> Black and white <small>Hard mode: shape and pattern only, no colour.</small></label>
-          <small><a href="https://github.com/mrsimonm/field-eye/blob/main/CREDITS.md" target="_blank" rel="noopener">Photo credits</a></small>
+          <a class="credits" href="https://github.com/mrsimonm/field-eye/blob/main/CREDITS.md" target="_blank" rel="noopener">Photo credits</a>
         </div>
       </details>
     </div>
@@ -1075,6 +1100,11 @@ function makeTransform() {
   const oy = S.set.zoom ? Math.round(32 + Math.random() * 36) : 50;
   return { flip, css: `transform-origin:${ox}% ${oy}%;transform:scale(${flip ? -z : z},${z}) rotate(${flip ? -rot : rot}deg);${S.set.bw ? "filter:grayscale(1) contrast(1.05);" : ""}` };
 }
+// "order: Decapoda" -> small rank line above the name, so long names don't get chopped.
+function choiceLabel(name) {
+  const m = /^([a-z]+(?: [a-z]+)?):\s*(.+)$/i.exec(String(name));
+  return m ? `<span class="cl"><small class="rank">${esc(m[1])}</small><span class="nm">${esc(m[2])}</span></span>` : `<span class="cl"><span class="nm">${esc(name)}</span></span>`;
+}
 function nextQuestion() {
   addTime();
   const p = pool();
@@ -1192,7 +1222,7 @@ function renderStage() {
       const o = byId(oid); const name = o ? o.name : "(removed)";
       let cls = "";
       if (q.answered) cls = oid === a.id ? "right" : oid === q.guess ? "wrong" : "dim";
-      return `<button class="choice ${cls}" data-act="choose" data-id="${esc(oid)}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span><span>${esc(name)}</span></button>`;
+      return `<button class="choice ${cls}" data-act="choose" data-id="${esc(oid)}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(name)}</button>`;
     }).join("") + `</div></div>`;
   } else {
     html += `<div class="tray">${q.forcedType && !q.answered ? `<p class="busy">Add a second animal to use Pick from 4.</p>` : ""}
