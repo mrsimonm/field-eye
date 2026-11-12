@@ -502,6 +502,14 @@ html.phone {
 .stat b { display: block; font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 .stat small { color: var(--muted); font-size: 0.8rem; }
 .chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.stats-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 14px 10px; }
+.stats-grid .stat b { font-size: 1.25rem; }
+.stat em { font-style: normal; font-size: 0.75rem; font-weight: 700; }
+.stat em.up { color: var(--good); }
+.stat em.down { color: var(--bad); }
+.ch-time { fill: var(--moss); }
+.ch-axis { stroke: var(--line); stroke-width: 1; }
+.ch-lab { fill: var(--muted); font: 500 13px var(--f-mono); }
 .ch-bar { fill: color-mix(in srgb, var(--amber) 55%, transparent); }
 .ch-line { fill: none; stroke: var(--moss); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
 .grow { display: grid; gap: 4px; }
@@ -1020,13 +1028,26 @@ function level(a) {
 }
 const masteredCount = () => S.animals.filter((a) => (a.photos || []).length && level(a) === "mastered").length;
 // Called after every answer: per-card days + mix-ups, and a per-day log for the history chart.
+const dayEntry = () => { const h = (S.progress._hist ||= {}); return (h[dayKey()] ||= { n: 0, r: 0, m: masteredCount(), t: 0, s: 0 }); };
+// Practice time: time between actions in Practice, capped at 90 s per step so a phone
+// left lying around doesn't count; nothing counts while the app is in the background.
+let tick = Date.now();
+const SESSION_GAP = 30 * 60e3;
+function addTime() {
+  const now = Date.now();
+  if (tick && S.view === "practice") { const e = dayEntry(); e.t = Math.round((e.t || 0) + Math.min(now - tick, 90e3) / 1000); }
+  tick = now;
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden) { addTime(); tick = 0; queueSaveProgress(); } else tick = Date.now(); });
 function logAnswer(pr, ok, confused) {
-  const today = dayKey();
-  pr.last = Date.now();
+  const today = dayKey(), now = Date.now();
+  pr.last = now;
   if (ok) pr.days = [...new Set([...(pr.days || []), today])].slice(-30);
   else if (confused) { pr.mix ||= {}; pr.mix[confused] = (pr.mix[confused] || 0) + 1; }
-  const h = (S.progress._hist ||= {});
-  const e = (h[today] ||= { n: 0, r: 0, m: 0 });
+  addTime();
+  const e = dayEntry();
+  if (!S.progress._lastAt || now - S.progress._lastAt > SESSION_GAP || dayKey(new Date(S.progress._lastAt)) !== today) e.s = (e.s || 0) + 1;
+  S.progress._lastAt = now;
   e.n++; if (ok) e.r++;
   e.m = masteredCount();
 }
@@ -1055,6 +1076,7 @@ function makeTransform() {
   return { flip, css: `transform-origin:${ox}% ${oy}%;transform:scale(${flip ? -z : z},${z}) rotate(${flip ? -rot : rot}deg);${S.set.bw ? "filter:grayscale(1) contrast(1.05);" : ""}` };
 }
 function nextQuestion() {
+  addTime();
   const p = pool();
   if (!p.length) { S.q = null; renderStage(); return; }
   const a = pickAnimal(p);
@@ -1306,6 +1328,46 @@ function renderProgress() {
   }
   const mix = [...pairs.entries()].sort((x, y2) => y2[1] - x[1]).slice(0, 5);
   const short = (a) => esc(String(a.name).replace(/^[^:]+:\s*/, ""));
+  // Usage statistics
+  const fmtDur = (s) => { s = Math.round(s || 0); if (s < 60) return s ? "<1 min" : "0 min"; const mi = Math.round(s / 60); return mi < 60 ? `${mi} min` : `${Math.floor(mi / 60)} h ${String(mi % 60).padStart(2, "0")} min`; };
+  const sum = (ks, f) => ks.reduce((s, k) => s + (h[k]?.[f] || 0), 0);
+  const lastDays = (n) => Array.from({ length: n }, (_, i) => dayKey(new Date(Date.now() - i * 864e5)));
+  const wk = lastDays(7), prevWk = lastDays(14).slice(7);
+  const tAll = sum(days, "t"), tToday = h[dayKey()]?.t || 0, tWeek = sum(wk, "t"), tPrevWk = sum(prevWk, "t");
+  const timedDays = days.filter((d) => h[d].t > 0).length;
+  let longest = 0, run = 0, prev = null;
+  for (const d of days) { const p = prev && dayKey(new Date(new Date(d + "T12:00").getTime() - 864e5)) === prev; run = p ? run + 1 : 1; longest = Math.max(longest, run); prev = d; }
+  const best = days.reduce((b, d) => (!b || h[d].n > h[b].n ? d : b), null);
+  const accWk = sum(wk, "n") ? Math.round(sum(wk, "r") / sum(wk, "n") * 100) : null;
+  const accPrev = sum(prevWk, "n") ? Math.round(sum(prevWk, "r") / sum(prevWk, "n") * 100) : null;
+  const niceDay = (k) => new Date(k + "T12:00").toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  const tPts = pts.map((p) => ({ k: p.k, t: (h[p.k]?.t || 0) / 60 }));
+  const maxT = Math.max(1, ...tPts.map((p) => p.t));
+  const timeChart = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Minutes practised per day, last 30 days">
+    <line x1="0" x2="${W}" y1="${H - pad}" y2="${H - pad}" class="ch-axis"/>
+    ${tPts.map((p, i) => p.t ? `<rect x="${(i * bw + 2).toFixed(1)}" y="${y(p.t, maxT).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${(H - pad - y(p.t, maxT)).toFixed(1)}" rx="2" class="ch-time"><title>${p.k}: ${Math.round(p.t)} min</title></rect>` : "").join("")}
+    <text x="0" y="12" class="ch-lab">${Math.round(maxT)} min</text>
+  </svg>`;
+  const trend = (a, b) => a == null || b == null || a === b ? "" : `<em class="${a > b ? "up" : "down"}">${a > b ? "▲" : "▼"} ${Math.abs(a - b)}${typeof a === "number" && a <= 100 && b <= 100 ? "" : ""}</em>`;
+  const statsHtml = `
+    <div class="sharecard">
+      <span class="eyebrow">Statistics</span>
+      <div class="stats stats-grid">
+        <div class="stat"><b>${fmtDur(tToday)}</b><small>today</small></div>
+        <div class="stat"><b>${fmtDur(tWeek)}</b><small>last 7 days${tPrevWk ? ` (week before: ${fmtDur(tPrevWk)})` : ""}</small></div>
+        <div class="stat"><b>${fmtDur(tAll)}</b><small>all time</small></div>
+        <div class="stat"><b>${fmtDur(timedDays ? tAll / timedDays : 0)}</b><small>average per practice day</small></div>
+        <div class="stat"><b>${streak}</b><small>day streak now</small></div>
+        <div class="stat"><b>${longest}</b><small>longest streak</small></div>
+        <div class="stat"><b>${sum(days, "s")}</b><small>sessions</small></div>
+        <div class="stat"><b>${allN}</b><small>answers in total</small></div>
+        <div class="stat"><b>${accWk == null ? "–" : accWk + "%"} ${trend(accWk, accPrev)}</b><small>right, last 7 days${accPrev != null ? ` (before: ${accPrev}%)` : ""}</small></div>
+        <div class="stat"><b>${best ? h[best].n : "–"}</b><small>${best ? `best day (${niceDay(best)})` : "best day"}</small></div>
+        <div class="stat"><b>${days.length}</b><small>days practised</small></div>
+        <div class="stat"><b>${allN ? Math.round(allR / allN * 100) + "%" : "–"}</b><small>right, all time</small></div>
+      </div>
+      ${tAll ? `<span class="eyebrow">Minutes per day, last 30 days</span><div class="chart">${timeChart}</div>` : `<p class="readonly-note">Practice time is counted from now on, only while you're practising.</p>`}
+    </div>`;
   const gs = groups();
   const where = S.store?.kind === "account" ? "your account, on all your devices" : "this browser. Sign in to keep it on all your devices";
   $("#progress").innerHTML = `
@@ -1316,11 +1378,12 @@ function renderProgress() {
       <div class="legend"><span><i class="lv-mastered"></i>Mastered ${m}</span><span><i class="lv-almost"></i>Almost ${count(list, "almost")}</span><span><i class="lv-learning"></i>Learning ${count(list, "learning")}</span><span><i class="lv-new"></i>New ${count(list, "new")}</span></div>
       <div class="stats">
         <div class="stat"><b>${streak}</b><small>day streak</small></div>
-        <div class="stat"><b>${days.length}</b><small>days practised</small></div>
+        <div class="stat"><b>${fmtDur(tToday)}</b><small>today</small></div>
         <div class="stat"><b>${allN ? Math.round(allR / allN * 100) + "%" : "–"}</b><small>right of ${allN}</small></div>
       </div>
       ${m < total ? `<button class="btn primary" type="button" data-act="practise-weak">Practise the ${total - m} not mastered yet</button>` : ""}
     </div>
+    ${statsHtml}
     <div class="sharecard">
       <span class="eyebrow">Last 30 days</span>
       ${days.length ? `<div class="chart">${chart}</div><div class="legend"><span><i class="lv-mastered"></i>Cards mastered</span><span><i class="lv-bars"></i>Answers per day</span></div>` : `<p class="readonly-note">Your history starts with your next answer.</p>`}
