@@ -1,5 +1,5 @@
 // Field Eye offline support: the app, its starter photos and the sign-in code keep working without a connection.
-const V = "field-eye-v2";
+const V = "field-eye-v3";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(V).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => {
