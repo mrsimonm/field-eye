@@ -28,6 +28,15 @@ Style = the existing cards: line 1 parent-group features, then the taxon's own f
 3. Merge: copy `<build>/photos/*` to `starter/`, append `<build>/cards.json` entries (skip ids already present) to `starter/starter.json`, regenerate `CREDITS.md` from `<build>/meta.json`, commit, push, wait for the live count.
 Expect thin photo supply for Anoplura (lice) and Siphonaptera (fleas).
 
+## Adding a tester's cards for everyone
+1. Tester: My animals → Share a set → Export file, and sends you the file.
+2. `python3 -I tools/import_set.py path/to/field-eye-xxx.json` (dry run: lists new cards and new photos).
+3. Same with `--apply` (add `--notes` to also take her notes for existing cards). Then commit + push `starter/`.
+New animals become built-in cards; existing ones only get her new photos (duplicates skipped). Users get them automatically.
+
+## Photos (2026-11-13)
+The 32 iNaturalist cards were re-done by hand: 18 high-res candidates per card (`tools/inat/inat_candidates.py`), the best 7-8 picked by eye (animal large and sharp), files `starter/kNNN-MM.jpg`, 1280 px. Old `iNNN-*.jpg` files are kept only for people who edited those cards.
+
 ## Open items
 - Add a "Photo credits" link in the app pointing to `CREDITS.md` (CC-BY needs attribution).
 - Signed-in photo upload is OFF: Firebase Storage can't be created because the Google billing account "Firebase Payment" looks disabled (storage returns 402). Fix the card/billing in Google Cloud Billing, then create the bucket in the Firebase console for `field-eye-mrsimonm` and run `firebase deploy --only storage` (rules are in `storage.rules`).
