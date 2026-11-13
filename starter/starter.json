@@ -1424,18 +1424,20 @@
    ],
    "traits": "myriapoda: head + trunk (14-177 segments), at least 9 pairs of limbs\nchilopoda (centipedes): long antennae, 1 pair of legs on each trunk segment, legs on the sides of the body, last pair of legs prolonged, limbs on the 1st trunk segment = maxillipeds with venom glands, fast runners, mostly predatory",
    "photos": [
-    "starter/i031-01.jpg",
-    "starter/i031-02.jpg",
-    "starter/i031-03.jpg",
-    "starter/i031-04.jpg",
-    "starter/i031-05.jpg",
-    "starter/i031-06.jpg",
-    "starter/i031-07.jpg"
+    "starter/k031-01.jpg",
+    "starter/k031-02.jpg",
+    "starter/k031-03.jpg",
+    "starter/k031-04.jpg",
+    "starter/k031-05.jpg",
+    "starter/k031-06.jpg",
+    "starter/k031-07.jpg"
    ],
    "photoEdits": [],
    "created": 31,
-   "rev": "vv3mve",
-   "oldRevs": []
+   "rev": "vfaj48",
+   "oldRevs": [
+    "vv3mve"
+   ]
   },
   {
    "id": "starter-a032",
@@ -1447,18 +1449,20 @@
    ],
    "traits": "myriapoda: head + trunk (14-177 segments), at least 9 pairs of limbs\ndiplopoda (millipedes): short antennae, legs under the body, 1st segment no legs, 2nd-4th segments 1 pair, the remaining segments (diplosomites) 2 pairs of legs, maxillae fused into a gnathochilarium, slow, mostly detritivorous, can roll up (volvation)\npill millipede (Glomeris) x pill bug (Isopoda): count the leg pairs per segment",
    "photos": [
-    "starter/i032-01.jpg",
-    "starter/i032-02.jpg",
-    "starter/i032-03.jpg",
-    "starter/i032-04.jpg",
-    "starter/i032-05.jpg",
-    "starter/i032-06.jpg",
-    "starter/i032-07.jpg"
+    "starter/k032-01.jpg",
+    "starter/k032-02.jpg",
+    "starter/k032-03.jpg",
+    "starter/k032-04.jpg",
+    "starter/k032-05.jpg",
+    "starter/k032-06.jpg",
+    "starter/k032-07.jpg"
    ],
    "photoEdits": [],
    "created": 32,
-   "rev": "urp2vg",
-   "oldRevs": []
+   "rev": "1d8oa32",
+   "oldRevs": [
+    "urp2vg"
+   ]
   },
   {
    "id": "starter-a033",
@@ -1470,18 +1474,21 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\ncollembola (springtails): minute to 9 mm, entognathous (mouthparts hidden inside the head capsule), 1st segment with a ventral tube (collophore), 3rd-4th segment with a jumping fork (furca), ocelli or blind",
    "photos": [
-    "starter/i033-01.jpg",
-    "starter/i033-02.jpg",
-    "starter/i033-03.jpg",
-    "starter/i033-04.jpg",
-    "starter/i033-05.jpg",
-    "starter/i033-06.jpg",
-    "starter/i033-07.jpg"
+    "starter/k033-01.jpg",
+    "starter/k033-02.jpg",
+    "starter/k033-03.jpg",
+    "starter/k033-04.jpg",
+    "starter/k033-05.jpg",
+    "starter/k033-06.jpg",
+    "starter/k033-07.jpg",
+    "starter/k033-08.jpg"
    ],
    "photoEdits": [],
    "created": 33,
-   "rev": "17y697v",
-   "oldRevs": []
+   "rev": "lfyre8",
+   "oldRevs": [
+    "17y697v"
+   ]
   },
   {
    "id": "starter-a034",
@@ -1493,18 +1500,20 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\narchaeognatha (jumping bristletails): mandible with a single joint, large compound eyes that touch each other + ocelli, long maxillary palps, up to 15 mm, covered in scales, styli on the abdomen, 1 epiproct (caudal filament) + 1 pair of cerci all pointing the same way, nocturnal, on rocks, jumpers",
    "photos": [
-    "starter/i034-01.jpg",
-    "starter/i034-02.jpg",
-    "starter/i034-03.jpg",
-    "starter/i034-04.jpg",
-    "starter/i034-05.jpg",
-    "starter/i034-06.jpg",
-    "starter/i034-07.jpg"
+    "starter/k034-01.jpg",
+    "starter/k034-02.jpg",
+    "starter/k034-03.jpg",
+    "starter/k034-04.jpg",
+    "starter/k034-05.jpg",
+    "starter/k034-06.jpg",
+    "starter/k034-07.jpg"
    ],
    "photoEdits": [],
    "created": 34,
-   "rev": "1o7hkd5",
-   "oldRevs": []
+   "rev": "1m592mz",
+   "oldRevs": [
+    "1o7hkd5"
+   ]
   },
   {
    "id": "starter-a035",
@@ -1516,18 +1525,20 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nzygentoma (silverfish): wingless (never had wings), up to 10 mm, covered in scales, one colour, compound eyes apart or missing, styli only on the last 2 abdominal segments, epiproct + 1 pair of cerci pointing to the sides, much smaller maxillary palps, do not jump, omnivorous, pests",
    "photos": [
-    "starter/i035-01.jpg",
-    "starter/i035-02.jpg",
-    "starter/i035-03.jpg",
-    "starter/i035-04.jpg",
-    "starter/i035-05.jpg",
-    "starter/i035-06.jpg",
-    "starter/i035-07.jpg"
+    "starter/k035-01.jpg",
+    "starter/k035-02.jpg",
+    "starter/k035-03.jpg",
+    "starter/k035-04.jpg",
+    "starter/k035-05.jpg",
+    "starter/k035-06.jpg",
+    "starter/k035-07.jpg"
    ],
    "photoEdits": [],
    "created": 35,
-   "rev": "55qtmh",
-   "oldRevs": []
+   "rev": "45vh6j",
+   "oldRevs": [
+    "55qtmh"
+   ]
   },
   {
    "id": "starter-a036",
@@ -1539,18 +1550,19 @@
    ],
    "traits": "pterygota: 2 pairs of wings; paleoptera: wings not folded on the abdomen\nephemeroptera (mayflies): short antennae, 2 long cerci (sometimes + 1 terminal filament), wings held upright, adult does not feed and lives hours to a few days, subimago = cloudy wings + fuzzy body\nnymphs: in water, tracheal gills on the abdomen, 3 caudal filaments",
    "photos": [
-    "starter/i036-01.jpg",
-    "starter/i036-02.jpg",
-    "starter/i036-03.jpg",
-    "starter/i036-04.jpg",
-    "starter/i036-05.jpg",
-    "starter/i036-06.jpg",
-    "starter/i036-07.jpg"
+    "starter/k036-01.jpg",
+    "starter/k036-02.jpg",
+    "starter/k036-03.jpg",
+    "starter/k036-04.jpg",
+    "starter/k036-05.jpg",
+    "starter/k036-06.jpg",
+    "starter/k036-07.jpg"
    ],
    "photoEdits": [],
    "created": 36,
-   "rev": "18zwde7",
+   "rev": "pgk0p9",
    "oldRevs": [
+    "18zwde7",
     "1bsjzou"
    ]
   },
@@ -1564,18 +1576,20 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nodonata: predators, short antennae, ocelli, wings with pterostigma (+ nodus)\nzygoptera (damselflies): eyes apart, wings with stems, folded along the abdomen (not touching), slim",
    "photos": [
-    "starter/i037-01.jpg",
-    "starter/i037-02.jpg",
-    "starter/i037-03.jpg",
-    "starter/i037-04.jpg",
-    "starter/i037-05.jpg",
-    "starter/i037-06.jpg",
-    "starter/i037-07.jpg"
+    "starter/k037-01.jpg",
+    "starter/k037-02.jpg",
+    "starter/k037-03.jpg",
+    "starter/k037-04.jpg",
+    "starter/k037-05.jpg",
+    "starter/k037-06.jpg",
+    "starter/k037-07.jpg"
    ],
    "photoEdits": [],
    "created": 37,
-   "rev": "8amdjj",
-   "oldRevs": []
+   "rev": "1rcstsd",
+   "oldRevs": [
+    "8amdjj"
+   ]
   },
   {
    "id": "starter-a038",
@@ -1587,18 +1601,19 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nodonata: predators, short antennae, ocelli, wings with pterostigma (+ nodus)\nanisoptera (dragonflies): eyes touching or very close, hind wings broader at the base than the front wings, wings held flat open at rest, robust abdomen",
    "photos": [
-    "starter/i038-01.jpg",
-    "starter/i038-02.jpg",
-    "starter/i038-03.jpg",
-    "starter/i038-04.jpg",
-    "starter/i038-05.jpg",
-    "starter/i038-06.jpg",
-    "starter/i038-07.jpg"
+    "starter/k038-01.jpg",
+    "starter/k038-02.jpg",
+    "starter/k038-03.jpg",
+    "starter/k038-04.jpg",
+    "starter/k038-05.jpg",
+    "starter/k038-06.jpg",
+    "starter/k038-07.jpg"
    ],
    "photoEdits": [],
    "created": 38,
-   "rev": "1fhoybb",
+   "rev": "1ghkar9",
    "oldRevs": [
+    "1fhoybb",
     "yakluc"
    ]
   },
@@ -1612,18 +1627,20 @@
    ],
    "traits": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen, usually a large anal lobe on the wings\nplecoptera (stoneflies): cloudy wings folded over each other horizontally, 2 long cerci, long antennae, ocelli, good runners\nnymphs: 2 cerci (x Ephemeroptera), gills near the legs, abdomen, mouth",
    "photos": [
-    "starter/i039-01.jpg",
-    "starter/i039-02.jpg",
-    "starter/i039-03.jpg",
-    "starter/i039-04.jpg",
-    "starter/i039-05.jpg",
-    "starter/i039-06.jpg",
-    "starter/i039-07.jpg"
+    "starter/k039-01.jpg",
+    "starter/k039-02.jpg",
+    "starter/k039-03.jpg",
+    "starter/k039-04.jpg",
+    "starter/k039-05.jpg",
+    "starter/k039-06.jpg",
+    "starter/k039-07.jpg"
    ],
    "photoEdits": [],
    "created": 39,
-   "rev": "gk7wxv",
-   "oldRevs": []
+   "rev": "imgeo1",
+   "oldRevs": [
+    "gk7wxv"
+   ]
   },
   {
    "id": "starter-a040",
@@ -1635,18 +1652,20 @@
    ],
    "traits": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\nblattodea (cockroaches): winged or wingless, leathery front wings = tegmens, multisegmented cerci, large pronotum, massive coxae, thorny tibiae, eggs in an ootheca, usually night-active",
    "photos": [
-    "starter/i040-01.jpg",
-    "starter/i040-02.jpg",
-    "starter/i040-03.jpg",
-    "starter/i040-04.jpg",
-    "starter/i040-05.jpg",
-    "starter/i040-06.jpg",
-    "starter/i040-07.jpg"
+    "starter/k040-01.jpg",
+    "starter/k040-02.jpg",
+    "starter/k040-03.jpg",
+    "starter/k040-04.jpg",
+    "starter/k040-05.jpg",
+    "starter/k040-06.jpg",
+    "starter/k040-07.jpg"
    ],
    "photoEdits": [],
    "created": 40,
-   "rev": "a6mx4h",
-   "oldRevs": []
+   "rev": "fvetf7",
+   "oldRevs": [
+    "a6mx4h"
+   ]
   },
   {
    "id": "starter-a041",
@@ -1658,19 +1677,20 @@
    ],
    "traits": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\nmantodea (mantises): tegmens, ootheca, triangular mobile head, raptorial forelegs, prolonged prothorax, short segmented cerci, females often with shorter wings than males",
    "photos": [
-    "starter/i041-01.jpg",
-    "starter/i041-02.jpg",
-    "starter/i041-03.jpg",
-    "starter/i041-04.jpg",
-    "starter/i041-05.jpg",
-    "starter/i041-06.jpg",
-    "starter/i041-07.jpg"
+    "starter/k041-01.jpg",
+    "starter/k041-02.jpg",
+    "starter/k041-03.jpg",
+    "starter/k041-04.jpg",
+    "starter/k041-05.jpg",
+    "starter/k041-06.jpg",
+    "starter/k041-07.jpg"
    ],
    "photoEdits": [],
    "created": 41,
-   "rev": "3jfoue",
+   "rev": "12p6r0k",
    "oldRevs": [
-    "1r5hlnx"
+    "1r5hlnx",
+    "3jfoue"
    ]
   },
   {
@@ -1683,18 +1703,20 @@
    ],
    "traits": "orthoptera: jumping hind legs, tegmens, 1-segmented cerci, stridulatory and hearing organs\nensifera (crickets and half of the grasshoppers): long antennae, long sword-like ovipositor, hearing organ on the front tibiae, stridulate by rubbing the front wings together, often predatory",
    "photos": [
-    "starter/i042-01.png",
-    "starter/i042-02.jpg",
-    "starter/i042-03.jpg",
-    "starter/i042-04.jpg",
-    "starter/i042-05.jpg",
-    "starter/i042-06.jpg",
-    "starter/i042-07.jpg"
+    "starter/k042-01.jpg",
+    "starter/k042-02.jpg",
+    "starter/k042-03.jpg",
+    "starter/k042-04.jpg",
+    "starter/k042-05.jpg",
+    "starter/k042-06.jpg",
+    "starter/k042-07.jpg"
    ],
    "photoEdits": [],
    "created": 42,
-   "rev": "i6vdrr",
-   "oldRevs": []
+   "rev": "xd7ywh",
+   "oldRevs": [
+    "i6vdrr"
+   ]
   },
   {
    "id": "starter-a043",
@@ -1706,18 +1728,20 @@
    ],
    "traits": "orthoptera: jumping hind legs, tegmens, 1-segmented cerci, stridulatory and hearing organs\ncaelifera (grasshoppers, locusts): short antennae, short ovipositor, hearing (tympanal) organ on the 1st abdominal segment, stridulate by rubbing the hind femur against a wing vein, phytophagous",
    "photos": [
-    "starter/i043-01.jpg",
-    "starter/i043-02.jpg",
-    "starter/i043-03.jpg",
-    "starter/i043-04.jpg",
-    "starter/i043-05.jpg",
-    "starter/i043-06.jpg",
-    "starter/i043-07.jpg"
+    "starter/k043-01.jpg",
+    "starter/k043-02.jpg",
+    "starter/k043-03.jpg",
+    "starter/k043-04.jpg",
+    "starter/k043-05.jpg",
+    "starter/k043-06.jpg",
+    "starter/k043-07.jpg"
    ],
    "photoEdits": [],
    "created": 43,
-   "rev": "dd6arx",
-   "oldRevs": []
+   "rev": "1qlxpan",
+   "oldRevs": [
+    "dd6arx"
+   ]
   },
   {
    "id": "starter-a044",
@@ -1729,18 +1753,20 @@
    ],
    "traits": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\ndermaptera (earwigs): short tegmens, hind wings folded under them (often fly), no ocelli, massive forceps-like 1-segmented cerci (hunting, defence, folding the wings), nocturnal, parental care",
    "photos": [
-    "starter/i044-01.jpg",
-    "starter/i044-02.jpg",
-    "starter/i044-03.jpg",
-    "starter/i044-04.jpg",
-    "starter/i044-05.jpg",
-    "starter/i044-06.jpg",
-    "starter/i044-07.jpg"
+    "starter/k044-01.jpg",
+    "starter/k044-02.jpg",
+    "starter/k044-03.jpg",
+    "starter/k044-04.jpg",
+    "starter/k044-05.jpg",
+    "starter/k044-06.jpg",
+    "starter/k044-07.jpg"
    ],
    "photoEdits": [],
    "created": 44,
-   "rev": "1qfe2z2",
-   "oldRevs": []
+   "rev": "1kqm6vg",
+   "oldRevs": [
+    "1qfe2z2"
+   ]
   },
   {
    "id": "starter-a045",
@@ -1752,18 +1778,20 @@
    ],
    "traits": "paraneoptera: mouthparts modified into a sucking proboscis, liquid food, reduced cerci and ovipositor\nanoplura (sucking lice): wingless, no cerci, usually 5-segmented antennae, fused thorax segments, grasping legs (claws), eyes reduced or missing, proboscis with teeth (haustellum), only on mammals, spread diseases (typhus, trench fever)",
    "photos": [
-    "starter/i045-01.jpg",
-    "starter/i045-02.jpg",
-    "starter/i045-03.jpg",
-    "starter/i045-04.jpg",
-    "starter/i045-05.jpg",
-    "starter/i045-06.jpg",
-    "starter/i045-07.jpg"
+    "starter/k045-01.jpg",
+    "starter/k045-02.jpg",
+    "starter/k045-03.jpg",
+    "starter/k045-04.jpg",
+    "starter/k045-05.jpg",
+    "starter/k045-06.jpg",
+    "starter/k045-07.jpg"
    ],
    "photoEdits": [],
    "created": 45,
-   "rev": "1at8i0r",
-   "oldRevs": []
+   "rev": "1pm3uh",
+   "oldRevs": [
+    "1at8i0r"
+   ]
   },
   {
    "id": "starter-a046",
@@ -1775,18 +1803,20 @@
    ],
    "traits": "hemiptera: piercing-sucking rostrum, tegmens or hemelytra, extraoral digestion\nsternorrhyncha: rostrum base on the thorax between the front legs, small, phytophagous pests\naphidoidea (aphids): long antennae, pair of siphunculi (tubes) on the abdomen, cauda (tail), honeydew, wings membranous if present",
    "photos": [
-    "starter/i046-01.jpg",
-    "starter/i046-02.jpg",
-    "starter/i046-03.jpg",
-    "starter/i046-04.jpg",
-    "starter/i046-05.jpg",
-    "starter/i046-06.jpg",
-    "starter/i046-07.jpg"
+    "starter/k046-01.jpg",
+    "starter/k046-02.jpg",
+    "starter/k046-03.jpg",
+    "starter/k046-04.jpg",
+    "starter/k046-05.jpg",
+    "starter/k046-06.jpg",
+    "starter/k046-07.jpg"
    ],
    "photoEdits": [],
    "created": 46,
-   "rev": "k560c5",
-   "oldRevs": []
+   "rev": "xd6fef",
+   "oldRevs": [
+    "k560c5"
+   ]
   },
   {
    "id": "starter-a047",
@@ -1798,18 +1828,20 @@
    ],
    "traits": "hemiptera: piercing-sucking rostrum, tegmens or hemelytra, extraoral digestion\nsternorrhyncha: rostrum base on the thorax between the front legs, small, phytophagous pests\ncoccoidea (scale insects): strong sexual dimorphism; females wingless, sessile, reduced legs, covered by a waxy shield or ovisac (wax glands); males minute, one pair of wings, live a few days",
    "photos": [
-    "starter/i047-01.jpg",
-    "starter/i047-02.jpg",
-    "starter/i047-03.jpg",
-    "starter/i047-04.jpg",
-    "starter/i047-05.jpg",
-    "starter/i047-06.jpg",
-    "starter/i047-07.jpg"
+    "starter/k047-01.jpg",
+    "starter/k047-02.jpg",
+    "starter/k047-03.jpg",
+    "starter/k047-04.jpg",
+    "starter/k047-05.jpg",
+    "starter/k047-06.jpg",
+    "starter/k047-07.jpg"
    ],
    "photoEdits": [],
    "created": 47,
-   "rev": "1jufb4w",
-   "oldRevs": []
+   "rev": "vm0ajm",
+   "oldRevs": [
+    "1jufb4w"
+   ]
   },
   {
    "id": "starter-a048",
@@ -1821,18 +1853,20 @@
    ],
    "traits": "hemiptera: piercing-sucking rostrum, tegmens or hemelytra, extraoral digestion\nauchenorrhyncha (cicadas, leafhoppers, planthoppers): rostrum starts at the back of the head, very short antennae (bristle), wings held roof-like, large pronotum, bulging eyes, thick hind legs (jumpers, thorny tibiae in leafhoppers), cicadas sing with a tymbal organ, phytophagous",
    "photos": [
-    "starter/i048-01.jpg",
-    "starter/i048-02.jpg",
-    "starter/i048-03.jpg",
-    "starter/i048-04.jpg",
-    "starter/i048-05.jpg",
-    "starter/i048-06.jpg",
-    "starter/i048-07.jpg"
+    "starter/k048-01.jpg",
+    "starter/k048-02.jpg",
+    "starter/k048-03.jpg",
+    "starter/k048-04.jpg",
+    "starter/k048-05.jpg",
+    "starter/k048-06.jpg",
+    "starter/k048-07.jpg"
    ],
    "photoEdits": [],
    "created": 48,
-   "rev": "1o8d8z6",
-   "oldRevs": []
+   "rev": "1hh87lc",
+   "oldRevs": [
+    "1o8d8z6"
+   ]
   },
   {
    "id": "starter-a049",
@@ -1844,18 +1878,20 @@
    ],
    "traits": "hemiptera: piercing-sucking rostrum, tegmens or hemelytra, extraoral digestion\nheteroptera (true bugs): prognathous head, rostrum starts at the front of the head, front wings = hemelytra (leathery base + membranous tip), large triangular scutellum, 4-5-segmented antennae, stink (repellent) glands, on land and in water",
    "photos": [
-    "starter/i049-01.jpg",
-    "starter/i049-02.jpg",
-    "starter/i049-03.jpg",
-    "starter/i049-04.jpg",
-    "starter/i049-05.jpg",
-    "starter/i049-06.jpg",
-    "starter/i049-07.jpg"
+    "starter/k049-01.jpg",
+    "starter/k049-02.jpg",
+    "starter/k049-03.jpg",
+    "starter/k049-04.jpg",
+    "starter/k049-05.jpg",
+    "starter/k049-06.jpg",
+    "starter/k049-07.jpg"
    ],
    "photoEdits": [],
    "created": 49,
-   "rev": "1hvgi30",
-   "oldRevs": []
+   "rev": "rxyuha",
+   "oldRevs": [
+    "1hvgi30"
+   ]
   },
   {
    "id": "starter-a050",
@@ -1867,18 +1903,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\nneuroptera (lacewings, antlions): 2 pairs of similar wings held roof-like, dense net-like venation (forked veins at the wing edge), chewing mouthparts, long many-segmented antennae (clubbed in antlions), usually no ocelli, predatory\nlarva: long sucking mandibles (antlion pits)",
    "photos": [
-    "starter/i050-01.jpg",
-    "starter/i050-02.jpg",
-    "starter/i050-03.jpg",
-    "starter/i050-04.jpg",
-    "starter/i050-05.jpg",
-    "starter/i050-06.jpg",
-    "starter/i050-07.jpg"
+    "starter/k050-01.jpg",
+    "starter/k050-02.jpg",
+    "starter/k050-03.jpg",
+    "starter/k050-04.jpg",
+    "starter/k050-05.jpg",
+    "starter/k050-06.jpg",
+    "starter/k050-07.jpg"
    ],
    "photoEdits": [],
    "created": 50,
-   "rev": "1ah7vi4",
-   "oldRevs": []
+   "rev": "1dny6bi",
+   "oldRevs": [
+    "1ah7vi4"
+   ]
   },
   {
    "id": "starter-a051",
@@ -1890,18 +1928,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\nmegaloptera (alderflies, dobsonflies): smoky wings held roof-like, coarse venation, large head, live near water\nlarva: aquatic predator with lateral tracheal gills on the abdomen",
    "photos": [
-    "starter/i051-01.jpg",
-    "starter/i051-02.jpg",
-    "starter/i051-03.jpg",
-    "starter/i051-04.jpg",
-    "starter/i051-05.jpg",
-    "starter/i051-06.jpg",
-    "starter/i051-07.jpg"
+    "starter/k051-01.jpg",
+    "starter/k051-02.jpg",
+    "starter/k051-03.jpg",
+    "starter/k051-04.jpg",
+    "starter/k051-05.jpg",
+    "starter/k051-06.jpg",
+    "starter/k051-07.jpg"
    ],
    "photoEdits": [],
    "created": 51,
-   "rev": "1n5j8dg",
-   "oldRevs": []
+   "rev": "1qc9j6u",
+   "oldRevs": [
+    "1n5j8dg"
+   ]
   },
   {
    "id": "starter-a052",
@@ -1913,18 +1953,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\nraphidioptera (snakeflies): very long neck-like prothorax, clear wings held roof-like with a pterostigma, female with a long needle-like ovipositor, predatory",
    "photos": [
-    "starter/i052-01.jpg",
-    "starter/i052-02.jpg",
-    "starter/i052-03.jpg",
-    "starter/i052-04.jpg",
-    "starter/i052-05.jpg",
-    "starter/i052-06.jpg",
-    "starter/i052-07.jpg"
+    "starter/k052-01.jpg",
+    "starter/k052-02.jpg",
+    "starter/k052-03.jpg",
+    "starter/k052-04.jpg",
+    "starter/k052-05.jpg",
+    "starter/k052-06.jpg",
+    "starter/k052-07.jpg"
    ],
    "photoEdits": [],
    "created": 52,
-   "rev": "kk9ho7",
-   "oldRevs": []
+   "rev": "8rxj05",
+   "oldRevs": [
+    "kk9ho7"
+   ]
   },
   {
    "id": "starter-a053",
@@ -1936,18 +1978,20 @@
    ],
    "traits": "coleoptera (beetles): front wings hardened into elytra, chewing mouthparts, complete metamorphosis\nadephaga (ground beetles, tiger beetles, diving beetles): hind coxae divide the 1st visible abdominal segment, always simple (thread-like) antennae, adults and larvae usually predatory",
    "photos": [
-    "starter/i053-01.jpg",
-    "starter/i053-02.jpg",
-    "starter/i053-03.jpg",
-    "starter/i053-04.jpg",
-    "starter/i053-05.jpg",
-    "starter/i053-06.jpg",
-    "starter/i053-07.jpg"
+    "starter/k053-01.jpg",
+    "starter/k053-02.jpg",
+    "starter/k053-03.jpg",
+    "starter/k053-04.jpg",
+    "starter/k053-05.jpg",
+    "starter/k053-06.jpg",
+    "starter/k053-07.jpg"
    ],
    "photoEdits": [],
    "created": 53,
-   "rev": "10h8hnk",
-   "oldRevs": []
+   "rev": "1erm1sy",
+   "oldRevs": [
+    "10h8hnk"
+   ]
   },
   {
    "id": "starter-a054",
@@ -1959,18 +2003,20 @@
    ],
    "traits": "coleoptera (beetles): front wings hardened into elytra, chewing mouthparts, complete metamorphosis\npolyphaga (most beetles: ladybirds, scarabs, weevils, longhorns): hind coxae do not divide the 1st abdominal segment, antennae often modified (clubbed, lamellate, elbowed, saw-like), all kinds of food",
    "photos": [
-    "starter/i054-01.jpg",
-    "starter/i054-02.jpg",
-    "starter/i054-03.jpg",
-    "starter/i054-04.jpg",
-    "starter/i054-05.jpg",
-    "starter/i054-06.jpg",
-    "starter/i054-07.jpg"
+    "starter/k054-01.jpg",
+    "starter/k054-02.jpg",
+    "starter/k054-03.jpg",
+    "starter/k054-04.jpg",
+    "starter/k054-05.jpg",
+    "starter/k054-06.jpg",
+    "starter/k054-07.jpg"
    ],
    "photoEdits": [],
    "created": 54,
-   "rev": "19rfo5l",
-   "oldRevs": []
+   "rev": "1gikpqj",
+   "oldRevs": [
+    "19rfo5l"
+   ]
   },
   {
    "id": "starter-a055",
@@ -1982,18 +2028,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\nmecoptera (scorpionflies): head prolonged into a beak with chewing mouthparts at the tip, 2 pairs of similar (often spotted) wings, long thread-like antennae, male's genital capsule curled up like a scorpion's tail",
    "photos": [
-    "starter/i055-01.jpg",
-    "starter/i055-02.jpg",
-    "starter/i055-03.jpg",
-    "starter/i055-04.jpg",
-    "starter/i055-05.jpg",
-    "starter/i055-06.jpg",
-    "starter/i055-07.jpg"
+    "starter/k055-01.jpg",
+    "starter/k055-02.jpg",
+    "starter/k055-03.jpg",
+    "starter/k055-04.jpg",
+    "starter/k055-05.jpg",
+    "starter/k055-06.jpg",
+    "starter/k055-07.jpg"
    ],
    "photoEdits": [],
    "created": 55,
-   "rev": "zrlozs",
-   "oldRevs": []
+   "rev": "15gdl3e",
+   "oldRevs": [
+    "zrlozs"
+   ]
   },
   {
    "id": "starter-a056",
@@ -2005,18 +2053,20 @@
    ],
    "traits": "diptera (flies): only 1 pair of wings, hind wings turned into halteres, sucking or piercing mouthparts, legless larvae\nnematocera (mosquitoes, crane flies, midges, black flies): long thin antennae with many (more than 6) similar segments, usually slender with long legs",
    "photos": [
-    "starter/i056-01.jpg",
-    "starter/i056-02.jpg",
-    "starter/i056-03.jpg",
-    "starter/i056-04.jpg",
-    "starter/i056-05.jpg",
-    "starter/i056-06.jpg",
-    "starter/i056-07.jpg"
+    "starter/k056-01.jpg",
+    "starter/k056-02.jpg",
+    "starter/k056-03.jpg",
+    "starter/k056-04.jpg",
+    "starter/k056-05.jpg",
+    "starter/k056-06.jpg",
+    "starter/k056-07.jpg"
    ],
    "photoEdits": [],
    "created": 56,
-   "rev": "14z4u83",
-   "oldRevs": []
+   "rev": "u960u9",
+   "oldRevs": [
+    "14z4u83"
+   ]
   },
   {
    "id": "starter-a057",
@@ -2028,18 +2078,20 @@
    ],
    "traits": "diptera (flies): only 1 pair of wings, hind wings turned into halteres, sucking or piercing mouthparts, legless larvae\nbrachycera (house flies, horse flies, hoverflies, bee flies): short antennae with 3 segments, often with a bristle (arista), stout body",
    "photos": [
-    "starter/i057-01.jpg",
-    "starter/i057-02.jpg",
-    "starter/i057-03.jpg",
-    "starter/i057-04.jpg",
-    "starter/i057-05.jpg",
-    "starter/i057-06.jpg",
-    "starter/i057-07.jpg"
+    "starter/k057-01.jpg",
+    "starter/k057-02.jpg",
+    "starter/k057-03.jpg",
+    "starter/k057-04.jpg",
+    "starter/k057-05.jpg",
+    "starter/k057-06.jpg",
+    "starter/k057-07.jpg"
    ],
    "photoEdits": [],
    "created": 57,
-   "rev": "1vj52z9",
-   "oldRevs": []
+   "rev": "77zudz",
+   "oldRevs": [
+    "1vj52z9"
+   ]
   },
   {
    "id": "starter-a058",
@@ -2051,18 +2103,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\nsiphonaptera (fleas): wingless, flattened from side to side, piercing-sucking mouthparts, no compound eyes, short antennae in grooves, combs of spines (ctenidia), long jumping hind legs, blood-sucking on mammals and birds",
    "photos": [
-    "starter/i058-01.jpg",
-    "starter/i058-02.jpg",
-    "starter/i058-03.jpg",
-    "starter/i058-04.jpg",
-    "starter/i058-05.jpg",
-    "starter/i058-06.jpg",
-    "starter/i058-07.jpg"
+    "starter/k058-01.jpg",
+    "starter/k058-02.jpg",
+    "starter/k058-03.jpg",
+    "starter/k058-04.jpg",
+    "starter/k058-05.jpg",
+    "starter/k058-06.jpg",
+    "starter/k058-07.jpg"
    ],
    "photoEdits": [],
    "created": 58,
-   "rev": "v7ajgg",
-   "oldRevs": []
+   "rev": "zgdzk2",
+   "oldRevs": [
+    "v7ajgg"
+   ]
   },
   {
    "id": "starter-a059",
@@ -2074,18 +2128,20 @@
    ],
    "traits": "holometabola: complete metamorphosis (egg, larva, pupa, adult)\ntrichoptera (caddisflies): moth-like, 2 pairs of hairy wings (hairs, not scales) held roof-like, very long thread-like antennae, long legs and palps, no proboscis\nlarva: aquatic, often builds a portable case of sand, stones or plants",
    "photos": [
-    "starter/i059-01.jpg",
-    "starter/i059-02.jpg",
-    "starter/i059-03.jpg",
-    "starter/i059-04.jpg",
-    "starter/i059-05.jpg",
-    "starter/i059-06.jpg",
-    "starter/i059-07.jpg"
+    "starter/k059-01.jpg",
+    "starter/k059-02.jpg",
+    "starter/k059-03.jpg",
+    "starter/k059-04.jpg",
+    "starter/k059-05.jpg",
+    "starter/k059-06.jpg",
+    "starter/k059-07.jpg"
    ],
    "photoEdits": [],
    "created": 59,
-   "rev": "nnsdsi",
-   "oldRevs": []
+   "rev": "jeoxow",
+   "oldRevs": [
+    "nnsdsi"
+   ]
   },
   {
    "id": "starter-a060",
@@ -2097,19 +2153,21 @@
    ],
    "traits": "hexapoda: head + thorax (3 segments) + abdomen, 6 legs (1 pair on each thorax segment)\nlepidoptera (moths and butterflies): 2 pairs of wings with scales, proboscis, long legs\nlarva = caterpillar: legs + prolegs, mandibles",
    "photos": [
-    "starter/i060-01.jpg",
-    "starter/i060-02.jpg",
-    "starter/i060-03.jpg",
-    "starter/i060-04.jpg",
-    "starter/i060-05.jpg",
-    "starter/i060-06.jpg",
-    "starter/i060-07.jpg",
-    "starter/i060-08.jpg"
+    "starter/k060-01.jpg",
+    "starter/k060-02.jpg",
+    "starter/k060-03.jpg",
+    "starter/k060-04.jpg",
+    "starter/k060-05.jpg",
+    "starter/k060-06.jpg",
+    "starter/k060-07.jpg",
+    "starter/k060-08.jpg"
    ],
    "photoEdits": [],
    "created": 60,
-   "rev": "1xqkt3t",
-   "oldRevs": []
+   "rev": "1ilzknt",
+   "oldRevs": [
+    "1xqkt3t"
+   ]
   },
   {
    "id": "starter-a061",
@@ -2121,18 +2179,20 @@
    ],
    "traits": "hymenoptera: 2 pairs of membranous wings hooked together, reduced venation, chewing or lapping mouthparts\nsymphyta (sawflies, horntails): no wasp waist (abdomen broadly joined to the thorax), no sting (saw-like ovipositor), caterpillar-like larvae, phytophagous",
    "photos": [
-    "starter/i061-01.jpg",
-    "starter/i061-02.jpg",
-    "starter/i061-03.jpg",
-    "starter/i061-04.jpg",
-    "starter/i061-05.jpg",
-    "starter/i061-06.jpg",
-    "starter/i061-07.jpg"
+    "starter/k061-01.jpg",
+    "starter/k061-02.jpg",
+    "starter/k061-03.jpg",
+    "starter/k061-04.jpg",
+    "starter/k061-05.jpg",
+    "starter/k061-06.jpg",
+    "starter/k061-07.jpg"
    ],
    "photoEdits": [],
    "created": 61,
-   "rev": "qc4f4k",
-   "oldRevs": []
+   "rev": "1u6s15i",
+   "oldRevs": [
+    "qc4f4k"
+   ]
   },
   {
    "id": "starter-a062",
@@ -2144,18 +2204,20 @@
    ],
    "traits": "hymenoptera: 2 pairs of membranous wings hooked together, reduced venation, chewing or lapping mouthparts\napocrita (wasps, bees, ants, parasitoid wasps): narrow wasp waist (petiole), ovipositor often turned into a sting, legless larvae",
    "photos": [
-    "starter/i062-01.jpg",
-    "starter/i062-02.jpg",
-    "starter/i062-03.jpg",
-    "starter/i062-04.jpg",
-    "starter/i062-05.jpg",
-    "starter/i062-06.jpg",
-    "starter/i062-07.jpg"
+    "starter/k062-01.jpg",
+    "starter/k062-02.jpg",
+    "starter/k062-03.jpg",
+    "starter/k062-04.jpg",
+    "starter/k062-05.jpg",
+    "starter/k062-06.jpg",
+    "starter/k062-07.jpg"
    ],
    "photoEdits": [],
    "created": 62,
-   "rev": "1ep14ev",
-   "oldRevs": []
+   "rev": "yq3iol",
+   "oldRevs": [
+    "1ep14ev"
+   ]
   }
  ]
 }
