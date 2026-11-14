@@ -403,3 +403,192 @@ Photos on the cards below come from iNaturalist (research-grade observations), u
 - `m030-02.jpg` (order: Araneida): *Misumena vatia*, no rights reserved, [observation](https://www.inaturalist.org/observations/135571228)
 - `m030-03.jpg` (order: Araneida): *Dolomedes*, (c) Denis Otkydach, some rights reserved (CC BY), [observation](https://www.inaturalist.org/observations/90137688)
 - `m030-04.jpg` (order: Araneida): *Pisaura mirabilis*, (c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), [observation](https://www.inaturalist.org/observations/148504961)
+
+
+### Chilopoda (extra)
+
+- `i031-08.jpg`: *Scutigera coleoptrata*, no rights reserved, [CC0](https://www.inaturalist.org/observations/85134729)
+- `i031-09.jpg`: *Cryptops parisi*, (c) Amelie Keane, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/279214564)
+
+### Diplopoda (extra)
+
+- `i032-08.jpg`: *Strongylosoma stigmatosum*, (c) mrkisaolamb, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/278682980)
+- `i032-09.jpg`: *Ommatoiulus bipartitus*, (c) Hélio Suarez, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/314210291)
+
+### Collembola (extra)
+
+- `i033-08.jpg`: *Entomobrya petri*, (c) Alfie Felton, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/287973052)
+- `i033-09.jpg`: *Dicyrtomina ornata*, (c) Rupert Lees, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/200114039)
+
+### Archaeognatha (extra)
+
+- `i034-08.jpg`: *Lepismachilis rozsypali*, (c) carnifex, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/13424098)
+- `i034-09.jpg`: *Petrobius maritimus*, (c) Conor McKinney, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/74930521)
+- `i034-10.jpg`: *Trigoniophthalmus alternatus*, (c) Matteo Bellucci, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/232589086)
+- `i034-11.jpg`: *Machilis*, (c) Philipp Pavelka, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/25310961)
+
+### Zygentoma (extra)
+
+- `i035-08.jpg`: *Ctenolepisma longicaudatum*, (c) Gianni Del Bufalo bygdb, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/128883460)
+- `i035-09.jpg`: *Atelura formicaria*, (c) Karol Ox, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/255311283)
+- `i035-10.jpg`: *Ctenolepisma phantasma*, no rights reserved, [CC0](https://www.inaturalist.org/observations/409481429)
+- `i035-11.jpg`: *Ctenolepisma longicaudatum*, (c) Sandra Cellina, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/61930342)
+
+### Ephemeroptera (extra)
+
+- `i036-08.jpg`: *Habroleptoides confusa*, no rights reserved, [CC0](https://www.inaturalist.org/observations/272514360)
+- `i036-09.jpg`: *Serratella ignita*, (c) Sinclair Laing, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/374306720)
+
+### Zygoptera (extra)
+
+- `i037-08.jpg`: *Ischnura elegans*, no rights reserved, [CC0](https://www.inaturalist.org/observations/217098958)
+- `i037-09.jpg`: *Calopteryx virgo*, (c) rober025, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/84022046)
+- `i037-10.jpg`: *Sympecma fusca*, (c) Christoph Moning, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/37922024)
+- `i037-11.jpg`: *Platycnemis pennipes*, (c) Alexis Tinker-Tsavalas, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/49111530)
+
+### Anisoptera (extra)
+
+- `i038-08.jpg`: *Aeshna cyanea*, (c) pearcefamily, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/129015999)
+- `i038-09.jpg`: *Cordulegaster boltonii*, (c) R Clarke, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/62933980)
+
+### Plecoptera (extra)
+
+- `i039-08.jpg`: *Perla grandis*, (c) carnifex, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/51798698)
+- `i039-09.jpg`: *Protonemura meyeri*, (c) Tomos Hughes, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/346177054)
+- `i039-10.jpg`: *Capnia vidua brachyptera*, (c) Justin Johnsen, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/5323281)
+
+### Blattodea (extra)
+
+- `i040-08.jpg`: *Blattella germanica*, (c) Ruben Ciantia, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/63989661)
+- `i040-09.jpg`: *Reticulitermes lucifugus*, (c) Mario Bassini, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/88160612)
+
+### Mantodea (extra)
+
+- `i041-08.jpg`: *Hierodula transcaucasica*, no rights reserved, [CC0](https://www.inaturalist.org/observations/307275102)
+- `i041-09.jpg`: *Ameles fasciipennis*, (c) Mario Oswald, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/142071737)
+- `i041-10.jpg`: *Armene pusilla*, (c) Pavel Smirnov, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/127991526)
+
+### Ensifera (extra)
+
+- `i042-08.jpg`: *Eumodicogryllus bordigalensis*, (c) Carlos Muñoz-Amezcua, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/393506356)
+- `i042-09.jpg`: *Dolichopoda palpata*, (c) Golfopolikayak, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/56913952)
+
+### Caelifera (extra)
+
+- `i043-08.jpg`: *Pyrgomorpha conica*, (c) Gonzalo Ganda Álvarez, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/279413325)
+- `i043-09.jpg`: *Paratettix meridionalis*, (c) Samuel GUIRAUDOU, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/250769989)
+- `i043-10.jpg`: *Xya variegata*, (c) carnifex, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/121728110)
+
+### Anoplura (extra)
+
+- `i045-08.jpg`: *Pediculus humanus*, no rights reserved, [CC0](https://www.inaturalist.org/observations/269797016)
+- `i045-09.jpg`: *Pediculus humanus*, (c) Marcello Manara, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/255575554)
+- `i045-10.jpg`: *Pediculus humanus*, (c) Chris walker, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/178488261)
+
+### Aphidoidea (extra)
+
+- `i046-08.jpg`: *Aphis nerii*, (c) Gianni Del Bufalo bygdb, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/405765527)
+
+### Coccoidea (extra)
+
+- `i047-08.jpg`: *Coccus hesperidum*, (c) Elena Obradović, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/268788074)
+- `i047-09.jpg`: *Icerya purchasi*, (c) Vicente Lopes, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/71454361)
+- `i047-10.jpg`: *Pseudococcus longispinus*, (c) Amelie Keane, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/245555789)
+- `i047-11.jpg`: *Dactylopius opuntiae*, no rights reserved, [CC0](https://www.inaturalist.org/observations/262362339)
+
+### Auchenorrhyncha (extra)
+
+- `i048-08.jpg`: *Graphocephala fennahi*, (c) Hannes Dahm, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/128636099)
+- `i048-09.jpg`: *Metcalfa pruinosa*, no rights reserved, [CC0](https://www.inaturalist.org/observations/126098845)
+
+### Heteroptera (extra)
+
+- `i049-08.jpg`: *Enoplops scapha*, (c) Katrin Simon, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/250338069)
+- `i049-09.jpg`: *Tinicephalus hortulanus*, (c) Adrien Nouailhane, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/213708503)
+- `i049-10.jpg`: *Phymata crassipes*, (c) Radu Teodoreanu, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/287059040)
+
+### Neuroptera (extra)
+
+- `i050-08.jpg`: *Drepanepteryx algida*, (c) sergej71, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/108502096)
+- `i050-09.jpg`: *Conwentzia pineticola*, (c) carnifex, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/104729268)
+
+### Megaloptera (extra)
+
+- `i051-08.jpg`: *Sialis sordida*, (c) Daniel Onneweer, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/274795846)
+- `i051-09.jpg`: *Sialis*, (c) Tone Killick, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/214843796)
+- `i051-10.jpg`: *Sialis*, (c) karliatje, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/352920386)
+
+### Raphidioptera (extra)
+
+- `i052-08.jpg`: *Fibla hesperica*, (c) Darío Calvente Viera, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/267194692)
+- `i052-09.jpg`: *Parainocellia bicolor*, (c) Drepanostoma, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/67995925)
+
+### Adephaga (extra)
+
+- `i053-08.jpg`: *Harpalus rufipes*, (c) Emil Jantke, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/225032645)
+- `i053-09.jpg`: *Calomera aphrodisia panormitana*, no rights reserved, [CC0](https://www.inaturalist.org/observations/387482656)
+- `i053-10.jpg`: *Gyrinus substriatus*, (c) Daniel Tomas-López, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/291289064)
+- `i053-11.jpg`: *Haliplus flavicollis*, (c) Johan Kjær Prehn, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/95546247)
+
+### Mecoptera (extra)
+
+- `i055-08.jpg`: *Boreus westwoodii*, (c) ajott, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/37844464)
+- `i055-09.jpg`: *Panorpa communis*, no rights reserved, [CC0](https://www.inaturalist.org/observations/227761181)
+
+### Nematocera (extra)
+
+- `i056-08.jpg`: *Ctenophora flaveolata*, (c) lalaia, some rights reserved (CC BY), [CC BY](http://www.inaturalist.org/observations/2974395)
+- `i056-09.jpg`: *Dasineura gleditchiae*, (c) jamie-aa, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/240347702)
+- `i056-10.jpg`: *Microtendipes pedellus*, (c) agujaceratops, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/87782053)
+- `i056-11.jpg`: *Rhabdomastix edwardsi*, (c) krickard0505, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/358047453)
+
+### Brachycera (extra)
+
+- `i057-08.jpg`: *Eristalis arbustorum*, (c) Вячеслав Юсупов, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/48830241)
+- `i057-09.jpg`: *Satanas gigas*, (c) Roman, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/29449251)
+- `i057-10.jpg`: *Protypusia grata*, no rights reserved, [CC0](https://www.inaturalist.org/observations/52133708)
+
+### Siphonaptera (extra)
+
+- `i058-08.jpg`: *Ctenocephalides felis*, (c) captainclover, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/129281160)
+- `i058-09.jpg`: *Nosopsyllus fasciatus*, (c) Sean Hartnett, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/195500828)
+- `i058-10.jpg`: *Ctenocephalides felis*, (c) Kieran Roy Powell, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/207812908)
+
+### Trichoptera (extra)
+
+- `i059-08.jpg`: *Glyphotaelius pellucidus*, (c) Sascha Nunheim, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/113747085)
+- `i059-09.jpg`: *Oecetis ochracea*, no rights reserved, [CC0](https://www.inaturalist.org/observations/131568883)
+- `i059-10.jpg`: *Hydropsyche*, (c) Michael Grundner, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/177361793)
+- `i059-11.jpg`: *Agraylea*, (c) Michel Langeveld, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/239560966)
+
+### Lepidoptera (extra)
+
+- `i060-09.jpg`: *Calliteara pudibunda*, (c) Sylvain Montagner, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/176245921)
+- `i060-10.jpg`: *Episema korsakovi*, (c) Demian Hiß, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/189331335)
+
+### Symphyta (extra)
+
+- `i061-08.jpg`: *Arge cyanocrocea*, (c) Jon Mortin, some rights reserved (CC BY), [CC BY](http://www.inaturalist.org/observations/413886)
+- `i061-09.jpg`: *Urocerus augur*, no rights reserved, [CC0](https://www.inaturalist.org/observations/86057591)
+- `i061-10.jpg`: *Gilpinia socia*, no rights reserved, [CC0](https://www.inaturalist.org/observations/119889071)
+
+### Apocrita (extra)
+
+- `i062-08.jpg`: *Xylocopa valga*, no rights reserved, [CC0](https://www.inaturalist.org/observations/268233021)
+- `i062-09.jpg`: *Rhyssa persuasoria*, (c) agujaceratops, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/82204923)
+
+
+### Dermaptera (extra)
+
+- `i044-08.jpg`: *Euborellia annulipes*, (c) Giacomo Navari, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/237850212)
+- `i044-09.jpg`: *Labidura riparia*, (c) Marcello Manara, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/309544849)
+- `i044-10.jpg`: *Labia minor*, no rights reserved, [CC0](https://www.inaturalist.org/observations/226156875)
+- `i044-11.jpg`: *Euborellia moesta*, no rights reserved, [CC0](https://www.inaturalist.org/observations/248606881)
+
+### Polyphaga (extra)
+
+- `i054-08.jpg`: *Cossyphus tauricus*, (c) katunchik, some rights reserved (CC BY), [CC BY](http://www.inaturalist.org/observations/4393167)
+- `i054-09.jpg`: *Lomechusa emarginata*, no rights reserved, [CC0](https://www.inaturalist.org/observations/79012039)
+- `i054-10.jpg`: *Denticollis rubens*, no rights reserved, [CC0](https://www.inaturalist.org/observations/217964544)
+- `i054-11.jpg`: *Cantharis quadripunctata*, no rights reserved, [CC0](https://www.inaturalist.org/observations/218089091)
+- `i054-12.jpg`: *Lampyris noctiluca*, (c) S, some rights reserved (CC BY), [CC BY](https://www.inaturalist.org/observations/376344146)

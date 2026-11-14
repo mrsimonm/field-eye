@@ -1,0 +1,20 @@
+[
+  {
+    "card_no": 44,
+    "name": "Dermaptera",
+    "rank": "order",
+    "group": "subphylum: Hexapoda",
+    "expect": "Insecta",
+    "n": 10,
+    "notes": "neoptera (polyneoptera): chewing mouthparts, wings folded on the abdomen\ndermaptera (earwigs): short tegmens, hind wings folded under them (often fly), no ocelli, massive forceps-like 1-segmented cerci (hunting, defence, folding the wings), nocturnal, parental care"
+  },
+  {
+    "card_no": 54,
+    "name": "Polyphaga",
+    "rank": "suborder",
+    "group": "subphylum: Hexapoda",
+    "expect": "Coleoptera",
+    "n": 10,
+    "notes": "coleoptera (beetles): front wings hardened into elytra, chewing mouthparts, complete metamorphosis\npolyphaga (most beetles: ladybirds, scarabs, weevils, longhorns): hind coxae do not divide the 1st abdominal segment, antennae often modified (clubbed, lamellate, elbowed, saw-like), all kinds of food"
+  }
+]
