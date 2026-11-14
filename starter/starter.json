@@ -16,13 +16,18 @@
     "starter/a001-03.jpg",
     "starter/a001-04.jpg",
     "starter/a001-05.jpg",
-    "starter/a001-06.jpg"
+    "starter/a001-06.jpg",
+    "starter/m001-01.jpg",
+    "starter/m001-02.jpg",
+    "starter/m001-03.jpg",
+    "starter/m001-04.jpg"
    ],
    "photoEdits": [],
    "created": 1,
-   "rev": "ymse63",
+   "rev": "ubqp1b",
    "oldRevs": [
-    "j5ud5e"
+    "j5ud5e",
+    "ymse63"
    ]
   },
   {
@@ -39,7 +44,11 @@
     "starter/a002-02.jpg",
     "starter/a002-03.jpg",
     "starter/a002-04.jpg",
-    "starter/a002-05.jpg"
+    "starter/a002-05.jpg",
+    "starter/m002-01.jpg",
+    "starter/m002-02.jpg",
+    "starter/m002-03.jpg",
+    "starter/m002-04.jpg"
    ],
    "photoEdits": [
     {
@@ -60,9 +69,10 @@
     }
    ],
    "created": 2,
-   "rev": "2xf8v7",
+   "rev": "17066xz",
    "oldRevs": [
-    "1ojbgi3"
+    "1ojbgi3",
+    "2xf8v7"
    ]
   },
   {
@@ -82,7 +92,11 @@
     "starter/a003-05.jpg",
     "starter/a003-06.jpg",
     "starter/a003-07.jpg",
-    "starter/a003-08.jpg"
+    "starter/a003-08.jpg",
+    "starter/m003-01.jpg",
+    "starter/m003-02.jpg",
+    "starter/m003-03.jpg",
+    "starter/m003-04.jpg"
    ],
    "photoEdits": [
     {
@@ -127,8 +141,9 @@
     }
    ],
    "created": 3,
-   "rev": "8q7q5c",
+   "rev": "bbk944",
    "oldRevs": [
+    "8q7q5c",
     "yy3q3e"
    ]
   },
@@ -148,7 +163,9 @@
     "starter/a004-04.jpg",
     "starter/a004-05.jpg",
     "starter/a004-06.jpg",
-    "starter/a004-07.jpg"
+    "starter/a004-07.jpg",
+    "starter/m004-01.jpg",
+    "starter/m004-02.jpg"
    ],
    "photoEdits": [
     {
@@ -169,8 +186,9 @@
     }
    ],
    "created": 4,
-   "rev": "f8qg5s",
+   "rev": "l04037",
    "oldRevs": [
+    "f8qg5s",
     "tmjdts"
    ]
   },
@@ -192,7 +210,8 @@
     "starter/a005-06.jpg",
     "starter/a005-07.jpg",
     "starter/a005-08.jpg",
-    "starter/a005-09.jpg"
+    "starter/a005-09.jpg",
+    "starter/m005-01.jpg"
    ],
    "photoEdits": [
     {
@@ -237,9 +256,10 @@
     }
    ],
    "created": 5,
-   "rev": "p9b623",
+   "rev": "ujpomw",
    "oldRevs": [
-    "2bbxyt"
+    "2bbxyt",
+    "p9b623"
    ]
   },
   {
@@ -257,7 +277,10 @@
     "starter/a006-03.jpg",
     "starter/a006-04.jpg",
     "starter/a006-05.jpg",
-    "starter/a006-06.jpg"
+    "starter/a006-06.jpg",
+    "starter/m006-01.jpg",
+    "starter/m006-02.jpg",
+    "starter/m006-03.jpg"
    ],
    "photoEdits": [
     {
@@ -270,9 +293,10 @@
     }
    ],
    "created": 6,
-   "rev": "vwf2n7",
+   "rev": "1ceg2ky",
    "oldRevs": [
-    "1by43de"
+    "1by43de",
+    "vwf2n7"
    ]
   },
   {
@@ -289,7 +313,12 @@
     "starter/a007-02.jpg",
     "starter/a007-03.jpg",
     "starter/a007-04.jpg",
-    "starter/a007-05.jpg"
+    "starter/a007-05.jpg",
+    "starter/m007-01.jpg",
+    "starter/m007-02.jpg",
+    "starter/m007-03.jpg",
+    "starter/m007-04.jpg",
+    "starter/m007-05.jpg"
    ],
    "photoEdits": [
     {
@@ -302,9 +331,10 @@
     }
    ],
    "created": 7,
-   "rev": "1lalg8c",
+   "rev": "w9sdj1",
    "oldRevs": [
-    "13evvj9"
+    "13evvj9",
+    "1lalg8c"
    ]
   },
   {
@@ -326,7 +356,10 @@
     "starter/a008-07.jpg",
     "starter/a008-08.jpg",
     "starter/a008-09.jpg",
-    "starter/a008-10.jpg"
+    "starter/a008-10.jpg",
+    "starter/m008-01.jpg",
+    "starter/m008-02.jpg",
+    "starter/m008-03.jpg"
    ],
    "photoEdits": [
     {
@@ -363,9 +396,10 @@
     }
    ],
    "created": 8,
-   "rev": "1eg3mil",
+   "rev": "18jtj42",
    "oldRevs": [
-    "1eef2qf"
+    "1eef2qf",
+    "1eg3mil"
    ]
   },
   {
@@ -390,7 +424,9 @@
     "starter/a009-10.jpg",
     "starter/a009-11.jpg",
     "starter/a009-12.jpg",
-    "starter/a009-13.jpg"
+    "starter/a009-13.jpg",
+    "starter/m009-01.jpg",
+    "starter/m009-02.jpg"
    ],
    "photoEdits": [
     {
@@ -427,9 +463,10 @@
     }
    ],
    "created": 9,
-   "rev": "koqmio",
+   "rev": "olotk3",
    "oldRevs": [
-    "9o120n"
+    "9o120n",
+    "koqmio"
    ]
   },
   {
@@ -451,7 +488,9 @@
     "starter/a010-07.jpg",
     "starter/a010-08.jpg",
     "starter/a010-09.jpg",
-    "starter/a010-10.jpg"
+    "starter/a010-10.jpg",
+    "starter/m010-01.jpg",
+    "starter/m010-02.jpg"
    ],
    "photoEdits": [
     {
@@ -512,9 +551,10 @@
     }
    ],
    "created": 10,
-   "rev": "e4r8u3",
+   "rev": "1a8nwwo",
    "oldRevs": [
-    "1twdqh4"
+    "1twdqh4",
+    "e4r8u3"
    ]
   },
   {
@@ -534,7 +574,11 @@
     "starter/a011-05.jpg",
     "starter/a011-06.jpg",
     "starter/a011-07.jpg",
-    "starter/a011-08.jpg"
+    "starter/a011-08.jpg",
+    "starter/m011-01.jpg",
+    "starter/m011-02.jpg",
+    "starter/m011-03.jpg",
+    "starter/m011-04.jpg"
    ],
    "photoEdits": [
     {
@@ -547,8 +591,9 @@
     }
    ],
    "created": 11,
-   "rev": "1wlljye",
+   "rev": "1awd2v6",
    "oldRevs": [
+    "1wlljye",
     "xj4w5p"
    ]
   },
@@ -573,7 +618,8 @@
     "starter/a012-09.jpg",
     "starter/a012-10.jpg",
     "starter/a012-11.jpg",
-    "starter/a012-12.jpg"
+    "starter/a012-12.jpg",
+    "starter/m012-01.jpg"
    ],
    "photoEdits": [
     {
@@ -618,9 +664,10 @@
     }
    ],
    "created": 12,
-   "rev": "9naw7w",
+   "rev": "1s982ll",
    "oldRevs": [
-    "1hlhmiv"
+    "1hlhmiv",
+    "9naw7w"
    ]
   },
   {
@@ -643,12 +690,15 @@
     "starter/a013-08.jpg",
     "starter/a013-09.jpg",
     "starter/a013-10.jpg",
-    "starter/a013-11.jpg"
+    "starter/a013-11.jpg",
+    "starter/m013-01.jpg",
+    "starter/m013-02.jpg"
    ],
    "photoEdits": [],
    "created": 13,
-   "rev": "1jxk1o",
+   "rev": "qcc8wv",
    "oldRevs": [
+    "1jxk1o",
     "9feutp"
    ]
   },
@@ -671,13 +721,17 @@
     "starter/a014-07.jpg",
     "starter/a014-08.jpg",
     "starter/a014-09.jpg",
-    "starter/a014-10.jpg"
+    "starter/a014-10.jpg",
+    "starter/m014-01.jpg",
+    "starter/m014-02.jpg",
+    "starter/m014-03.jpg"
    ],
    "photoEdits": [],
    "created": 14,
-   "rev": "z5ml5x",
+   "rev": "1a63l9z",
    "oldRevs": [
-    "4ehhe5"
+    "4ehhe5",
+    "z5ml5x"
    ]
   },
   {
@@ -698,7 +752,9 @@
     "starter/a015-06.jpg",
     "starter/a015-07.jpg",
     "starter/a015-08.jpg",
-    "starter/a015-09.jpg"
+    "starter/a015-09.jpg",
+    "starter/m015-01.jpg",
+    "starter/m015-02.jpg"
    ],
    "photoEdits": [
     {
@@ -727,9 +783,10 @@
     }
    ],
    "created": 15,
-   "rev": "xi339w",
+   "rev": "16l5tiv",
    "oldRevs": [
-    "fa6xh8"
+    "fa6xh8",
+    "xi339w"
    ]
   },
   {
@@ -752,7 +809,9 @@
     "starter/a016-08.jpg",
     "starter/a016-09.jpg",
     "starter/a016-10.jpg",
-    "starter/a016-11.jpg"
+    "starter/a016-11.jpg",
+    "starter/m016-01.jpg",
+    "starter/m016-02.jpg"
    ],
    "photoEdits": [
     {
@@ -773,8 +832,9 @@
     }
    ],
    "created": 16,
-   "rev": "1juzyf8",
+   "rev": "1o0naqv",
    "oldRevs": [
+    "1juzyf8",
     "g97bh"
    ]
   },
@@ -798,7 +858,9 @@
     "starter/a017-08.jpg",
     "starter/a017-09.jpg",
     "starter/a017-10.jpg",
-    "starter/a017-11.jpg"
+    "starter/a017-11.jpg",
+    "starter/m017-01.jpg",
+    "starter/m017-02.jpg"
    ],
    "photoEdits": [
     {
@@ -819,9 +881,10 @@
     }
    ],
    "created": 17,
-   "rev": "eov7yn",
+   "rev": "eu10vg",
    "oldRevs": [
-    "1hlhe2z"
+    "1hlhe2z",
+    "eov7yn"
    ]
   },
   {
@@ -903,12 +966,15 @@
     "starter/a019-06.jpg",
     "starter/a019-07.jpg",
     "starter/a019-08.jpg",
-    "starter/a019-09.jpg"
+    "starter/a019-09.jpg",
+    "starter/m019-01.jpg",
+    "starter/m019-02.jpg"
    ],
    "photoEdits": [],
    "created": 19,
-   "rev": "4t8y70",
+   "rev": "1fbm2yn",
    "oldRevs": [
+    "4t8y70",
     "qems37"
    ]
   },
@@ -992,7 +1058,6 @@
    "photos": [
     "starter/a021-01.jpg",
     "starter/a021-02.jpg",
-    "starter/a021-03.jpg",
     "starter/a021-04.jpg",
     "starter/a021-05.jpg",
     "starter/a021-06.jpg",
@@ -1002,7 +1067,9 @@
     "starter/a021-10.jpg",
     "starter/a021-11.jpg",
     "starter/a021-12.jpg",
-    "starter/a021-13.jpg"
+    "starter/a021-13.jpg",
+    "starter/m021-01.jpg",
+    "starter/m021-02.jpg"
    ],
    "photoEdits": [
     {
@@ -1015,9 +1082,10 @@
     }
    ],
    "created": 21,
-   "rev": "5m7489",
+   "rev": "a2j4ep",
    "oldRevs": [
-    "1qr6bgh"
+    "1qr6bgh",
+    "5m7489"
    ]
   },
   {
@@ -1035,21 +1103,23 @@
     "starter/a022-03.jpg",
     "starter/a022-04.jpg",
     "starter/a022-05.jpg",
-    "starter/a022-06.jpg",
     "starter/a022-07.jpg",
     "starter/a022-08.jpg",
     "starter/a022-09.jpg",
     "starter/a022-10.jpg",
-    "starter/a022-11.jpg",
     "starter/a022-12.jpg",
     "starter/a022-13.jpg",
-    "starter/a022-14.jpg"
+    "starter/m022-01.jpg",
+    "starter/m022-02.jpg",
+    "starter/m022-03.jpg",
+    "starter/m022-04.jpg"
    ],
    "photoEdits": [],
    "created": 22,
-   "rev": "1f2wnd0",
+   "rev": "1dawe8o",
    "oldRevs": [
-    "178ukgt"
+    "178ukgt",
+    "1f2wnd0"
    ]
   },
   {
@@ -1072,8 +1142,10 @@
     "starter/a023-08.jpg",
     "starter/a023-09.jpg",
     "starter/a023-10.jpg",
-    "starter/a023-11.jpg",
-    "starter/a023-12.jpg"
+    "starter/a023-12.jpg",
+    "starter/m023-01.jpg",
+    "starter/m023-02.jpg",
+    "starter/m023-03.jpg"
    ],
    "photoEdits": [
     {
@@ -1126,8 +1198,9 @@
     }
    ],
    "created": 23,
-   "rev": "1plilur",
+   "rev": "u9aslr",
    "oldRevs": [
+    "1plilur",
     "o8yybx"
    ]
   },
@@ -1142,7 +1215,6 @@
    "traits": "amphi = both kinds\ncrustacea: 2 pairs of antennae, body = head + thorax + abdomen or cephalothorax + abdomen, segmented body and limbs\ncl. malacostraca: hard (calcified) shell, legs also on the abdomen\namphipoda (scuds, sand hoppers): flattened from the sides, curved (shrimp-like) body, no carapace, front legs with small grasping claws, eyes not stalked",
    "photos": [
     "starter/a024-01.jpg",
-    "starter/a024-02.jpg",
     "starter/a024-03.jpg",
     "starter/a024-04.jpg",
     "starter/a024-05.jpg",
@@ -1153,7 +1225,10 @@
     "starter/a024-10.jpg",
     "starter/a024-11.jpg",
     "starter/a024-12.jpg",
-    "starter/a024-13.jpg"
+    "starter/a024-13.jpg",
+    "starter/m024-01.jpg",
+    "starter/m024-02.jpg",
+    "starter/m024-03.jpg"
    ],
    "photoEdits": [
     {
@@ -1174,8 +1249,9 @@
     }
    ],
    "created": 24,
-   "rev": "f71ka4",
+   "rev": "mgm1eq",
    "oldRevs": [
+    "f71ka4",
     "ol9mdp"
    ]
   },
@@ -1190,14 +1266,15 @@
    "traits": "chelicerata: no antennae, body = prosoma (head + thorax) + opisthosoma (abdomen), 1 pair of chelicerae, 1 pair of pedipalps, 4 pairs of walking legs\nxiphosura (horseshoe crabs): large horseshoe-shaped prosoma shield, opisthosoma shield with spines, long spike-like tail (telson), book gills, marine",
    "photos": [
     "starter/a025-01.jpg",
-    "starter/a025-02.jpg",
     "starter/a025-03.jpg",
     "starter/a025-04.jpg",
     "starter/a025-05.jpg",
     "starter/a025-06.jpg",
     "starter/a025-07.jpg",
     "starter/a025-08.jpg",
-    "starter/a025-09.jpg"
+    "starter/a025-09.jpg",
+    "starter/m025-01.jpg",
+    "starter/m025-02.jpg"
    ],
    "photoEdits": [
     {
@@ -1210,9 +1287,10 @@
     }
    ],
    "created": 25,
-   "rev": "au0vmj",
+   "rev": "1cqvnd2",
    "oldRevs": [
-    "1gs50j"
+    "1gs50j",
+    "au0vmj"
    ]
   },
   {
@@ -1234,12 +1312,16 @@
     "starter/a031-07.jpg",
     "starter/a031-08.jpg",
     "starter/a031-09.jpg",
-    "starter/a031-10.jpg"
+    "starter/a031-10.jpg",
+    "starter/m026-01.jpg",
+    "starter/m026-02.jpg",
+    "starter/m026-03.jpg"
    ],
    "photoEdits": [],
    "created": 26,
-   "rev": "b9pboz",
+   "rev": "jukmbk",
    "oldRevs": [
+    "b9pboz",
     "j82dl7"
    ]
   },
@@ -1260,13 +1342,16 @@
     "starter/a027-05.jpg",
     "starter/a027-06.jpg",
     "starter/a027-07.jpg",
-    "starter/a027-08.jpg"
+    "starter/a027-08.jpg",
+    "starter/m027-01.jpg",
+    "starter/m027-02.jpg"
    ],
    "photoEdits": [],
    "created": 27,
-   "rev": "qsi13a",
+   "rev": "ett2cl",
    "oldRevs": [
-    "1jn9m6q"
+    "1jn9m6q",
+    "qsi13a"
    ]
   },
   {
@@ -1289,7 +1374,10 @@
     "starter/a028-08.jpg",
     "starter/a028-09.jpg",
     "starter/a028-10.jpg",
-    "starter/a028-11.jpg"
+    "starter/a028-11.jpg",
+    "starter/m028-01.jpg",
+    "starter/m028-02.jpg",
+    "starter/m028-03.jpg"
    ],
    "photoEdits": [
     {
@@ -1310,9 +1398,10 @@
     }
    ],
    "created": 28,
-   "rev": "1rxn3f2",
+   "rev": "kfjhir",
    "oldRevs": [
-    "16t9trv"
+    "16t9trv",
+    "1rxn3f2"
    ]
   },
   {
@@ -1330,11 +1419,13 @@
     "starter/a029-03.jpg",
     "starter/a029-04.jpg",
     "starter/a029-05.jpg",
-    "starter/a029-06.jpg",
     "starter/a029-07.jpg",
     "starter/a029-08.jpg",
     "starter/a029-09.jpg",
-    "starter/a029-10.jpg"
+    "starter/a029-10.jpg",
+    "starter/m029-01.jpg",
+    "starter/m029-02.jpg",
+    "starter/m029-03.jpg"
    ],
    "photoEdits": [
     {
@@ -1347,8 +1438,9 @@
     }
    ],
    "created": 29,
-   "rev": "1du889m",
+   "rev": "15xwf80",
    "oldRevs": [
+    "1du889m",
     "8vq99j"
    ]
   },
@@ -1372,7 +1464,11 @@
     "starter/a030-08.jpg",
     "starter/a030-09.jpg",
     "starter/a030-10.jpg",
-    "starter/a030-11.jpg"
+    "starter/a030-11.jpg",
+    "starter/m030-01.jpg",
+    "starter/m030-02.jpg",
+    "starter/m030-03.jpg",
+    "starter/m030-04.jpg"
    ],
    "photoEdits": [
     {
@@ -1409,9 +1505,10 @@
     }
    ],
    "created": 30,
-   "rev": "9nnytp",
+   "rev": "1ip5oy1",
    "oldRevs": [
-    "1nxs7fk"
+    "1nxs7fk",
+    "9nnytp"
    ]
   },
   {

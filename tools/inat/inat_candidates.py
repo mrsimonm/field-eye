@@ -16,8 +16,8 @@ API = "https://api.inaturalist.org/v1"
 UA = "field-eye-study-app"
 BY = ("cc0", "cc-by")
 BYNC = ("cc0", "cc-by", "cc-by-nc")
-STAGES = [("eu", True, BY), ("world", True, BY), ("eu", True, BYNC), ("world", True, BYNC)]
-MIN_SHORT = 1000
+STAGES = [("eu", True, BY), ("world", True, BY), ("eu", True, BYNC), ("world", True, BYNC), ("eu", False, BYNC), ("world", False, BYNC)]
+MIN_SHORT = [1000]   # per card: spec 'min_short'
 WANT = 18
 
 out_dir = sys.argv[1]
@@ -46,15 +46,17 @@ def api(path, **params):
     raise RuntimeError("iNaturalist request failed: " + url)
 
 
-def resolve(spec):
-    res = api("taxa", q=spec["name"], per_page=30, is_active="true")["results"]
+def resolve(spec, name=None):
+    name = name or spec["name"]
+    res = api("taxa", q=name, per_page=30, is_active="true")["results"]
     good = []
-    for t in (t for t in res if t["name"].lower() == spec["name"].lower()):
+    for t in (t for t in res if t["name"].lower() == name.lower()):
         full = api(f"taxa/{t['id']}")["results"][0]
         if spec["expect"] in [a["name"] for a in full.get("ancestors", [])] + [full["name"]]:
             good.append(full)
     if not good:
-        raise SystemExit(f"STOP {spec['name']}: not found under {spec['expect']}")
+        print(f"  ?? {name}: not found under {spec['expect']}")
+        return None
     return max(good, key=lambda t: t.get("observations_count", 0))
 
 
@@ -93,7 +95,7 @@ def top_obs(pool_id, place, adult, lic):
 def pick_photo(obs, lic):
     for ph in obs.get("photos", []):
         d = ph.get("original_dimensions") or {}
-        if (ph.get("license_code") or "").lower() in lic and min(d.get("width") or 0, d.get("height") or 0) >= MIN_SHORT:
+        if (ph.get("license_code") or "").lower() in lic and min(d.get("width") or 0, d.get("height") or 0) >= MIN_SHORT[0]:
             return ph
     return None
 
@@ -144,11 +146,15 @@ europe = find_europe()
 for spec in specs:
     if spec["name"] in meta:
         continue
-    t = resolve(spec)
+    taxa = [t for t in (resolve(spec, n) for n in spec.get("taxa", [spec["name"]])) if t]
+    if not taxa:
+        print(f"SKIP {spec['name']}: no iNaturalist taxon", flush=True); continue
+    MIN_SHORT[0] = spec.get("min_short", 1000)
+    pl = [x for t in taxa for x in pools(t["id"])]
     cdir = os.path.join(out_dir, f"{spec['card_no']:03d}")
     os.makedirs(cdir, exist_ok=True)
     rows = []
-    for obs, ph, fam in collect(pools(t["id"]), europe):
+    for obs, ph, fam in collect(pl, europe):
         f = f"{len(rows) + 1:02d}.jpg"
         try:
             w, h = download(ph, os.path.join(cdir, f))
