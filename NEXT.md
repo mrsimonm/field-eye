@@ -2,6 +2,13 @@
 
 Live app: https://mrsimonm.github.io/field-eye/  (repo: github.com/mrsimonm/field-eye, GitHub Pages from `main`)
 
+## Latest (2026-11-14) — read this first
+- 62 cards, 585 photos, all photos checked by eye (first 30: tester photos + `mNNN-*` iNat additions; rest: `kNNN-*`).
+- App features: phone/laptop layout switch, Progress tab (mastery: right on 3 photos on 2 days; streaks; practice time; 30-day charts; hardest cards; mix-ups), Test mode (exam, results + retry missed), progress syncs/merges across devices when signed in, Google sign-in falls back to full-page sign-in when blocked.
+- Bump `V` in `sw.js` on every release (now field-eye-v10).
+- Firebase Storage (photo upload when signed in) still blocked: Google Cloud shows NO active billing account ("Firebase Payment" closed/suspended). User must fix billing, then: Firebase console → Storage → Get started → Create; then deploy `storage.rules`.
+- Ideas not done yet: Class view (testers share progress), daily reminder, "report a wrong photo" button.
+
 ## State
 - Single-file app: `index.html`. Built-in cards: `starter/starter.json` + photos in `starter/`.
 - Starter cards are added to every user by id ("top-up": `topUpLocal` / `adoptLocal`), so new cards reach existing users automatically; deleted ones never return.
