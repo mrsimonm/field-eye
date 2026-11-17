@@ -786,6 +786,49 @@ html.phone {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 
+/* ---------- Test prep (Experimental only) ---------- */
+.prep-sw { margin-bottom: 4px; }
+#practice.prep-on .controls, #practice.prep-on #scoreline, #practice.prep-on #fcBar { display: none !important; }
+.tp { display: grid; gap: 14px; }
+.tp-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-family: var(--f-mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tp-bar { height: 10px; border-radius: var(--r-pill); border: 1px solid var(--line); overflow: hidden; margin-top: 8px; }
+.tp-bar i { display: block; height: 100%; background: var(--ink); }
+.tp-counts { display: flex; gap: 14px; flex-wrap: wrap; color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+.tp-counts b { color: var(--ink); }
+.tp-steps { display: grid; gap: 10px; }
+.tp-step { display: flex; gap: 14px; align-items: center; text-align: left; width: 100%; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: var(--r); padding: 14px 16px; cursor: pointer; font: inherit; }
+.tp-step:hover:not(:disabled) { border-color: var(--ink); }
+.tp-step:disabled { opacity: 0.5; cursor: default; }
+.tp-step.primary { border-color: var(--ink); border-width: 2.5px; }
+.tp-n { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid var(--ink); font-weight: 800; }
+.tp-step.primary .tp-n { background: var(--ink); color: var(--paper); }
+.tp-st { display: grid; gap: 2px; min-width: 0; }
+.tp-st b { font-size: 1.05rem; }
+.tp-st small { color: var(--muted); font-size: 0.88rem; }
+.tp-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.tp-chip { display: grid; gap: 1px; text-align: left; border: 1.5px dashed var(--line); background: transparent; color: var(--ink); border-radius: var(--r-sm); padding: 6px 10px; cursor: pointer; font: inherit; font-weight: 700; font-size: 0.9rem; }
+.tp-chip small { font-weight: 400; color: var(--muted); font-size: 0.78rem; }
+.tp-chip.learn { border-style: solid; border-color: var(--ink); }
+.tp-chip.know { border-style: solid; border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.tp-chip.know small { color: var(--paper); opacity: 0.75; }
+.tp-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
+.tp-legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 5px; vertical-align: -2px; border: 1.5px dashed var(--line); }
+.tp-legend .l-learn::before { border: 1.5px solid var(--ink); }
+.tp-legend .l-know::before { border: 1.5px solid var(--ink); background: var(--ink); }
+.tp-clue { font-size: 1.12rem; line-height: 1.45; font-weight: 600; }
+.tp-twins { margin: 0; padding-left: 1.2rem; display: grid; gap: 6px; line-height: 1.45; }
+.tp-ask { text-align: center; color: var(--muted); font-size: 1rem; }
+.tp-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.tp-row .btn { flex: 1 1 140px; padding: 13px 16px; font-size: 1rem; }
+.tp-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.tp-strip button { flex: none; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: pointer; background: none; }
+.tp-strip button[aria-current="true"] { border-color: var(--ink); }
+.tp-strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tp-score { font-size: clamp(2.6rem, 12vw, 4rem); font-weight: 800; line-height: 1; }
+.tp-miss { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.tp-miss li { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: start; }
+.tp-miss img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; display: block; }
+.tp-miss .sub { color: var(--muted); font-size: 0.88rem; }
 </style>
 
 <header class="bar">
@@ -831,6 +874,10 @@ html.phone {
   <section id="groups" class="view" aria-labelledby="tab-groups" hidden></section>
 
   <section id="practice" class="view" aria-labelledby="tab-practice">
+    <div class="seg prep-sw" role="group" aria-label="Experimental mode">
+      <button type="button" id="prepOnBtn" data-act="prep-on" aria-pressed="true">Test prep</button>
+      <button type="button" id="prepOffBtn" data-act="prep-off" aria-pressed="false">Repetition</button>
+    </div>
     <div class="controls">
       <select id="groupSel" aria-label="Which animals to practise"><option value="all">All animals</option></select>
       <div class="seg prac-mode" role="group" aria-label="Practice mode" hidden>
@@ -1702,6 +1749,7 @@ function renderRepetition(q, a) {
 }
 
 function renderStage() {
+  if (P.on) { renderPrep(); return; }
   renderScore();
   const st = $("#stage");
   if (S.testSetup) { st.innerHTML = testSetupHtml(); return; }
@@ -1765,6 +1813,275 @@ function renderStage() {
   st.innerHTML = html;
   if (!q.answered && q.mode === "type") setTimeout(() => $("#typeIn")?.focus({ preventScroll: true }), 30);
 }
+
+/* ---------- Test prep (Experimental only) ----------
+   Only the animals that came up on the zoology specimen test. Four steps:
+   sort (know it / don't), learn the pile (one giveaway clue each), drill the pile
+   (pick from 4, look-alikes first; right twice in a row = known), mock test (20 photos).
+   Saved under fe-exp-prep so it never touches the normal progress. */
+const TP_LIST = [
+  ["oligochaeta", "worms", "earthworm", "a saddle (clitellum) and only a few short bristles per segment, no side flaps, nothing on the head"],
+  ["polychaeta", "worms", "bristle worm (sea)", "a pair of side flaps (parapodia) on every segment with LOTS of bristles, head with antennae and palps"],
+  ["nematoda", "worms", "roundworm", "smooth and NOT segmented, round in cross-section, tapered at both ends"],
+  ["caenogastropoda", "shells", "sea or river snail", "shell closed by a lid (operculum); opening often narrow or with a channel (siphonal canal)"],
+  ["bivalvia", "shells", "clam, mussel", "TWO shell halves joined by a hinge"],
+  ["pseudoscorpionida", "arachnids", "pseudoscorpion", "a tiny scorpion with big pincers but NO tail and no sting"],
+  ["opilionida", "arachnids", "harvestman, daddy longlegs", "ONE oval body with no waist, very long thin legs, 2 eyes on a bump in the middle"],
+  ["araneida", "arachnids", "spider", "a thin WAIST between the two body parts, spinnerets at the end, usually 8 eyes"],
+  ["chilopoda", "many legs", "centipede", "ONE pair of legs per segment, legs stick out to the SIDES, long antennae"],
+  ["diplopoda", "many legs", "millipede", "TWO pairs of legs on most segments, legs UNDER the body, short antennae, can roll up"],
+  ["archaeognatha", "bristletails", "jumping bristletail", "big eyes that TOUCH each other, the 3 tails all point backwards, jumps"],
+  ["zygentoma", "bristletails", "silverfish", "eyes small and APART (or missing), the 2 side tails point SIDEWAYS, doesn't jump"],
+  ["ephemeroptera", "water nymphs", "mayfly", "wings held UPRIGHT, 2–3 long tails, short antennae. Nymph: 3 tails, gills along the sides of the abdomen"],
+  ["plecoptera", "water nymphs", "stonefly", "wings folded FLAT over the back, 2 tails, long antennae. Nymph: 2 tails, gills near the legs"],
+  ["zygoptera", "odonata", "damselfly", "eyes far APART, slim, wings folded along the body at rest"],
+  ["anisoptera", "odonata", "dragonfly", "eyes touching or almost, robust, wings held OPEN and flat at rest"],
+  ["blattodea", "roaches", "cockroach", "flat, a big shield (pronotum) over the head, leathery front wings, spiny legs, many-segmented cerci"],
+  ["mantodea", "roaches", "praying mantis", "triangular head, GRABBING front legs, long neck-like prothorax"],
+  ["dermaptera", "roaches", "earwig", "PINCERS (forceps) at the back end, short wing covers"],
+  ["ensifera", "orthoptera", "cricket, bush cricket", "LONG thread-like antennae, sword-like ovipositor, ears on the front legs"],
+  ["caelifera", "orthoptera", "grasshopper, locust", "SHORT antennae, short ovipositor, ear on the 1st abdominal segment"],
+  ["coccoidea", "bugs", "scale insect", "female = a waxy shield or blob stuck on a plant, no wings, legs barely visible"],
+  ["auchenorrhyncha", "bugs", "cicada, leafhopper, froghopper", "tiny bristle antennae, wings held like a ROOF, beak from the BACK of the head, jumping hind legs"],
+  ["heteroptera", "bugs", "true bug, shield bug", "front wings HALF leathery, half clear (hemelytra), big TRIANGLE (scutellum) on the back, beak from the FRONT of the head"],
+  ["neuroptera", "net wings", "lacewing, antlion", "2 pairs of similar clear wings with a fine NET of veins, held like a roof, long antennae"],
+  ["megaloptera", "net wings", "alderfly", "smoky wings held like a roof, coarse veins, big head. Larva: in water, gill threads along the sides of the abdomen"],
+  ["raphidioptera", "net wings", "snakefly", "very LONG NECK, clear wings with a dark spot, female with a long needle-like ovipositor"],
+  ["mecoptera", "net wings", "scorpionfly", "head drawn out into a BEAK, often spotted wings, male's tail curled up like a scorpion's"],
+  ["adephaga", "beetles", "ground beetle, diving beetle", "beetle with simple thread-like antennae, predator look; hind leg bases cut into the 1st belly segment"],
+  ["polyphaga", "beetles", "most beetles: ladybird, weevil, scarab", "beetle with clubbed, elbowed, comb-like or saw-like antennae; hind leg bases don't cut the belly segment"],
+  ["brachycera", "flies & wasps", "fly, hoverfly (even bee-like ones)", "only ONE pair of wings, short stubby 3-part antennae, stout body"],
+  ["symphyta", "flies & wasps", "sawfly", "NO wasp waist (body joins the thorax broadly), no sting, 2 pairs of wings"],
+  ["apocrita", "flies & wasps", "wasp, bee, ant", "narrow WASP WAIST, 2 pairs of wings, often a sting"],
+  ["trichoptera", "moth-like", "caddisfly", "moth-like but wings HAIRY (no scales), held like a roof, very long antennae, no proboscis. Larva: in water, often in a case"],
+  ["lepidoptera", "moth-like", "butterfly, moth", "wings covered in SCALES, coiled proboscis. Larva: caterpillar with prolegs"],
+].map(([t, look, common, clue]) => ({ t, look, common, clue }));
+const TP_PASS = 0.7;
+const P = {
+  on: ls.get("fe-exp-mode", "prep") !== "rep",
+  st: Object.assign({ know: {}, streak: {}, mockPick: false }, ls.get("fe-exp-prep", {})),
+  screen: "home", queue: [], i: 0, q: null, pid: null, mock: null, last: null,
+};
+const savePrep = () => ls.set("fe-exp-prep", P.st);
+const tpAnimal = (t) => S.animals.find((a) => baseTaxon(a.name) === t && (a.photos || []).length);
+const tpAvail = () => TP_LIST.filter((x) => tpAnimal(x.t));
+const tpGet = (t) => TP_LIST.find((x) => x.t === t);
+const tpStatus = (t) => (P.st.know[t] === true ? "know" : P.st.know[t] === false ? "learn" : "new");
+const tpPile = () => tpAvail().filter((x) => P.st.know[x.t] !== true);
+const tpShort = (a) => String(a?.name || "").replace(/^[^:]+:\s*/, "");
+function tpName(a) {
+  const m = /^([a-z]+(?: [a-z]+)?):\s*(.+)$/i.exec(String(a.name || ""));
+  return m ? `<span class="learn-rank">${esc(m[1])}:</span> <span>${esc(m[2])}</span>` : `<span>${esc(a.name)}</span>`;
+}
+function tpPhoto(pid, alt) {
+  const url = photoSrc(pid), ar = ratios.get(url);
+  return `<figure class="plate"><div class="frame${S.set.bw ? " bw" : ""}"${ar ? ` style="--ar:${ar.toFixed(3)}"` : ""}><div class="fill" data-pid="${esc(pid)}" style="background-image:url('${esc(url)}')"></div><img data-pid="${esc(pid)}" src="${esc(url)}" alt="${esc(alt || "Photo of the animal to identify")}"></div></figure>`;
+}
+function tpInfo(x, a, extra = "") {
+  const twins = TP_LIST.filter((y) => y.look === x.look && y.t !== x.t && tpAnimal(y.t));
+  return `<div class="rep-banner"><span class="eyebrow">${esc(x.common)}</span><h2>${tpName(a)}</h2></div>
+    <div class="learn">${extra}<div><h4>The giveaway</h4><p class="tp-clue">${esc(x.clue)}</p></div>
+    ${twins.length ? `<div><h4>Don't mix it up with</h4><ul class="tp-twins">${twins.map((y) => `<li><b>${esc(tpShort(tpAnimal(y.t)))}</b> (${esc(y.common)}): ${esc(y.clue)}</li>`).join("")}</ul></div>` : ""}</div>`;
+}
+function tpOptions(x) {
+  const others = tpAvail().filter((y) => y.t !== x.t);
+  const same = shuffle(others.filter((y) => y.look === x.look)), rest = shuffle(others.filter((y) => y.look !== x.look));
+  return shuffle([x, ...[...same, ...rest].slice(0, 3)]).map((y) => y.t);
+}
+const tpTop = (left) => `<div class="tp-top"><span>${left}</span><button class="btn ghost sm" type="button" data-act="prep-go" data-screen="home">← Test prep home</button></div>`;
+
+function setPrep(on) {
+  P.on = on; ls.set("fe-exp-mode", on ? "prep" : "rep");
+  $("#practice").classList.toggle("prep-on", on);
+  $("#prepOnBtn").setAttribute("aria-pressed", on); $("#prepOffBtn").setAttribute("aria-pressed", !on);
+  if (on) { P.screen = "home"; renderStage(); } else { renderControls(); nextQuestion(); }
+  window.scrollTo({ top: 0 });
+}
+function prepGo(screen, t) {
+  const all = tpAvail();
+  P.q = null; P.screen = screen;
+  if (screen === "sort") {
+    const fresh = all.filter((x) => tpStatus(x.t) === "new");
+    P.queue = shuffle((fresh.length ? fresh : all).map((x) => x.t)); P.i = 0; prepSortQ();
+  } else if (screen === "learn") {
+    P.queue = t ? all.map((x) => x.t) : tpPile().map((x) => x.t);
+    P.i = t ? Math.max(0, P.queue.indexOf(t)) : 0; P.pid = null;
+  } else if (screen === "drill") prepDrillQ();
+  else if (screen === "mock") {
+    const items = shuffle([...all]).slice(0, 20).map((x) => ({ t: x.t, pid: pick(tpAnimal(x.t).photos) }));
+    P.mock = { items, i: 0, done: false };
+  }
+  renderStage(); window.scrollTo({ top: 0 });
+}
+function prepSortQ() {
+  const t = P.queue[P.i];
+  P.q = t ? { t, pid: pick(tpAnimal(t).photos), shown: false } : null;
+}
+function prepSorted(knew) {
+  const q = P.q; if (!q || !q.shown) return;
+  P.st.know[q.t] = knew; if (!knew) P.st.streak[q.t] = 0; savePrep();
+  P.i++; prepSortQ(); renderStage(); window.scrollTo({ top: 0 });
+}
+function prepDrillQ() {
+  const pile = tpPile();
+  if (!pile.length) { P.q = null; return; }
+  const cands = pile.length > 1 ? pile.filter((x) => x.t !== P.last) : pile;
+  const x = pick(cands), a = tpAnimal(x.t);
+  P.last = x.t;
+  P.q = { t: x.t, pid: pick(a.photos), options: tpOptions(x), answered: false, guess: null };
+}
+function prepChoose(t) {
+  const q = P.q; if (!q || q.answered) return;
+  q.answered = true; q.guess = t; q.ok = t === q.t;
+  if (q.ok) {
+    P.st.streak[q.t] = (P.st.streak[q.t] || 0) + 1;
+    if (P.st.streak[q.t] >= 2) { P.st.know[q.t] = true; q.moved = true; }
+  } else { P.st.streak[q.t] = 0; P.st.know[q.t] = false; }
+  savePrep(); renderStage();
+}
+function prepMockAnswer(val, t) {
+  const m = P.mock; if (!m || m.done) return;
+  const it = m.items[m.i]; if (!it) return;
+  if (t !== undefined) { it.guess = t; it.ok = t === it.t; }
+  else { it.typed = val || ""; it.ok = !!val && judge(val, tpAnimal(it.t)).ok; }
+  m.i++;
+  if (m.i >= m.items.length) {
+    m.done = true;
+    for (const x of m.items) if (!x.ok) { P.st.know[x.t] = false; P.st.streak[x.t] = 0; }
+    savePrep();
+  }
+  renderStage(); window.scrollTo({ top: 0 });
+}
+
+function renderPrep() {
+  const st = $("#stage");
+  if (!S.ready) { st.innerHTML = `<div class="empty"><p>Loading your animals…</p></div>`; return; }
+  const all = tpAvail();
+  if (!all.length) { st.innerHTML = `<div class="empty"><h2>No test animals found</h2><p>Test prep uses the built-in cards. Switch to Normal, check the cards are there, then come back.</p></div>`; return; }
+  let html = "";
+  if (P.screen === "sort") html = prepSortHtml(all);
+  else if (P.screen === "learn") html = prepLearnHtml();
+  else if (P.screen === "drill") html = prepDrillHtml();
+  else if (P.screen === "mock") html = prepMockHtml();
+  else html = prepHomeHtml(all);
+  st.innerHTML = `<div class="tp">${html}</div>`;
+  if (P.screen === "mock" && !P.mock?.done && !P.st.mockPick) setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
+}
+function prepHomeHtml(all) {
+  const know = all.filter((x) => tpStatus(x.t) === "know").length;
+  const learn = all.filter((x) => tpStatus(x.t) === "learn").length;
+  const fresh = all.length - know - learn, pile = tpPile().length;
+  const next = fresh ? "sort" : pile ? "drill" : "mock";
+  const step = (n, screen, title, sub, off) => `<button class="tp-step${next === screen ? " primary" : ""}" type="button" data-act="prep-go" data-screen="${screen}"${off ? " disabled" : ""}><span class="tp-n">${n}</span><span class="tp-st"><b>${title}</b><small>${sub}</small></span></button>`;
+  return `<div class="rep-banner"><span class="eyebrow">Test prep</span><h2>The ${all.length} animals on your test</h2>
+      <div class="sub">Only what came up last time. Everything else is hidden.</div>
+      <div class="tp-bar" role="progressbar" aria-label="Animals you know" aria-valuemin="0" aria-valuemax="${all.length}" aria-valuenow="${know}"><i style="width:${Math.round((know / all.length) * 100)}%"></i></div>
+      <div class="tp-counts"><span><b>${know}</b> know</span><span><b>${learn}</b> learning</span><span><b>${fresh}</b> not sorted yet</span></div></div>
+    <div class="tp-steps">
+      ${step(1, "sort", "Sort", fresh ? `See a photo, say if you know it. ${fresh} to go, about ${Math.max(1, Math.round((fresh * 10) / 60))} min.` : "All sorted. Tap to check them all again.")}
+      ${step(2, "learn", "Learn my pile", pile ? `${plural(pile, "animal")} you don't know yet, one giveaway clue each.` : "Nothing left in your pile.", !pile)}
+      ${step(3, "drill", "Drill my pile", pile ? "Pick the right name. Right twice in a row moves it to Know." : "Nothing left in your pile.", !pile)}
+      ${step(4, "mock", "Mock test", `${Math.min(20, all.length)} photos like the real test, no hints. Pass is about ${Math.ceil(Math.min(20, all.length) * TP_PASS)}.`)}
+    </div>
+    <div class="learn"><h4>All ${all.length} · tap one to study it</h4>
+      <div class="tp-legend"><span class="l-new">not sorted</span><span class="l-learn">learning</span><span class="l-know">know</span></div>
+      <div class="tp-list">${all.map((x) => `<button class="tp-chip ${tpStatus(x.t)}" type="button" data-act="prep-open" data-t="${x.t}"><span>${esc(tpShort(tpAnimal(x.t)))}</span><small>${esc(x.common)}</small></button>`).join("")}</div>
+      <div><button class="btn ghost sm" type="button" data-act="prep-reset">${P.confirmReset ? "Tap again to wipe your sorting" : "Start over"}</button></div></div>`;
+}
+function prepSortHtml(all) {
+  const q = P.q;
+  if (!q) {
+    const pile = tpPile().length;
+    return `<div class="empty"><h2>Sorted!</h2><p>${pile ? `${plural(pile, "animal")} in your pile to learn. Next: learn them, one clue each.` : "You know all of them. Try the mock test."}</p>
+      <div class="tp-row">${pile ? `<button class="btn primary" type="button" data-act="prep-go" data-screen="learn">Learn my pile</button>` : `<button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button>`}<button class="btn" type="button" data-act="prep-go" data-screen="home">Home</button></div></div>`;
+  }
+  const a = tpAnimal(q.t), x = tpGet(q.t);
+  let html = tpTop(`Sort · ${P.i + 1} of ${P.queue.length}`) + tpPhoto(q.pid);
+  if (!q.shown) {
+    html += `<p class="tp-ask">What is it? Say the Latin name in your head.</p><div class="tp-row"><button class="btn primary" type="button" data-act="prep-reveal">Show answer <kbd>Space</kbd></button></div>`;
+  } else {
+    html += `<div class="tp-row"><button class="btn primary" type="button" data-act="prep-sorted" data-v="1">I knew it <kbd>1</kbd></button><button class="btn" type="button" data-act="prep-sorted" data-v="0">I didn't <kbd>2</kbd></button></div>` + tpInfo(x, a);
+  }
+  return html;
+}
+function prepLearnHtml() {
+  const t = P.queue[P.i];
+  if (!t) return `<div class="empty"><h2>Nothing to learn</h2><p>Your pile is empty.</p><div class="tp-row"><button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button><button class="btn" type="button" data-act="prep-go" data-screen="home">Home</button></div></div>`;
+  const a = tpAnimal(t), x = tpGet(t);
+  const pid = P.pid && a.photos.includes(P.pid) ? P.pid : a.photos[0];
+  const last = P.i >= P.queue.length - 1;
+  return tpTop(`Learn · ${P.i + 1} of ${P.queue.length}`) + tpPhoto(pid, a.name)
+    + `<div class="tp-strip">${a.photos.map((p) => `<button type="button" data-act="prep-photo" data-pid="${esc(p)}" aria-current="${p === pid}" aria-label="Show this photo"><img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy"></button>`).join("")}</div>`
+    + tpInfo(x, a)
+    + `<div class="tp-row"><button class="btn" type="button" data-act="prep-step" data-d="-1"${P.i ? "" : " disabled"}>← Back</button>${last ? `<button class="btn primary" type="button" data-act="prep-go" data-screen="drill"${tpPile().length ? "" : " disabled"}>Drill them now</button>` : `<button class="btn primary" type="button" data-act="prep-step" data-d="1">Next →</button>`}</div>`;
+}
+function prepDrillHtml() {
+  const q = P.q, pile = tpPile().length;
+  if (!q) return `<div class="empty"><h2>Pile cleared!</h2><p>You got every animal in your pile right twice in a row. Now try the mock test, like the real one.</p><div class="tp-row"><button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button><button class="btn" type="button" data-act="prep-go" data-screen="home">Home</button></div></div>`;
+  const a = tpAnimal(q.t), x = tpGet(q.t);
+  let html = tpTop(`Drill · ${plural(pile, "animal")} left in your pile`) + tpPhoto(q.pid, q.answered ? a.name : "");
+  html += `<div class="tray"><div class="choices">` + q.options.map((t, i) => {
+    const o = tpAnimal(t); let cls = "";
+    if (q.answered) cls = t === q.t ? "right" : t === q.guess ? "wrong" : "dim";
+    return `<button class="choice ${cls}" type="button" data-act="prep-choose" data-t="${t}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(o ? o.name : t)}</button>`;
+  }).join("") + `</div></div>`;
+  if (q.answered) {
+    const streak = P.st.streak[q.t] || 0;
+    const label = q.ok ? (q.moved ? "Right! Moved to Know" : `Right · ${streak} of 2`) : "Not quite";
+    html += `<div class="verdict ${q.ok ? "ok" : "no"}"><span class="label">${label}</span></div>`;
+    html += `<div class="next-row"><button class="btn primary" id="nextBtn" type="button" data-act="prep-next">Next <kbd>Enter</kbd></button></div>`;
+    const g = !q.ok && tpGet(q.guess);
+    const extra = g ? `<div><h4>You picked ${esc(tpShort(tpAnimal(g.t)))}</h4><p>${esc(g.common)}: ${esc(g.clue)}</p></div>` : "";
+    html += tpInfo(x, a, extra);
+  }
+  return html;
+}
+function prepMockHtml() {
+  const m = P.mock;
+  if (!m) return "";
+  if (m.done) {
+    const n = m.items.length, right = m.items.filter((it) => it.ok).length, need = Math.ceil(n * TP_PASS);
+    const miss = m.items.filter((it) => !it.ok);
+    return tpTop("Mock test · results")
+      + `<div class="rep-banner"><span class="eyebrow">${right >= need ? "Pass" : "Not yet"} · need about ${need}</span><div class="tp-score">${right} / ${n}</div>
+         <div class="sub">${right >= need ? "That would pass. Keep it fresh: one more round tomorrow morning." : `${need - right} more to pass. The ones you missed are back in your pile.`}</div></div>`
+      + `<div class="tp-row">${miss.length ? `<button class="btn primary" type="button" data-act="prep-go" data-screen="drill">Drill the ${miss.length === 1 ? "1 miss" : `${miss.length} misses`}</button>` : ""}<button class="btn" type="button" data-act="prep-go" data-screen="mock">New mock test</button></div>`
+      + (miss.length ? `<div class="learn"><h4>What you missed</h4><ul class="tp-miss">${miss.map((it) => {
+        const a = tpAnimal(it.t), x = tpGet(it.t);
+        const said = it.guess ? tpShort(tpAnimal(it.guess)) : it.typed;
+        return `<li><img data-pid="${esc(it.pid)}" src="${esc(photoSrc(it.pid))}" alt="${esc(a.name)}"><div><b>${esc(tpShort(a))}</b> (${esc(x.common)})<div class="sub">${said ? `You said “${esc(said)}”. ` : "Skipped. "}${esc(x.clue)}</div></div></li>`;
+      }).join("")}</ul></div>` : "");
+  }
+  const it = m.items[m.i];
+  let html = tpTop(`Mock test · ${m.i + 1} of ${m.items.length}`)
+    + `<div class="seg" role="group" aria-label="Answer style"><button type="button" data-act="prep-mockmode" data-v="0" aria-pressed="${!P.st.mockPick}">Type the name</button><button type="button" data-act="prep-mockmode" data-v="1" aria-pressed="${!!P.st.mockPick}">Pick from 4</button></div>`
+    + tpPhoto(it.pid);
+  if (P.st.mockPick) {
+    it.options ||= tpOptions(tpGet(it.t));
+    html += `<div class="tray"><div class="choices">` + it.options.map((t, i) => `<button class="choice" type="button" data-act="prep-mockpick" data-t="${t}"><span class="k">${i + 1}</span>${choiceLabel(tpAnimal(t).name)}</button>`).join("") + `</div></div>`;
+  } else {
+    html += `<div class="tray"><form class="typeform" id="prepForm"><input id="prepIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Latin name, e.g. Araneida" aria-label="Animal name"><button class="btn primary" type="submit">Next</button><button class="btn ghost" type="button" data-act="prep-mockskip">I don't know</button></form></div>`;
+  }
+  return html + `<p class="tp-ask">No hints until the end, like the real test.</p>`;
+}
+function prepKey(e, inField) {
+  if (inField) return;
+  const k = e.key, q = P.q;
+  if (P.screen === "sort" && q) {
+    if (!q.shown && (k === " " || k === "Enter") && e.target.tagName !== "BUTTON") { e.preventDefault(); q.shown = true; renderStage(); }
+    else if (q.shown && (k === "1" || k === "2")) { e.preventDefault(); prepSorted(k === "1"); }
+  } else if (P.screen === "drill" && q) {
+    if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepChoose(t); } }
+    else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepDrillQ(); renderStage(); window.scrollTo({ top: 0 }); }
+  } else if (P.screen === "learn") {
+    if (k === "ArrowLeft" && P.i > 0) { e.preventDefault(); P.i--; P.pid = null; renderStage(); }
+    else if (k === "ArrowRight" && P.i < P.queue.length - 1) { e.preventDefault(); P.i++; P.pid = null; renderStage(); }
+  } else if (P.screen === "mock" && P.mock && !P.mock.done && P.st.mockPick && /^[1-4]$/.test(k)) {
+    const t = P.mock.items[P.mock.i]?.options?.[+k - 1]; if (t) { e.preventDefault(); prepMockAnswer(null, t); }
+  }
+}
+$("#practice").classList.toggle("prep-on", P.on);
+$("#prepOnBtn").setAttribute("aria-pressed", P.on); $("#prepOffBtn").setAttribute("aria-pressed", !P.on);
 
 /* ---------- rendering: library ---------- */
 function pips(box) { return `<span class="pips">${[1, 2, 3, 4, 5].map((i) => `<i class="${i <= box ? "on" : ""}"></i>`).join("")}</span>`; }
@@ -2756,6 +3073,22 @@ document.addEventListener("click", async (e) => {
   const act = t.dataset.act;
   const card = t.closest(".specimen"); const aid = card?.dataset.id;
   switch (act) {
+    case "prep-on": setPrep(true); break;
+    case "prep-off": setPrep(false); break;
+    case "prep-go": prepGo(t.dataset.screen); break;
+    case "prep-open": prepGo("learn", t.dataset.t); break;
+    case "prep-reveal": if (P.q) { P.q.shown = true; renderStage(); } break;
+    case "prep-sorted": prepSorted(t.dataset.v === "1"); break;
+    case "prep-step": P.i = clamp(P.i + +t.dataset.d, 0, P.queue.length - 1); P.pid = null; renderStage(); window.scrollTo({ top: 0 }); break;
+    case "prep-photo": P.pid = t.dataset.pid; renderStage(); break;
+    case "prep-choose": prepChoose(t.dataset.t); break;
+    case "prep-next": prepDrillQ(); renderStage(); window.scrollTo({ top: 0 }); break;
+    case "prep-mockmode": P.st.mockPick = t.dataset.v === "1"; savePrep(); renderStage(); break;
+    case "prep-mockpick": prepMockAnswer(null, t.dataset.t); break;
+    case "prep-mockskip": prepMockAnswer(""); break;
+    case "prep-reset":
+      if (!P.confirmReset) { P.confirmReset = true; renderStage(); setTimeout(() => { P.confirmReset = false; if (P.on && P.screen === "home") renderStage(); }, 4000); break; }
+      P.confirmReset = false; P.st = { know: {}, streak: {}, mockPick: P.st.mockPick }; savePrep(); renderStage(); break;
     case "view": setView(t.dataset.view); break;
     case "test-setup": openTestSetup(); break;
     case "test-size": S.testSize = +t.dataset.n; renderStage(); break;
@@ -2926,7 +3259,12 @@ document.addEventListener("click", async (e) => {
 });
 
 document.addEventListener("submit", (e) => {
-  if (e.target.id === "typeForm") {
+  if (e.target.id === "prepForm") {
+    e.preventDefault();
+    const v = $("#prepIn").value.trim();
+    if (!v) { $("#prepIn").focus(); return; }
+    prepMockAnswer(v);
+  } else if (e.target.id === "typeForm") {
     e.preventDefault();
     const v = $("#typeIn").value;
     if (!v.trim()) { $("#typeIn").focus(); return; }
@@ -2997,6 +3335,7 @@ document.addEventListener("keydown", (e) => {
     }
     return;
   }
+  if (S.view === "practice" && P.on) { prepKey(e, inField); return; }
   if (S.view !== "practice" || !S.q) return;
   if (S.q.mode === "fc") {
     if (!S.q.flipped && !inField && (e.key === " " || e.key === "Enter")) {
