@@ -1904,6 +1904,27 @@ const tpGroupKnown = (g) => tpGroup(g).filter((x) => P.st.know[x.t] === true).le
 const tpGroupDone = (g) => { const n = tpGroup(g).length; return n > 0 && tpGroupKnown(g) === n; };
 const tpGroupsLive = () => TP_GROUPS.filter((g) => tpGroup(g).length);
 const tpNextGroup = () => tpGroupsLive().find((g) => !tpGroupDone(g));
+// Separated: all test animals split at random into 4 parts. The split is saved so it stays the same until reshuffled.
+function tpParts() {
+  const all = tpAvail().map((x) => x.t);
+  let p = P.st.parts;
+  const flat = Array.isArray(p) ? p.flat() : [];
+  if (!(Array.isArray(p) && p.length === 4 && flat.length === all.length && all.every((t) => flat.includes(t)))) {
+    const s = shuffle([...all]);
+    p = [0, 1, 2, 3].map((i) => s.filter((_, j) => j % 4 === i));
+    P.st.parts = p; savePrep();
+  }
+  return p;
+}
+const tpPartKnown = (i) => tpParts()[i].filter((t) => P.st.know[t] === true).length;
+const tpPartDone = (i) => tpPartKnown(i) === tpParts()[i].length;
+const tpNextPart = () => [0, 1, 2, 3].find((i) => !tpPartDone(i));
+function tpCard(t) {
+  const a = tpAnimal(t), x = tpGet(t);
+  return `<div class="tp-card">${tpPhoto(a.photos[0], a.name)}`
+    + (a.photos.length > 1 ? `<div class="tp-thumbs">${a.photos.slice(1, 6).map((p) => `<img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy">`).join("")}</div>` : "")
+    + `<h3>${tpName(a)}</h3><small>${esc(x.common)}</small><p class="tp-clue">${esc(x.clue)}</p></div>`;
+}
 const tpTop = (left) => `<div class="tp-top"><span>${left}</span><button class="btn ghost sm" type="button" data-act="prep-go" data-screen="home">← Test prep home</button></div>`;
 
 function setPrep(on) {
@@ -1927,8 +1948,12 @@ function prepGo(screen, t) {
     P.queue = shuffle(((P.st.copyAll || !pile.length) ? all : pile).map((x) => x.t)); P.i = 0; P.copyN = 0; P.copyMsg = null; prepCopyQ();
   } else if (screen === "drill") prepDrillQ();
   else if (screen === "gsee") { if (t) P.g = t; }
-  else if (screen === "gquiz") {
-    P.gMix = t === "mix";
+  else if (screen === "psee") { if (t !== undefined) P.part = +t; }
+  else if (screen === "pquiz") {
+    if (t !== undefined) P.part = +t;
+    P.gKind = "part"; P.gMix = false; P.gPool = [...tpParts()[P.part]]; P.gs = {}; P.last = null; prepGroupQ();
+  } else if (screen === "gquiz") {
+    P.gMix = t === "mix"; P.gKind = P.gMix ? "mix" : "group";
     if (t && !P.gMix) P.g = t;
     P.gPool = P.gMix ? tpGroupsLive().filter(tpGroupDone).flatMap((g) => tpGroup(g).map((x) => x.t)) : tpGroup(P.g).map((x) => x.t);
     P.gs = {}; P.last = null; prepGroupQ();
@@ -2034,7 +2059,9 @@ function renderPrep() {
   else if (P.screen === "mock") html = prepMockHtml();
   else if (P.screen === "groups") html = prepGroupsHtml();
   else if (P.screen === "gsee") html = prepGroupSeeHtml();
-  else if (P.screen === "gquiz") html = prepGroupQuizHtml();
+  else if (P.screen === "gquiz" || P.screen === "pquiz") html = prepGroupQuizHtml();
+  else if (P.screen === "parts") html = prepPartsHtml();
+  else if (P.screen === "psee") html = prepPartSeeHtml();
   else html = prepHomeHtml(all);
   st.innerHTML = `<div class="tp">${html}</div>`;
   if ((P.screen === "mock" && !P.mock?.done && !P.st.mockPick) || P.screen === "copy") setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
@@ -2058,6 +2085,7 @@ function prepHomeHtml(all) {
     </div>
     <div class="tp-steps"><h4 class="tp-or">Or learn in small pieces</h4>
       ${(() => { const gs = tpGroupsLive(), d = gs.filter(tpGroupDone).length; return `<button class="tp-step" type="button" data-act="prep-go" data-screen="groups"><span class="tp-n">G</span><span class="tp-st"><b>Small groups · ${d} of ${gs.length} done</b><small>${gs.length} groups of 2–4 look-alikes. See them side by side, then quiz just that group.</small></span></button>`; })()}
+      ${(() => { const d = [0, 1, 2, 3].filter(tpPartDone).length; return `<button class="tp-step" type="button" data-act="prep-go" data-screen="parts"><span class="tp-n">S</span><span class="tp-st"><b>Separated · ${d} of 4 done</b><small>All ${all.length} split at random into 4 parts of about ${Math.ceil(all.length / 4)}. Learn one part, quiz it, move on.</small></span></button>`; })()}
     </div>
     <div class="learn"><h4>All ${all.length} · tap one to study it</h4>
       <div class="tp-legend"><span class="l-new">not sorted</span><span class="l-learn">learning</span><span class="l-know">know</span></div>
@@ -2167,17 +2195,33 @@ function prepGroupSeeHtml() {
   const m = tpGroup(P.g);
   return tpTop(`Small groups · ${esc(tpCap(P.g))}`)
     + `<div class="rep-banner"><span class="eyebrow">${m.length} look-alikes</span><h2>${esc(tpCap(P.g))}</h2><div class="sub">Look at them side by side. Find the ONE thing that tells each apart.</div></div>`
-    + `<div class="tp-cmp">` + m.map((x) => {
-      const a = tpAnimal(x.t);
-      return `<div class="tp-card">${tpPhoto(a.photos[0], a.name)}`
-        + (a.photos.length > 1 ? `<div class="tp-thumbs">${a.photos.slice(1, 6).map((p) => `<img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy">`).join("")}</div>` : "")
-        + `<h3>${tpName(a)}</h3><small>${esc(x.common)}</small><p class="tp-clue">${esc(x.clue)}</p></div>`;
-    }).join("") + `</div>`
+    + `<div class="tp-cmp">` + m.map((x) => tpCard(x.t)).join("") + `</div>`
     + `<div class="tp-row"><button class="btn primary" type="button" data-act="prep-group" data-screen="gquiz" data-g="${esc(P.g)}">Quiz this group</button><button class="btn" type="button" data-act="prep-go" data-screen="groups">All groups</button></div>`;
 }
+function prepPartsHtml() {
+  const parts = tpParts(), next = tpNextPart(), done = [0, 1, 2, 3].filter(tpPartDone).length;
+  return tpTop(`Separated · ${done} of 4 done`)
+    + `<p class="tp-ask">All ${parts.flat().length} animals split at random into 4 parts. Learn one part, quiz it until each is right twice in a row, then go to the next.</p>`
+    + `<div class="tp-steps">` + parts.map((p, i) => `<button class="tp-step${i === next ? " primary" : ""}" type="button" data-act="prep-group" data-screen="psee" data-g="${i}"><span class="tp-n">${tpPartDone(i) ? "✓" : i + 1}</span><span class="tp-st"><b>Part ${i + 1} · ${tpPartKnown(i)} of ${p.length}</b><small>${p.map((t) => esc(tpShort(tpAnimal(t)))).join(", ")}</small></span></button>`).join("") + `</div>`
+    + `<div class="tp-row"><button class="btn ghost sm" type="button" data-act="prep-pshuffle">Shuffle into new parts</button></div>`;
+}
+function prepPartSeeHtml() {
+  const p = tpParts()[P.part] || [];
+  return tpTop(`Separated · Part ${P.part + 1}`)
+    + `<div class="rep-banner"><span class="eyebrow">Part ${P.part + 1} of 4 · ${p.length} animals</span><h2>Part ${P.part + 1}</h2><div class="sub">Go through each one: photo, name, giveaway. Then quiz this part.</div></div>`
+    + `<div class="tp-row"><button class="btn primary" type="button" data-act="prep-group" data-screen="pquiz" data-g="${P.part}">Quiz Part ${P.part + 1}</button><button class="btn" type="button" data-act="prep-go" data-screen="parts">All parts</button></div>`
+    + `<div class="tp-cmp">` + p.map(tpCard).join("") + `</div>`
+    + `<div class="tp-row"><button class="btn primary" type="button" data-act="prep-group" data-screen="pquiz" data-g="${P.part}">Quiz Part ${P.part + 1}</button></div>`;
+}
 function prepGroupQuizHtml() {
-  const q = P.q, label = P.gMix ? "Mix" : tpCap(P.g || "");
+  const isPart = P.gKind === "part";
+  const q = P.q, label = isPart ? `Part ${P.part + 1}` : P.gMix ? "Mix" : tpCap(P.g || "");
   const pool = P.gPool || [], got = pool.filter((t) => (P.gs[t] || 0) >= 2).length;
+  if (!q && isPart) {
+    const next = tpNextPart();
+    return `<div class="empty"><h2>${esc(label)} done!</h2><p>Every animal right twice in a row.${next !== undefined ? ` Next up: Part ${next + 1}.` : " All 4 parts done. Try the mock test."}</p>
+      <div class="tp-row">${next !== undefined ? `<button class="btn primary" type="button" data-act="prep-group" data-screen="psee" data-g="${next}">Next: Part ${next + 1}</button>` : `<button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button>`}<button class="btn" type="button" data-act="prep-go" data-screen="parts">All parts</button></div></div>`;
+  }
   if (!q) {
     const next = tpNextGroup(), done = tpGroupsLive().filter(tpGroupDone).length;
     return `<div class="empty"><h2>${esc(label)} done!</h2><p>Every animal right twice in a row.${next ? ` Next up: ${esc(tpCap(next))}.` : " That was the last group. Try the mock test."}${done >= 2 && !P.gMix ? " Every few groups, do a Mix round so the old ones stay fresh." : ""}</p>
@@ -2210,7 +2254,7 @@ function prepKey(e, inField) {
   } else if (P.screen === "drill" && q) {
     if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepChoose(t); } }
     else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepDrillQ(); renderStage(); window.scrollTo({ top: 0 }); }
-  } else if (P.screen === "gquiz" && q) {
+  } else if ((P.screen === "gquiz" || P.screen === "pquiz") && q) {
     if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepGroupChoose(t); } }
     else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); }
   } else if (P.screen === "learn") {
@@ -3219,6 +3263,7 @@ document.addEventListener("click", async (e) => {
     case "prep-open": prepGo("learn", t.dataset.t); break;
     case "prep-group": prepGo(t.dataset.screen, t.dataset.g); break;
     case "prep-gchoose": prepGroupChoose(t.dataset.t); break;
+    case "prep-pshuffle": P.st.parts = null; savePrep(); tpParts(); renderStage(); break;
     case "prep-gnext": prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); break;
     case "prep-reveal": if (P.q) { P.q.shown = true; renderStage(); } break;
     case "prep-sorted": prepSorted(t.dataset.v === "1"); break;
