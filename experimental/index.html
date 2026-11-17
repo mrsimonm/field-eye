@@ -350,54 +350,54 @@ html.phone {
    dialogs that rise as bottom sheets. Keeps the readable Atkinson fonts.
    ===================================================================== */
 :root {
-  --paper: #EDF2E8;
-  --card: rgba(249,252,246,.74);
-  --ink: #1E2A22; --muted: #5A6B5E; --line: #D4DECB;
-  --moss: #2E6B48; --on-moss: #F3F8F1;
-  --amber: #866C2C; --amber-soft: #ECE3CC;
-  --good: #2A7548; --good-soft: #D8EEDD;
-  --bad: #B4402B; --bad-soft: #F6DDD6;
-  --plate: #0E140F; --plate-ink: #CBD6CD;
+  --paper: #F5F5F5;
+  --card: rgba(255,255,255,.82);
+  --ink: #111111; --muted: #666666; --line: #D4D4D4;
+  --moss: #111111; --on-moss: #FFFFFF;
+  --amber: #555555; --amber-soft: #E5E5E5;
+  --good: #111111; --good-soft: #E5E5E5;
+  --bad: #333333; --bad-soft: #EBEBEB;
+  --plate: #0D0D0D; --plate-ink: #D4D4D4;
   --r: 18px; --r-sm: 12px; --r-pill: 999px;
-  --glass-fill: rgba(249,252,246,.66); --glass-fill-2: rgba(249,252,246,.86);
-  --glass-border: rgba(255,255,255,.62);
-  --glass-blur: blur(22px) saturate(160%);
-  --glass-shadow: 0 20px 50px -16px rgba(32,74,50,.26), 0 0 0 1px rgba(30,70,45,.05), inset 0 1px 0 rgba(255,255,255,.72), inset 0 -1px 0 rgba(40,90,60,.04);
-  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.30), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.14), transparent 84%), var(--glass-fill);
-  --blob-1: rgba(94,168,125,.34); --blob-2: rgba(150,180,120,.30); --blob-3: rgba(120,170,150,.26); --blob-4: rgba(196,206,150,.26);
-  --shadow: 0 1px 2px rgba(32,74,50,.08);
-  --shadow-lift: 0 14px 34px -12px rgba(36,80,52,.26);
+  --glass-fill: rgba(255,255,255,.72); --glass-fill-2: rgba(255,255,255,.90);
+  --glass-border: rgba(0,0,0,.10);
+  --glass-blur: blur(22px) saturate(100%);
+  --glass-shadow: 0 20px 50px -16px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.06), inset 0 1px 0 rgba(255,255,255,.8), inset 0 -1px 0 rgba(0,0,0,.04);
+  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.35), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.15), transparent 84%), var(--glass-fill);
+  --blob-1: rgba(0,0,0,.05); --blob-2: rgba(0,0,0,.04); --blob-3: rgba(0,0,0,.03); --blob-4: rgba(0,0,0,.04);
+  --shadow: 0 1px 2px rgba(0,0,0,.08);
+  --shadow-lift: 0 14px 34px -12px rgba(0,0,0,.22);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #121711; --card: rgba(28,37,29,.72);
-    --ink: #E6EDE4; --muted: #9DAE9F; --line: #2C382E;
-    --moss: #8ECBA4; --on-moss: #0F1511;
-    --amber: #CDAE6E; --amber-soft: #39301A;
-    --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
-    --plate: #080A08; --plate-ink: #AEB9AF;
-    --glass-fill: rgba(28,37,29,.62); --glass-fill-2: rgba(28,37,29,.84);
+    --paper: #0E0E0E; --card: rgba(24,24,24,.78);
+    --ink: #F2F2F2; --muted: #999999; --line: #2C2C2C;
+    --moss: #FFFFFF; --on-moss: #111111;
+    --amber: #B0B0B0; --amber-soft: #262626;
+    --good: #FFFFFF; --good-soft: #262626; --bad: #CCCCCC; --bad-soft: #202020;
+    --plate: #050505; --plate-ink: #B5B5B5;
+    --glass-fill: rgba(24,24,24,.70); --glass-fill-2: rgba(24,24,24,.88);
     --glass-border: rgba(255,255,255,.12);
-    --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.25);
-    --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.05), transparent 84%), var(--glass-fill);
-    --blob-1: rgba(70,150,105,.26); --blob-2: rgba(120,160,90,.22); --blob-3: rgba(90,150,130,.20); --blob-4: rgba(150,170,100,.16);
+    --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.10), inset 0 -1px 0 rgba(0,0,0,.25);
+    --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.04), transparent 84%), var(--glass-fill);
+    --blob-1: rgba(255,255,255,.05); --blob-2: rgba(255,255,255,.04); --blob-3: rgba(255,255,255,.03); --blob-4: rgba(255,255,255,.04);
     --shadow: 0 1px 2px rgba(0,0,0,.45);
     --shadow-lift: 0 16px 38px -12px rgba(0,0,0,.6);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #121711; --card: rgba(28,37,29,.72);
-  --ink: #E6EDE4; --muted: #9DAE9F; --line: #2C382E;
-  --moss: #8ECBA4; --on-moss: #0F1511;
-  --amber: #CDAE6E; --amber-soft: #39301A;
-  --good: #74CC93; --good-soft: #18301F; --bad: #EE8B74; --bad-soft: #3A1E18;
-  --plate: #080A08; --plate-ink: #AEB9AF;
-  --glass-fill: rgba(28,37,29,.62); --glass-fill-2: rgba(28,37,29,.84);
+  --paper: #0E0E0E; --card: rgba(24,24,24,.78);
+  --ink: #F2F2F2; --muted: #999999; --line: #2C2C2C;
+  --moss: #FFFFFF; --on-moss: #111111;
+  --amber: #B0B0B0; --amber-soft: #262626;
+  --good: #FFFFFF; --good-soft: #262626; --bad: #CCCCCC; --bad-soft: #202020;
+  --plate: #050505; --plate-ink: #B5B5B5;
+  --glass-fill: rgba(24,24,24,.70); --glass-fill-2: rgba(24,24,24,.88);
   --glass-border: rgba(255,255,255,.12);
-  --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.6), 0 0 0 1px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.25);
-  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.05), transparent 84%), var(--glass-fill);
-  --blob-1: rgba(70,150,105,.26); --blob-2: rgba(120,160,90,.22); --blob-3: rgba(90,150,130,.20); --blob-4: rgba(150,170,100,.16);
+  --glass-shadow: 0 18px 48px -14px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.10), inset 0 -1px 0 rgba(0,0,0,.25);
+  --glass-sheen: radial-gradient(180px 120px at 12% 8%, rgba(255,255,255,.08), transparent 82%), radial-gradient(150px 100px at 92% 82%, rgba(255,255,255,.04), transparent 84%), var(--glass-fill);
+  --blob-1: rgba(255,255,255,.05); --blob-2: rgba(255,255,255,.04); --blob-3: rgba(255,255,255,.03); --blob-4: rgba(255,255,255,.04);
   --shadow: 0 1px 2px rgba(0,0,0,.45);
   --shadow-lift: 0 16px 38px -12px rgba(0,0,0,.6);
   color-scheme: dark;
@@ -795,7 +795,7 @@ html.phone {
       Field Eye
     </div>
     <div class="bar-right">
-      <nav class="tabs" role="tablist" aria-label="Sections">
+      <nav class="tabs" role="tablist" aria-label="Sections" hidden>
         <button class="tab" role="tab" id="tab-learn" data-act="view" data-view="learn" aria-selected="false">Learn</button>
         <button class="tab" role="tab" id="tab-groups" data-act="view" data-view="groups" aria-selected="false">Groups</button>
         <button class="tab" role="tab" id="tab-practice" data-act="view" data-view="practice" aria-selected="true">Practice</button>
@@ -813,7 +813,7 @@ html.phone {
         <button type="button" data-layout="laptop" aria-pressed="false" aria-label="Laptop layout" title="Laptop layout"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="4" width="13" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M1.5 16h17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
       </div>
       <button class="tourbtn" type="button" id="acctBtn" data-act="account" aria-label="Sign in"><span class="avatar" id="acctAvatar" aria-hidden="true"></span><span id="acctLabel">Sign in</span></button>
-      <button class="tourbtn" type="button" id="tourBtn" data-act="tour" aria-label="Tutorial: learn how to use Field Eye"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.6 7.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.6" r="1.1" fill="currentColor"/></svg><span>Tutorial</span></button>
+      <button class="tourbtn" type="button" id="tourBtn" data-act="tour" aria-label="Tutorial: learn how to use Field Eye" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.6 7.6a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14.6" r="1.1" fill="currentColor"/></svg><span>Tutorial</span></button>
     </div>
   </div>
 </header>
@@ -833,13 +833,13 @@ html.phone {
   <section id="practice" class="view" aria-labelledby="tab-practice">
     <div class="controls">
       <select id="groupSel" aria-label="Which animals to practise"><option value="all">All animals</option></select>
-      <div class="seg prac-mode" role="group" aria-label="Practice mode">
+      <div class="seg prac-mode" role="group" aria-label="Practice mode" hidden>
         <button type="button" id="pmode-quiz" data-act="prac-mode" data-pmode="quiz" aria-pressed="true">Quiz</button>
         <button type="button" id="pmode-fc" data-act="prac-mode" data-pmode="fc" aria-pressed="false">Flashcards</button>
         <button type="button" id="pmode-rep" data-act="prac-mode" data-pmode="rep" aria-pressed="false">Repetition</button>
       </div>
       <div class="ctl-right">
-      <button class="testbtn" type="button" data-act="test-setup" id="testBtn">Test</button>
+      <button class="testbtn" type="button" data-act="test-setup" id="testBtn" hidden>Test</button>
       <details class="tweaks" id="tweaks">
         <summary>Options</summary>
         <div class="tweak-box">
@@ -998,7 +998,7 @@ const S = {
   animals: [],
   progress: {},          // animalId -> { box 1..5, seen, right, ph: { photoId: [seen, right] } }
   // Zoom and tilt hide the photo edges, so it's off for everyone once (they can turn it back on).
-  set: Object.assign({ mode: "choice", pracMode: "quiz", fcReverse: false, group: "all", mirror: true, zoom: false, bw: false }, (() => { const s = ls.get("fe-settings", {}); if (!ls.get("fe-full-photo", false)) { s.zoom = false; ls.set("fe-settings", s); ls.set("fe-full-photo", true); } return s; })()),
+  set: Object.assign({ mode: "choice", pracMode: "rep", fcReverse: false, group: "all", mirror: true, zoom: false, bw: false }, (() => { const s = ls.get("fe-settings", {}); if (!ls.get("fe-full-photo", false)) { s.zoom = false; ls.set("fe-settings", s); ls.set("fe-full-photo", true); } return s; })(), { pracMode: "rep" }),
   view: "practice",
   q: null,
   sess: { right: 0, total: 0, streak: 0, best: 0 },
