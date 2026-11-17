@@ -1859,7 +1859,7 @@ const TP_LIST = [
 const TP_PASS = 0.7;
 const P = {
   on: ls.get("fe-exp-mode", "prep") !== "rep",
-  st: Object.assign({ know: {}, streak: {}, mockPick: false }, ls.get("fe-exp-prep", {})),
+  st: Object.assign({ know: {}, streak: {}, mockPick: false, copyAll: false }, ls.get("fe-exp-prep", {})),
   screen: "home", queue: [], i: 0, q: null, pid: null, mock: null, last: null,
 };
 const savePrep = () => ls.set("fe-exp-prep", P.st);
@@ -1906,6 +1906,9 @@ function prepGo(screen, t) {
   } else if (screen === "learn") {
     P.queue = t ? all.map((x) => x.t) : tpPile().map((x) => x.t);
     P.i = t ? Math.max(0, P.queue.indexOf(t)) : 0; P.pid = null;
+  } else if (screen === "copy") {
+    const pile = tpPile();
+    P.queue = shuffle(((P.st.copyAll || !pile.length) ? all : pile).map((x) => x.t)); P.i = 0; P.copyN = 0; P.copyMsg = null; prepCopyQ();
   } else if (screen === "drill") prepDrillQ();
   else if (screen === "mock") {
     const items = shuffle([...all]).slice(0, 20).map((x) => ({ t: x.t, pid: pick(tpAnimal(x.t).photos) }));
@@ -1921,6 +1924,22 @@ function prepSorted(knew) {
   const q = P.q; if (!q || !q.shown) return;
   P.st.know[q.t] = knew; if (!knew) P.st.streak[q.t] = 0; savePrep();
   P.i++; prepSortQ(); renderStage(); window.scrollTo({ top: 0 });
+}
+function prepCopyQ() {
+  if (P.i >= P.queue.length) { shuffle(P.queue); P.i = 0; }
+  const t = P.queue[P.i];
+  P.q = t ? { t, pid: pick(tpAnimal(t).photos) } : null;
+}
+// Copy typing: the name must be spelled exactly (case and the rank word don't matter).
+function prepCopyAnswer(v) {
+  const q = P.q; if (!q) return;
+  const a = tpAnimal(q.t), g = norm(v);
+  if (g === baseTaxon(a.name) || g === norm(a.name)) {
+    P.copyN++; P.copyMsg = { ok: true, text: `✓ ${tpShort(a)}` };
+    P.i++; prepCopyQ();
+  } else if (judge(v, a).ok) P.copyMsg = { ok: false, text: "Almost. Check the spelling letter by letter." };
+  else P.copyMsg = { ok: false, text: "Not quite. Copy the name above exactly." };
+  renderStage();
 }
 function prepDrillQ() {
   const pile = tpPile();
@@ -1961,11 +1980,12 @@ function renderPrep() {
   let html = "";
   if (P.screen === "sort") html = prepSortHtml(all);
   else if (P.screen === "learn") html = prepLearnHtml();
+  else if (P.screen === "copy") html = prepCopyHtml();
   else if (P.screen === "drill") html = prepDrillHtml();
   else if (P.screen === "mock") html = prepMockHtml();
   else html = prepHomeHtml(all);
   st.innerHTML = `<div class="tp">${html}</div>`;
-  if (P.screen === "mock" && !P.mock?.done && !P.st.mockPick) setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
+  if ((P.screen === "mock" && !P.mock?.done && !P.st.mockPick) || P.screen === "copy") setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
 }
 function prepHomeHtml(all) {
   const know = all.filter((x) => tpStatus(x.t) === "know").length;
@@ -1980,8 +2000,9 @@ function prepHomeHtml(all) {
     <div class="tp-steps">
       ${step(1, "sort", "Sort", fresh ? `See a photo, say if you know it. ${fresh} to go, about ${Math.max(1, Math.round((fresh * 10) / 60))} min.` : "All sorted. Tap to check them all again.")}
       ${step(2, "learn", "Learn my pile", pile ? `${plural(pile, "animal")} you don't know yet, one giveaway clue each.` : "Nothing left in your pile.", !pile)}
-      ${step(3, "drill", "Drill my pile", pile ? "Pick the right name. Right twice in a row moves it to Know." : "Nothing left in your pile.", !pile)}
-      ${step(4, "mock", "Mock test", `${Math.min(20, all.length)} photos like the real test, no hints. Pass is about ${Math.ceil(Math.min(20, all.length) * TP_PASS)}.`)}
+      ${step(3, "copy", "Type it", "See the photo and the name, type the name yourself. Learns the spelling.")}
+      ${step(4, "drill", "Drill my pile", pile ? "Pick the right name. Right twice in a row moves it to Know." : "Nothing left in your pile.", !pile)}
+      ${step(5, "mock", "Mock test", `${Math.min(20, all.length)} photos like the real test, no hints. Pass is about ${Math.ceil(Math.min(20, all.length) * TP_PASS)}.`)}
     </div>
     <div class="learn"><h4>All ${all.length} · tap one to study it</h4>
       <div class="tp-legend"><span class="l-new">not sorted</span><span class="l-learn">learning</span><span class="l-know">know</span></div>
@@ -2014,6 +2035,19 @@ function prepLearnHtml() {
     + `<div class="tp-strip">${a.photos.map((p) => `<button type="button" data-act="prep-photo" data-pid="${esc(p)}" aria-current="${p === pid}" aria-label="Show this photo"><img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy"></button>`).join("")}</div>`
     + tpInfo(x, a)
     + `<div class="tp-row"><button class="btn" type="button" data-act="prep-step" data-d="-1"${P.i ? "" : " disabled"}>← Back</button>${last ? `<button class="btn primary" type="button" data-act="prep-go" data-screen="drill"${tpPile().length ? "" : " disabled"}>Drill them now</button>` : `<button class="btn primary" type="button" data-act="prep-step" data-d="1">Next →</button>`}</div>`;
+}
+function prepCopyHtml() {
+  const q = P.q;
+  if (!q) return `<div class="empty"><h2>Nothing to type</h2><div class="tp-row"><button class="btn" type="button" data-act="prep-go" data-screen="home">Home</button></div></div>`;
+  const a = tpAnimal(q.t), x = tpGet(q.t), pile = tpPile().length;
+  const m = P.copyMsg;
+  return tpTop(`Type it · ${plural(P.copyN, "name")} typed`)
+    + `<div class="seg" role="group" aria-label="Which animals"><button type="button" data-act="prep-copyset" data-v="0" aria-pressed="${!(P.st.copyAll || !pile)}"${pile ? "" : " disabled"}>My pile (${pile})</button><button type="button" data-act="prep-copyset" data-v="1" aria-pressed="${!!(P.st.copyAll || !pile)}">All ${tpAvail().length}</button></div>`
+    + `<div class="rep-banner"><span class="eyebrow">${esc(x.common)}</span><h2>${tpName(a)}</h2></div>`
+    + `<div class="tray"><form class="typeform" id="prepCopyForm"><input id="prepIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the name shown above" aria-label="Type the name shown above"><button class="btn primary" type="submit">Check</button><button class="btn ghost" type="button" data-act="prep-copyskip">Skip</button></form></div>`
+    + (m ? `<div class="verdict ${m.ok ? "ok" : "no"}"><span class="label">${esc(m.text)}</span></div>` : "")
+    + tpPhoto(q.pid, a.name)
+    + `<div class="learn"><div><h4>The giveaway</h4><p class="tp-clue">${esc(x.clue)}</p></div></div>`;
 }
 function prepDrillHtml() {
   const q = P.q, pile = tpPile().length;
@@ -3086,6 +3120,8 @@ document.addEventListener("click", async (e) => {
     case "prep-mockmode": P.st.mockPick = t.dataset.v === "1"; savePrep(); renderStage(); break;
     case "prep-mockpick": prepMockAnswer(null, t.dataset.t); break;
     case "prep-mockskip": prepMockAnswer(""); break;
+    case "prep-copyset": P.st.copyAll = t.dataset.v === "1"; savePrep(); prepGo("copy"); break;
+    case "prep-copyskip": P.copyMsg = null; P.i++; prepCopyQ(); renderStage(); break;
     case "prep-reset":
       if (!P.confirmReset) { P.confirmReset = true; renderStage(); setTimeout(() => { P.confirmReset = false; if (P.on && P.screen === "home") renderStage(); }, 4000); break; }
       P.confirmReset = false; P.st = { know: {}, streak: {}, mockPick: P.st.mockPick }; savePrep(); renderStage(); break;
@@ -3259,7 +3295,12 @@ document.addEventListener("click", async (e) => {
 });
 
 document.addEventListener("submit", (e) => {
-  if (e.target.id === "prepForm") {
+  if (e.target.id === "prepCopyForm") {
+    e.preventDefault();
+    const v = $("#prepIn").value.trim();
+    if (!v) { $("#prepIn").focus(); return; }
+    prepCopyAnswer(v);
+  } else if (e.target.id === "prepForm") {
     e.preventDefault();
     const v = $("#prepIn").value.trim();
     if (!v) { $("#prepIn").focus(); return; }
