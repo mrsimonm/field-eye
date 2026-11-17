@@ -820,6 +820,14 @@ html.phone {
 .tp-ask { text-align: center; color: var(--muted); font-size: 1rem; }
 .tp-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .tp-row .btn { flex: 1 1 140px; padding: 13px 16px; font-size: 1rem; }
+.tp-or { margin: 6px 0 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.tp-cmp { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.tp-card { display: grid; gap: 6px; align-content: start; border: 1.5px solid var(--line); border-radius: var(--r); padding: 10px; background: var(--card); min-width: 0; }
+.tp-card h3 { margin: 4px 0 0; font-size: 1.05rem; }
+.tp-card small { color: var(--muted); }
+.tp-card .tp-clue { margin: 0; }
+.tp-thumbs { display: flex; gap: 4px; overflow-x: auto; }
+.tp-thumbs img { flex: none; width: 44px; height: 44px; object-fit: cover; border-radius: 6px; }
 .tp-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
 .tp-strip button { flex: none; width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: pointer; background: none; }
 .tp-strip button[aria-current="true"] { border-color: var(--ink); }
@@ -1888,6 +1896,14 @@ function tpOptions(x) {
   const same = shuffle(others.filter((y) => y.look === x.look)), rest = shuffle(others.filter((y) => y.look !== x.look));
   return shuffle([x, ...[...same, ...rest].slice(0, 3)]).map((y) => y.t);
 }
+// Small groups: the look-alike groups above (2–4 animals each), learned one group at a time.
+const TP_GROUPS = [...new Set(TP_LIST.map((x) => x.look))];
+const tpCap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const tpGroup = (g) => tpAvail().filter((x) => x.look === g);
+const tpGroupKnown = (g) => tpGroup(g).filter((x) => P.st.know[x.t] === true).length;
+const tpGroupDone = (g) => { const n = tpGroup(g).length; return n > 0 && tpGroupKnown(g) === n; };
+const tpGroupsLive = () => TP_GROUPS.filter((g) => tpGroup(g).length);
+const tpNextGroup = () => tpGroupsLive().find((g) => !tpGroupDone(g));
 const tpTop = (left) => `<div class="tp-top"><span>${left}</span><button class="btn ghost sm" type="button" data-act="prep-go" data-screen="home">← Test prep home</button></div>`;
 
 function setPrep(on) {
@@ -1910,7 +1926,13 @@ function prepGo(screen, t) {
     const pile = tpPile();
     P.queue = shuffle(((P.st.copyAll || !pile.length) ? all : pile).map((x) => x.t)); P.i = 0; P.copyN = 0; P.copyMsg = null; prepCopyQ();
   } else if (screen === "drill") prepDrillQ();
-  else if (screen === "mock") {
+  else if (screen === "gsee") { if (t) P.g = t; }
+  else if (screen === "gquiz") {
+    P.gMix = t === "mix";
+    if (t && !P.gMix) P.g = t;
+    P.gPool = P.gMix ? tpGroupsLive().filter(tpGroupDone).flatMap((g) => tpGroup(g).map((x) => x.t)) : tpGroup(P.g).map((x) => x.t);
+    P.gs = {}; P.last = null; prepGroupQ();
+  } else if (screen === "mock") {
     const items = shuffle([...all]).slice(0, 20).map((x) => ({ t: x.t, pid: pick(tpAnimal(x.t).photos) }));
     P.mock = { items, i: 0, done: false };
   }
@@ -1958,6 +1980,33 @@ function prepChoose(t) {
   } else { P.st.streak[q.t] = 0; P.st.know[q.t] = false; }
   savePrep(); renderStage();
 }
+// Group quiz: only the animals of one group (or all finished groups when mixing).
+// Each one must be right twice in a row in this round; it also counts toward Know.
+function prepGroupQ() {
+  const pool = P.gPool || [];
+  const left = pool.filter((t) => (P.gs[t] || 0) < 2);
+  if (!left.length) { P.q = null; return; }
+  let cands = left.length > 1 ? left.filter((t) => t !== P.last) : left;
+  if (left.length === 1 && P.last === left[0] && pool.length > 1) cands = pool.filter((t) => t !== P.last);
+  const t = pick(cands), x = tpGet(t);
+  let opts = pool.filter((y) => y !== t);
+  if (opts.length > 3) {
+    const same = shuffle(opts.filter((y) => tpGet(y).look === x.look)), rest = shuffle(opts.filter((y) => tpGet(y).look !== x.look));
+    opts = [...same, ...rest].slice(0, 3);
+  }
+  P.last = t;
+  P.q = { t, pid: pick(tpAnimal(t).photos), options: shuffle([t, ...opts]), answered: false, guess: null };
+}
+function prepGroupChoose(t) {
+  const q = P.q; if (!q || q.answered) return;
+  q.answered = true; q.guess = t; q.ok = t === q.t;
+  if (q.ok) {
+    P.gs[q.t] = (P.gs[q.t] || 0) + 1;
+    P.st.streak[q.t] = (P.st.streak[q.t] || 0) + 1;
+    if (P.st.streak[q.t] >= 2) P.st.know[q.t] = true;
+  } else { P.gs[q.t] = 0; P.st.streak[q.t] = 0; P.st.know[q.t] = false; }
+  savePrep(); renderStage();
+}
 function prepMockAnswer(val, t) {
   const m = P.mock; if (!m || m.done) return;
   const it = m.items[m.i]; if (!it) return;
@@ -1983,6 +2032,9 @@ function renderPrep() {
   else if (P.screen === "copy") html = prepCopyHtml();
   else if (P.screen === "drill") html = prepDrillHtml();
   else if (P.screen === "mock") html = prepMockHtml();
+  else if (P.screen === "groups") html = prepGroupsHtml();
+  else if (P.screen === "gsee") html = prepGroupSeeHtml();
+  else if (P.screen === "gquiz") html = prepGroupQuizHtml();
   else html = prepHomeHtml(all);
   st.innerHTML = `<div class="tp">${html}</div>`;
   if ((P.screen === "mock" && !P.mock?.done && !P.st.mockPick) || P.screen === "copy") setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
@@ -2003,6 +2055,9 @@ function prepHomeHtml(all) {
       ${step(3, "copy", "Type it", "See the photo and the name, type the name yourself. Learns the spelling.")}
       ${step(4, "drill", "Drill my pile", pile ? "Pick the right name. Right twice in a row moves it to Know." : "Nothing left in your pile.", !pile)}
       ${step(5, "mock", "Mock test", `${Math.min(20, all.length)} photos like the real test, no hints. Pass is about ${Math.ceil(Math.min(20, all.length) * TP_PASS)}.`)}
+    </div>
+    <div class="tp-steps"><h4 class="tp-or">Or learn in small pieces</h4>
+      ${(() => { const gs = tpGroupsLive(), d = gs.filter(tpGroupDone).length; return `<button class="tp-step" type="button" data-act="prep-go" data-screen="groups"><span class="tp-n">G</span><span class="tp-st"><b>Small groups · ${d} of ${gs.length} done</b><small>${gs.length} groups of 2–4 look-alikes. See them side by side, then quiz just that group.</small></span></button>`; })()}
     </div>
     <div class="learn"><h4>All ${all.length} · tap one to study it</h4>
       <div class="tp-legend"><span class="l-new">not sorted</span><span class="l-learn">learning</span><span class="l-know">know</span></div>
@@ -2098,6 +2153,54 @@ function prepMockHtml() {
   }
   return html + `<p class="tp-ask">No hints until the end, like the real test.</p>`;
 }
+function prepGroupsHtml() {
+  const gs = tpGroupsLive(), next = tpNextGroup(), done = gs.filter(tpGroupDone).length;
+  return tpTop(`Small groups · ${done} of ${gs.length} done`)
+    + `<p class="tp-ask">One small group at a time. Look at the 2–4 look-alikes side by side, then quiz only them until each is right twice in a row.</p>`
+    + `<div class="tp-steps">` + gs.map((g, i) => {
+      const m = tpGroup(g), k = tpGroupKnown(g);
+      return `<button class="tp-step${g === next ? " primary" : ""}" type="button" data-act="prep-group" data-screen="gsee" data-g="${esc(g)}"><span class="tp-n">${k === m.length ? "✓" : i + 1}</span><span class="tp-st"><b>${esc(tpCap(g))} · ${k} of ${m.length}</b><small>${m.map((x) => esc(tpShort(tpAnimal(x.t)))).join(", ")}</small></span></button>`;
+    }).join("") + `</div>`
+    + `<div class="tp-row"><button class="btn${next ? "" : " primary"}" type="button" data-act="prep-group" data-screen="gquiz" data-g="mix"${done >= 2 ? "" : " disabled"}>Mix all finished groups${done >= 2 ? ` (${done})` : " · finish 2 first"}</button></div>`;
+}
+function prepGroupSeeHtml() {
+  const m = tpGroup(P.g);
+  return tpTop(`Small groups · ${esc(tpCap(P.g))}`)
+    + `<div class="rep-banner"><span class="eyebrow">${m.length} look-alikes</span><h2>${esc(tpCap(P.g))}</h2><div class="sub">Look at them side by side. Find the ONE thing that tells each apart.</div></div>`
+    + `<div class="tp-cmp">` + m.map((x) => {
+      const a = tpAnimal(x.t);
+      return `<div class="tp-card">${tpPhoto(a.photos[0], a.name)}`
+        + (a.photos.length > 1 ? `<div class="tp-thumbs">${a.photos.slice(1, 6).map((p) => `<img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy">`).join("")}</div>` : "")
+        + `<h3>${tpName(a)}</h3><small>${esc(x.common)}</small><p class="tp-clue">${esc(x.clue)}</p></div>`;
+    }).join("") + `</div>`
+    + `<div class="tp-row"><button class="btn primary" type="button" data-act="prep-group" data-screen="gquiz" data-g="${esc(P.g)}">Quiz this group</button><button class="btn" type="button" data-act="prep-go" data-screen="groups">All groups</button></div>`;
+}
+function prepGroupQuizHtml() {
+  const q = P.q, label = P.gMix ? "Mix" : tpCap(P.g || "");
+  const pool = P.gPool || [], got = pool.filter((t) => (P.gs[t] || 0) >= 2).length;
+  if (!q) {
+    const next = tpNextGroup(), done = tpGroupsLive().filter(tpGroupDone).length;
+    return `<div class="empty"><h2>${esc(label)} done!</h2><p>Every animal right twice in a row.${next ? ` Next up: ${esc(tpCap(next))}.` : " That was the last group. Try the mock test."}${done >= 2 && !P.gMix ? " Every few groups, do a Mix round so the old ones stay fresh." : ""}</p>
+      <div class="tp-row">${next ? `<button class="btn primary" type="button" data-act="prep-group" data-screen="gsee" data-g="${esc(next)}">Next group: ${esc(tpCap(next))}</button>` : `<button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button>`}${done >= 2 ? `<button class="btn" type="button" data-act="prep-group" data-screen="gquiz" data-g="mix">Mix finished groups</button>` : ""}<button class="btn" type="button" data-act="prep-go" data-screen="groups">All groups</button></div></div>`;
+  }
+  const a = tpAnimal(q.t), x = tpGet(q.t);
+  let html = tpTop(`${esc(label)} · ${got} of ${pool.length} learned`) + tpPhoto(q.pid, q.answered ? a.name : "");
+  html += `<div class="tray"><div class="choices">` + q.options.map((t, i) => {
+    const o = tpAnimal(t); let cls = "";
+    if (q.answered) cls = t === q.t ? "right" : t === q.guess ? "wrong" : "dim";
+    return `<button class="choice ${cls}" type="button" data-act="prep-gchoose" data-t="${t}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(o ? o.name : t)}</button>`;
+  }).join("") + `</div></div>`;
+  if (q.answered) {
+    const n = P.gs[q.t] || 0;
+    const lbl = q.ok ? (n >= 2 ? "Right! Got this one" : `Right · ${n} of 2`) : "Not quite";
+    html += `<div class="verdict ${q.ok ? "ok" : "no"}"><span class="label">${lbl}</span></div>`;
+    html += `<div class="next-row"><button class="btn primary" id="nextBtn" type="button" data-act="prep-gnext">Next <kbd>Enter</kbd></button></div>`;
+    const g = !q.ok && tpGet(q.guess);
+    const extra = g ? `<div><h4>You picked ${esc(tpShort(tpAnimal(g.t)))}</h4><p>${esc(g.common)}: ${esc(g.clue)}</p></div>` : "";
+    html += tpInfo(x, a, extra);
+  }
+  return html;
+}
 function prepKey(e, inField) {
   if (inField) return;
   const k = e.key, q = P.q;
@@ -2107,6 +2210,9 @@ function prepKey(e, inField) {
   } else if (P.screen === "drill" && q) {
     if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepChoose(t); } }
     else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepDrillQ(); renderStage(); window.scrollTo({ top: 0 }); }
+  } else if (P.screen === "gquiz" && q) {
+    if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepGroupChoose(t); } }
+    else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); }
   } else if (P.screen === "learn") {
     if (k === "ArrowLeft" && P.i > 0) { e.preventDefault(); P.i--; P.pid = null; renderStage(); }
     else if (k === "ArrowRight" && P.i < P.queue.length - 1) { e.preventDefault(); P.i++; P.pid = null; renderStage(); }
@@ -3111,6 +3217,9 @@ document.addEventListener("click", async (e) => {
     case "prep-off": setPrep(false); break;
     case "prep-go": prepGo(t.dataset.screen); break;
     case "prep-open": prepGo("learn", t.dataset.t); break;
+    case "prep-group": prepGo(t.dataset.screen, t.dataset.g); break;
+    case "prep-gchoose": prepGroupChoose(t.dataset.t); break;
+    case "prep-gnext": prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); break;
     case "prep-reveal": if (P.q) { P.q.shown = true; renderStage(); } break;
     case "prep-sorted": prepSorted(t.dataset.v === "1"); break;
     case "prep-step": P.i = clamp(P.i + +t.dataset.d, 0, P.queue.length - 1); P.pid = null; renderStage(); window.scrollTo({ top: 0 }); break;
