@@ -1925,6 +1925,34 @@ function tpCard(t) {
     + (a.photos.length > 1 ? `<div class="tp-thumbs">${a.photos.slice(1, 6).map((p) => `<img data-pid="${esc(p)}" src="${esc(photoSrc(p))}" alt="" loading="lazy">`).join("")}</div>` : "")
     + `<h3>${tpName(a)}</h3><small>${esc(x.common)}</small><p class="tp-clue">${esc(x.clue)}</p></div>`;
 }
+// Quizzes: type the name (like the real test) or pick from 4. Typing is the default.
+const tpTyping = () => P.st.quizType !== false;
+const tpModeSeg = () => `<div class="seg" role="group" aria-label="Answer style"><button type="button" data-act="prep-qmode" data-v="1" aria-pressed="${tpTyping()}">Type the name</button><button type="button" data-act="prep-qmode" data-v="0" aria-pressed="${!tpTyping()}">Pick from 4</button></div>`;
+function tpAnswerHtml(q, act) {
+  if (tpTyping()) {
+    const dis = q.answered ? " disabled" : "";
+    return `<div class="tray"><form class="typeform" id="prepQForm"><input id="prepIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the Latin name, e.g. Araneida" aria-label="Animal name"${q.answered ? ` disabled value="${esc(q.typed || "")}"` : ""}><button class="btn primary" type="submit"${dis}>Check</button><button class="btn ghost" type="button" data-act="prep-qskip"${dis}>I don't know</button></form></div>`;
+  }
+  return `<div class="tray"><div class="choices">` + q.options.map((t, i) => {
+    const o = tpAnimal(t); let cls = "";
+    if (q.answered) cls = t === q.t ? "right" : t === q.guess ? "wrong" : "dim";
+    return `<button class="choice ${cls}" type="button" data-act="${act}" data-t="${t}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(o ? o.name : t)}</button>`;
+  }).join("") + `</div></div>`;
+}
+// Typed answer: judge() forgives a small typo, but then we show the exact spelling.
+function tpTypedLabel(q, a, label) {
+  if (q.typed === undefined) return label;
+  if (q.ok && !q.exact) return `${label} · exact spelling: ${esc(tpShort(a))}`;
+  if (!q.ok) return `${label} · it's ${esc(tpShort(a))}`;
+  return label;
+}
+function prepTypedAnswer(val) {
+  const q = P.q; if (!q || q.answered) return;
+  const a = tpAnimal(q.t), v = String(val || "").trim();
+  const ok = !!v && judge(v, a).ok;
+  q.typed = v; q.exact = ok && (norm(v) === baseTaxon(a.name) || norm(v) === norm(a.name));
+  if (P.screen === "drill") prepChoose(ok ? q.t : ""); else prepGroupChoose(ok ? q.t : "");
+}
 const tpTop = (left) => `<div class="tp-top"><span>${left}</span><button class="btn ghost sm" type="button" data-act="prep-go" data-screen="home">← Test prep home</button></div>`;
 
 function setPrep(on) {
@@ -2065,6 +2093,7 @@ function renderPrep() {
   else html = prepHomeHtml(all);
   st.innerHTML = `<div class="tp">${html}</div>`;
   if ((P.screen === "mock" && !P.mock?.done && !P.st.mockPick) || P.screen === "copy") setTimeout(() => $("#prepIn")?.focus({ preventScroll: true }), 30);
+  if (["drill", "gquiz", "pquiz"].includes(P.screen) && P.q && tpTyping()) setTimeout(() => (P.q.answered ? $("#nextBtn") : $("#prepIn"))?.focus({ preventScroll: true }), 30);
 }
 function prepHomeHtml(all) {
   const know = all.filter((x) => tpStatus(x.t) === "know").length;
@@ -2136,15 +2165,11 @@ function prepDrillHtml() {
   const q = P.q, pile = tpPile().length;
   if (!q) return `<div class="empty"><h2>Pile cleared!</h2><p>You got every animal in your pile right twice in a row. Now try the mock test, like the real one.</p><div class="tp-row"><button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button><button class="btn" type="button" data-act="prep-go" data-screen="home">Home</button></div></div>`;
   const a = tpAnimal(q.t), x = tpGet(q.t);
-  let html = tpTop(`Drill · ${plural(pile, "animal")} left in your pile`) + tpPhoto(q.pid, q.answered ? a.name : "");
-  html += `<div class="tray"><div class="choices">` + q.options.map((t, i) => {
-    const o = tpAnimal(t); let cls = "";
-    if (q.answered) cls = t === q.t ? "right" : t === q.guess ? "wrong" : "dim";
-    return `<button class="choice ${cls}" type="button" data-act="prep-choose" data-t="${t}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(o ? o.name : t)}</button>`;
-  }).join("") + `</div></div>`;
+  let html = tpTop(`Drill · ${plural(pile, "animal")} left in your pile`) + tpModeSeg() + tpPhoto(q.pid, q.answered ? a.name : "");
+  html += tpAnswerHtml(q, "prep-choose");
   if (q.answered) {
     const streak = P.st.streak[q.t] || 0;
-    const label = q.ok ? (q.moved ? "Right! Moved to Know" : `Right · ${streak} of 2`) : "Not quite";
+    const label = tpTypedLabel(q, a, q.ok ? (q.moved ? "Right! Moved to Know" : `Right · ${streak} of 2`) : "Not quite");
     html += `<div class="verdict ${q.ok ? "ok" : "no"}"><span class="label">${label}</span></div>`;
     html += `<div class="next-row"><button class="btn primary" id="nextBtn" type="button" data-act="prep-next">Next <kbd>Enter</kbd></button></div>`;
     const g = !q.ok && tpGet(q.guess);
@@ -2228,15 +2253,11 @@ function prepGroupQuizHtml() {
       <div class="tp-row">${next ? `<button class="btn primary" type="button" data-act="prep-group" data-screen="gsee" data-g="${esc(next)}">Next group: ${esc(tpCap(next))}</button>` : `<button class="btn primary" type="button" data-act="prep-go" data-screen="mock">Mock test</button>`}${done >= 2 ? `<button class="btn" type="button" data-act="prep-group" data-screen="gquiz" data-g="mix">Mix finished groups</button>` : ""}<button class="btn" type="button" data-act="prep-go" data-screen="groups">All groups</button></div></div>`;
   }
   const a = tpAnimal(q.t), x = tpGet(q.t);
-  let html = tpTop(`${esc(label)} · ${got} of ${pool.length} learned`) + tpPhoto(q.pid, q.answered ? a.name : "");
-  html += `<div class="tray"><div class="choices">` + q.options.map((t, i) => {
-    const o = tpAnimal(t); let cls = "";
-    if (q.answered) cls = t === q.t ? "right" : t === q.guess ? "wrong" : "dim";
-    return `<button class="choice ${cls}" type="button" data-act="prep-gchoose" data-t="${t}" ${q.answered ? "disabled" : ""}><span class="k">${i + 1}</span>${choiceLabel(o ? o.name : t)}</button>`;
-  }).join("") + `</div></div>`;
+  let html = tpTop(`${esc(label)} · ${got} of ${pool.length} learned`) + tpModeSeg() + tpPhoto(q.pid, q.answered ? a.name : "");
+  html += tpAnswerHtml(q, "prep-gchoose");
   if (q.answered) {
     const n = P.gs[q.t] || 0;
-    const lbl = q.ok ? (n >= 2 ? "Right! Got this one" : `Right · ${n} of 2`) : "Not quite";
+    const lbl = tpTypedLabel(q, a, q.ok ? (n >= 2 ? "Right! Got this one" : `Right · ${n} of 2`) : "Not quite");
     html += `<div class="verdict ${q.ok ? "ok" : "no"}"><span class="label">${lbl}</span></div>`;
     html += `<div class="next-row"><button class="btn primary" id="nextBtn" type="button" data-act="prep-gnext">Next <kbd>Enter</kbd></button></div>`;
     const g = !q.ok && tpGet(q.guess);
@@ -2252,10 +2273,10 @@ function prepKey(e, inField) {
     if (!q.shown && (k === " " || k === "Enter") && e.target.tagName !== "BUTTON") { e.preventDefault(); q.shown = true; renderStage(); }
     else if (q.shown && (k === "1" || k === "2")) { e.preventDefault(); prepSorted(k === "1"); }
   } else if (P.screen === "drill" && q) {
-    if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepChoose(t); } }
+    if (!q.answered && !tpTyping() && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepChoose(t); } }
     else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepDrillQ(); renderStage(); window.scrollTo({ top: 0 }); }
   } else if ((P.screen === "gquiz" || P.screen === "pquiz") && q) {
-    if (!q.answered && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepGroupChoose(t); } }
+    if (!q.answered && !tpTyping() && /^[1-4]$/.test(k)) { const t = q.options[+k - 1]; if (t) { e.preventDefault(); prepGroupChoose(t); } }
     else if (q.answered && k === "Enter" && e.target.tagName !== "BUTTON") { e.preventDefault(); prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); }
   } else if (P.screen === "learn") {
     if (k === "ArrowLeft" && P.i > 0) { e.preventDefault(); P.i--; P.pid = null; renderStage(); }
@@ -3263,6 +3284,8 @@ document.addEventListener("click", async (e) => {
     case "prep-open": prepGo("learn", t.dataset.t); break;
     case "prep-group": prepGo(t.dataset.screen, t.dataset.g); break;
     case "prep-gchoose": prepGroupChoose(t.dataset.t); break;
+    case "prep-qmode": P.st.quizType = t.dataset.v === "1"; savePrep(); renderStage(); break;
+    case "prep-qskip": prepTypedAnswer(""); break;
     case "prep-pshuffle": P.st.parts = null; savePrep(); tpParts(); renderStage(); break;
     case "prep-gnext": prepGroupQ(); renderStage(); window.scrollTo({ top: 0 }); break;
     case "prep-reveal": if (P.q) { P.q.shown = true; renderStage(); } break;
@@ -3449,7 +3472,12 @@ document.addEventListener("click", async (e) => {
 });
 
 document.addEventListener("submit", (e) => {
-  if (e.target.id === "prepCopyForm") {
+  if (e.target.id === "prepQForm") {
+    e.preventDefault();
+    const v = $("#prepIn").value.trim();
+    if (!v) { $("#prepIn").focus(); return; }
+    prepTypedAnswer(v);
+  } else if (e.target.id === "prepCopyForm") {
     e.preventDefault();
     const v = $("#prepIn").value.trim();
     if (!v) { $("#prepIn").focus(); return; }
